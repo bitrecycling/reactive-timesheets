@@ -52,16 +52,20 @@ public class ControllerTests {
 
     @Test
     public void testProjectController() {
-        webTestClient.get().uri("/projects").exchange().expectBody().json("[{\"id\":\"bcd\",\"name\":\"fullTestProjectName\",\"description\":\"fullTestProjectDescription\",\"rate\":100,\"taskIds\":[\"cde\"]}]");
+        webTestClient.get().uri("/projects").exchange().expectBody()
+        .jsonPath("$[0].name").isEqualTo("fullTestProjectName")
+        .jsonPath("$[0].id").isEqualTo("projectId");
     }
 
     @Test
     public void testClientController(){
-        webTestClient.get().uri("/clients").exchange().expectBody().json("[{\"id\":\"abc\",\"name\":\"fullTestClient\",\"address\":\"fullTestClientAddress\",\"projectIds\":[\"bcd\"]}]");
+        webTestClient.get().uri("/clients").exchange().expectBody()
+                .jsonPath("$[0].name").isEqualTo("fullTestClientName")
+                .jsonPath("$[0].id").isEqualTo("clientId");
     }
 
     private Client createTestData() {
-        Client c = Client.builder().name("fullTestClient").address("fullTestClientAddress").build();
+        Client c = Client.builder().name("fullTestClientName").address("fullTestClientAddress").build();
         c.setId("clientId");
         clientRepository.insert(c).subscribe();
         Project p = Project.builder().name("fullTestProjectName")
