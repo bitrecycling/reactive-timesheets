@@ -23,3 +23,12 @@ A tool to be used by freelancers or consultants to keep track of their projects 
 - get report per client
 - get report for all projects
 - all reports shall be able to be restricted to a time (from / to) 
+
+### project structure
+- reactive-service: contains the described springboot 2 / spring 5 reactive backend service
+- client-lib: contains the code to connect to the service
+- client-console: contains a client application (also springboot 2), that communicates with the service
+- client-web: a web-ui, using static html plus js magic
+
+## comments 
+Nothing's ever perfect. Feedback is welcome! 
