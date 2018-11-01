@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 /**
  * The task controller provides the endpoints to the task resource
  *
@@ -25,7 +27,9 @@ public class TaskEntryController {
     }
 
     @PostMapping
-    public Mono<TaskEntry> create(@RequestBody TaskEntry taskEntry){
+    public Mono<TaskEntry> create(@RequestBody Integer durationMinutes, String taskId){
+        Duration duration = Duration.ofMinutes(durationMinutes);
+        TaskEntry taskEntry = TaskEntry.builder().duration(duration).taskId(taskId).build();
         return taskEntryService.insert(taskEntry);
 
     }

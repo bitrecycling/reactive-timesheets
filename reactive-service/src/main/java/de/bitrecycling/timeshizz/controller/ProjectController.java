@@ -30,8 +30,8 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public Mono<Task> addTask(@PathVariable("{id}") String projectId, @RequestBody Task task){
-        //todo: blocking
+    public Mono<Task> addTask(@PathVariable("{id}") String projectId, String taskName){
+        Task task = Task.builder().projectId(projectId).name(taskName).build();
         return projectService.addTask(task);
     }
 }

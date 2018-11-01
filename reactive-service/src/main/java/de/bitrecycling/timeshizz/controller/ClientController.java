@@ -25,7 +25,8 @@ public class ClientController {
     }
 
     @PostMapping
-    public Mono<Client> create(@RequestBody Client client){
+    public Mono<Client> create(@RequestParam("name") String clientName, @RequestParam("address") String clientAddress){
+        Client client = Client.builder().name(clientName).address(clientAddress).build();
         return clientService.insert(client);
 
     }
