@@ -1,23 +1,36 @@
 package de.bitrecycling.timeshizz.model;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 /**
  * The persistent client model
  *
- * created by robo
+ * creationTime by robo
  */
-@Data
+@Getter
+@EqualsAndHashCode
 @Document
 public class Client {
     @Id
+    @Setter
     private String id;
     private String name;
     private String address;
-    private Set<String> projectIds = new HashSet<>();
+    private LocalDateTime creationTime;
+
+    private Client(){}
+
+    @Builder
+    public Client(String name, String address){
+        this.name = name;
+        this.address = address;
+        this.creationTime = LocalDateTime.now();
+    }
 }

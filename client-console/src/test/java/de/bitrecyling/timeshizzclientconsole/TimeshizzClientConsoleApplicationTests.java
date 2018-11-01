@@ -8,7 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * tests (parts of) the console app
  *
- * created by robo
+ * creationTime by robo
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

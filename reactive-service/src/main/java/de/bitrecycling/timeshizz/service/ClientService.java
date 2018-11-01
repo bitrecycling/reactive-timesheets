@@ -7,6 +7,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * The project service
+ *
+ * creationTime by robo
+ */
 @Service
 public class ClientService {
 
@@ -20,8 +25,8 @@ public class ClientService {
         return clientRepository.findById(id);
     }
 
-    public Mono<Client> byName(String name){
-        return clientRepository.findDistinctFirstByName(name);
+    public Flux<Client> byName(String clientName){
+        return clientRepository.findByName(clientName);
     }
 
 

@@ -2,6 +2,7 @@ package de.bitrecycling.timeshizz.controller;
 
 import de.bitrecycling.timeshizz.model.Client;
 import de.bitrecycling.timeshizz.service.ClientService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -9,17 +10,14 @@ import reactor.core.publisher.Mono;
 /**
  * The client controller provides the endpoints to the client resource
  *
- * created by robo
+ * creationTime by robo
  */
 @RestController
 @RequestMapping("/clients")
 public class ClientController {
 
-    private final ClientService clientService;
-
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
-    }
+    @Autowired
+    private ClientService clientService;
 
     @GetMapping
     public Flux<Client> all(){

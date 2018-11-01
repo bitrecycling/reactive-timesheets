@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * The timeshizz application spring boot main class
  *
- * created by robo
+ * creationTime by robo
  */
 @SpringBootApplication
 public class TimeshizzApplication {

@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 /**
  * The client controller provides the endpoints to the client resource
  *
- * created by robo
+ * creationTime by robo
  */
 @RestController
 @RequestMapping("/projects")
@@ -30,8 +30,8 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public Mono<Project> addTask(@PathVariable("{id}") String projectId, @RequestBody Task task){
+    public Mono<Task> addTask(@PathVariable("{id}") String projectId, @RequestBody Task task){
         //todo: blocking
-        return projectService.addTask(projectService.byId(projectId).block(),task);
+        return projectService.addTask(task);
     }
 }

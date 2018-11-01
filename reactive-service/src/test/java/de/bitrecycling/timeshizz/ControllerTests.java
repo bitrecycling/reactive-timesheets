@@ -61,35 +61,20 @@ public class ControllerTests {
     }
 
     private Client createTestData() {
-        Client c = new Client();
-        c.setName("fullTestClient");
-        c.setAddress("fullTestClientAddress");
-        c.setId("abc");
+        Client c = Client.builder().name("fullTestClient").address("fullTestClientAddress").build();
+        c.setId("clientId");
         clientRepository.insert(c).subscribe();
-        Project p = new Project();
-        p.setDescription("fullTestProjectDescription");
-        p.setName("fullTestProjectName");
-        p.setRate(100);
-        p.setId("bcd");
+        Project p = Project.builder().name("fullTestProjectName")
+                .description("fullTestProjectDescription").rate(100).clientId(c.getId()).build();
+        p.setId("projectId");
         projectRespository.insert(p).subscribe();
-        Task t = new Task();
-        t.setName("fullTestTaskName");
-        t.setCreationTime(LocalDateTime.now());
-        t.setId("cde");
+        Task t = Task.builder().name("fullTestTaskName").projectId(p.getId()).build();
+        t.setId("taskId");
         taskRepository.insert(t).subscribe();
-        TaskEntry te1 = new TaskEntry(LocalDateTime.now(), LocalDateTime.now().plusHours(5));
-        te1.setId("def");
-        TaskEntry te2 = new TaskEntry(Duration.between(LocalDateTime.now(), LocalDateTime.now().plusHours(3)));
-        te2.setId("efg");
-        t.getTaskEntryIds().add(te1.getId());
-        t.getTaskEntryIds().add(te2.getId());
+        TaskEntry te1 = new TaskEntry(LocalDateTime.now(), LocalDateTime.now().plusHours(5), t.getId());
+        TaskEntry te2 = new TaskEntry(Duration.between(LocalDateTime.now(), LocalDateTime.now().plusHours(3)),t.getId());
         taskEntryRepository.insert(te1).subscribe();
         taskEntryRepository.insert(te2).subscribe();
-        taskRepository.save(t).subscribe();
-        p.getTaskIds().add(t.getId());
-        projectRespository.save(p).subscribe();
-        c.getProjectIds().add(p.getId());
-        clientRepository.save(c).subscribe();
         return c;
     }
 
