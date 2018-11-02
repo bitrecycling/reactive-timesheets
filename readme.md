@@ -1,4 +1,4 @@
-# timeshizz reactive project tracking and timesheets with spring boot 2 and webflux 
+# reactive demo for project tracking and timesheets with spring boot 2 and webflux 
 Demo / Sample application to explore reactive programming with spring boot 2 / webflux
 
 Apart from being a learning project, there's actual practical use. Run the service and
