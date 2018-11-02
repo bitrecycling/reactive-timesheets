@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 /**
  * The taskentry repository provides persistence the the taskentry model
  *
- * creationTime by robo
+ * created by robo
  */
 public interface TaskEntryRepository extends ReactiveMongoRepository<TaskEntry, String> {
 }

@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * The task service
- * creationTime by robo
+ * created by robo
  */
 @Service
 public class TaskService {
@@ -23,5 +23,9 @@ public class TaskService {
 
     public Mono<Task> insert(Task task) {
         return taskRepository.insert(task);
+    }
+
+    public Mono<Void> delete (String taskId){
+        return taskRepository.deleteById(taskId);
     }
 }

@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 /**
  * The project service
  *
- * creationTime by robo
+ * created by robo
  */
 @Service
 public class ProjectService {
@@ -40,7 +40,30 @@ public class ProjectService {
         return projectRespository.insert(project);
     }
 
-    public Mono<Task> addTask(Task task){
+    public Mono<Task> addTask(String projectId, String taskName){
+        Task task = Task.builder().projectId(projectId).name(taskName).build();
         return taskRepository.insert(task);
+    }
+
+    public Mono<Project> update(String projectId, String projectName, String projectDescription, Integer rate) {
+        return projectRespository.findById(projectId).flatMap(
+                p-> {
+                    p.setName(projectName);
+                    p.setDescription(projectDescription);
+                    p.setRate(rate);
+                    return projectRespository.save(p);
+                }
+        );
+
+    }
+
+    /**
+     * Just deletes the project, no cleanup here, associated tasks and taskentries will stay in persistence
+     *
+     * @param projectId
+     * @return
+     */
+    public Mono<Void> delete(String projectId) {
+        return projectRespository.deleteById(projectId);
     }
 }

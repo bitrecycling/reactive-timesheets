@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
 /**
  * The project repository provides persistence the the project model
  *
- * creationTime by robo
+ * created by robo
  */
 public interface ProjectRespository extends ReactiveMongoRepository<Project, String> {
     Flux<Project> findAllByClientId(String clientId);

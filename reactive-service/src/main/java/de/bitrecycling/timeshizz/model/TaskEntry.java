@@ -1,9 +1,8 @@
 package de.bitrecycling.timeshizz.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,12 +14,11 @@ import java.time.LocalDateTime;
  *
  * by robo
  */
-@Getter
-@EqualsAndHashCode
+@Data
+@AllArgsConstructor
 @Document
 public class TaskEntry {
     @Id
-    @Setter
     private String id;
     private LocalDateTime creationTime = null;
     private LocalDateTime start = null;

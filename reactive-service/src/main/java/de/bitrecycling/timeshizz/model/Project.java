@@ -1,8 +1,8 @@
 package de.bitrecycling.timeshizz.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 /**
  * The persistent project model
  *
- * creationTime by robo
+ * created by robo
  */
-@Getter
-@EqualsAndHashCode
+@Data
+@AllArgsConstructor
 @Document
 public class Project {
 

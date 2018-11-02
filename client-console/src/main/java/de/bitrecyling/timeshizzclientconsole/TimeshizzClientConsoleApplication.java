@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * spring boot application main classs
  *
- * creationTime by robo
+ * created by robo
  */
 @SpringBootApplication
 public class TimeshizzClientConsoleApplication {

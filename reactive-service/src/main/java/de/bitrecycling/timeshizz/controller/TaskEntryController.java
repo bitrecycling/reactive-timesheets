@@ -12,7 +12,7 @@ import java.time.Duration;
 /**
  * The task controller provides the endpoints to the task resource
  *
- * creationTime by robo
+ * created by robo
  */
 @RestController
 @RequestMapping("/taskentries")
@@ -32,5 +32,10 @@ public class TaskEntryController {
         TaskEntry taskEntry = TaskEntry.builder().duration(duration).taskId(taskId).build();
         return taskEntryService.insert(taskEntry);
 
+    }
+
+    @PostMapping("/{id}")
+    public Mono<Void> delete(@PathVariable("{id}") String taskEntryId){
+        return taskEntryService.delete(taskEntryId);
     }
 }

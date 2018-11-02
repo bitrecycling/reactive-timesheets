@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 
 /**
  * The project service
- *
- * creationTime by robo
+ * <p>
+ * created by robo
  */
 @Service
 public class ClientService {
@@ -18,20 +18,41 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Flux<Client> all(){
+    public Flux<Client> all() {
         return clientRepository.findAll();
     }
-    public Mono<Client> byId(String id){
+
+    public Mono<Client> byId(String id) {
         return clientRepository.findById(id);
     }
 
-    public Flux<Client> byName(String clientName){
+    public Flux<Client> byName(String clientName) {
         return clientRepository.findByName(clientName);
     }
 
 
-    public Mono<Client> insert(Client client){
+    public Mono<Client> insert(Client client) {
         return clientRepository.insert(client);
     }
 
+    public Mono<Client> update(String clientId, String clientName, String clientAddress) {
+        return clientRepository.findById(clientId).flatMap(
+                c-> {
+                    c.setName(clientName);
+                    c.setAddress(clientAddress);
+                    return clientRepository.save(c);
+                }
+        );
+
+    }
+    /**
+     * Just deletes the client, no cleanup here, associated projects, their tasks and taskentries will stay
+     * in persistence
+     *
+     * @param clientId
+     * @return
+     */
+    public Mono<Void> delete(String clientId) {
+       return clientRepository.deleteById(clientId);
+    }
 }

@@ -54,20 +54,33 @@ public class ServiceTests {
         StepVerifier.create(
                 clientService.all()).expectNextMatches(c::equals).verifyComplete();
 
+        StepVerifier.create(
+                clientService.update(c.getId(), "newClientName", "newClientAddress")
+        ).expectNextMatches(
+
+                client -> {
+                    Client yo = new Client("clientId","newClientName", "newClientAddress",
+                            LocalDateTime.of(1970, 1,1,1,1));
+                    yo.setId(c.getId());
+                    return client.equals(yo);
+                }).verifyComplete();
+
+        StepVerifier.create(clientService.delete("clientId")).expectNext().verifyComplete();
+        System.out.println("done");
     }
 
     @Test
-    public void testProjectsByClient(){
+    public void testProjectsByClient() {
         createTestData();
         StepVerifier.create(projectService.byClientName("fullTestClient"))
                 .expectNextMatches(
-                        project -> project.getName().equals( "fullTestProjectName"))
+                        project -> project.getName().equals("fullTestProjectName"))
                 .verifyComplete();
     }
 
     private Client createTestData() {
-        Client c = Client.builder().name("fullTestClient").address("fullTestClientAddress").build();
-        c.setId("clientId");
+        Client c = new Client("clientId", "clientName", "clientAddress",
+                LocalDateTime.of(1970, 1,1,1,1));
         clientRepository.insert(c).subscribe();
         Project p = Project.builder().name("fullTestProjectName")
                 .description("fullTestProjectDescription").rate(100).clientId(c.getId()).build();
@@ -77,7 +90,7 @@ public class ServiceTests {
         t.setId("taskId");
         taskRepository.insert(t).subscribe();
         TaskEntry te1 = new TaskEntry(LocalDateTime.now(), LocalDateTime.now().plusHours(5), t.getId());
-        TaskEntry te2 = new TaskEntry(Duration.between(LocalDateTime.now(), LocalDateTime.now().plusHours(3)),t.getId());
+        TaskEntry te2 = new TaskEntry(Duration.between(LocalDateTime.now(), LocalDateTime.now().plusHours(3)), t.getId());
         taskEntryRepository.insert(te1).subscribe();
         taskEntryRepository.insert(te2).subscribe();
         return c;

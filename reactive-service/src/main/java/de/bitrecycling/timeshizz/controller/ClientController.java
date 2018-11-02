@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 /**
  * The client controller provides the endpoints to the client resource
  *
- * creationTime by robo
+ * created by robo
  */
 @RestController
 @RequestMapping("/clients")
@@ -24,10 +24,37 @@ public class ClientController {
         return clientService.all();
     }
 
+    /**
+     * create a new client with name and address
+     * @param clientName
+     * @param clientAddress
+     * @return
+     */
     @PostMapping
-    public Mono<Client> create(@RequestParam("name") String clientName, @RequestParam("address") String clientAddress){
+    public Mono<Client> create(@RequestParam("name") String clientName,
+                               @RequestParam("address") String clientAddress){
+
         Client client = Client.builder().name(clientName).address(clientAddress).build();
         return clientService.insert(client);
 
+    }
+
+    /**
+     * update a client
+     * @param clientName
+     * @param clientAddress
+     * @return
+     */
+    @PutMapping("/{id}")
+    public Mono<Client> update(@PathVariable("id") String clientId,
+                               @RequestParam("name") String clientName,
+                               @RequestParam("address") String clientAddress){
+
+        return clientService.update(clientId, clientName, clientAddress);
+    }
+
+    @DeleteMapping("/{id}")
+    public Mono<Void> delete(@PathVariable("id") String clientId){
+        return clientService.delete(clientId);
     }
 }

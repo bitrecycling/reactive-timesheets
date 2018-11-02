@@ -1,9 +1,8 @@
 package de.bitrecycling.timeshizz.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,14 +11,13 @@ import java.time.LocalDateTime;
 /**
  * The persistent client model
  *
- * creationTime by robo
+ * created by robo
  */
-@Getter
-@EqualsAndHashCode
+@Data
+@AllArgsConstructor
 @Document
 public class Client {
     @Id
-    @Setter
     private String id;
     private String name;
     private String address;
@@ -28,7 +26,8 @@ public class Client {
     private Client(){}
 
     @Builder
-    public Client(String name, String address){
+    public Client(String id, String name, String address){
+        this.id = id;
         this.name = name;
         this.address = address;
         this.creationTime = LocalDateTime.now();

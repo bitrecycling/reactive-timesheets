@@ -14,7 +14,7 @@ import reactor.test.StepVerifier;
 /**
  * tests (parts of) the client lib
  *
- * creationTime by robo
+ * created by robo
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
