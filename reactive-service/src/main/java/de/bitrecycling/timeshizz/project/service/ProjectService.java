@@ -1,10 +1,10 @@
-package de.bitrecycling.timeshizz.service;
+package de.bitrecycling.timeshizz.project.service;
 
-import de.bitrecycling.timeshizz.model.Project;
-import de.bitrecycling.timeshizz.model.Task;
-import de.bitrecycling.timeshizz.repository.ClientRepository;
-import de.bitrecycling.timeshizz.repository.ProjectRespository;
-import de.bitrecycling.timeshizz.repository.TaskRepository;
+import de.bitrecycling.timeshizz.client.repository.ClientRepository;
+import de.bitrecycling.timeshizz.project.model.Project;
+import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
+import de.bitrecycling.timeshizz.task.model.Task;
+import de.bitrecycling.timeshizz.task.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

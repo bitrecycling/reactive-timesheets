@@ -20,12 +20,6 @@ A tool to be used by freelancers or consultants to keep track of their projects 
 ## nonfunctional requirements
 - reactive / SpringBoot 2 (Spring 5)
 - clean structure / architecture
-- (minimal artifact (jigsaw, requires java 9+))
-
-## non requirements
-- immutable models, might come later though
-- fancy gui
-- no coupling to vendor tech (it's spring, and it stays in spring)
 
 ## use cases
 - register new client
@@ -42,6 +36,15 @@ A tool to be used by freelancers or consultants to keep track of their projects 
 - client-lib: contains the code to connect to the service
 - client-console: contains a client application (also springboot 2), that communicates with the service
 - client-web: a web-ui, using static html plus js magic
+
+## future requirements, might never come
+- minimal artifact (jigsaw)
+- multi user 
+- spring security
+- immutable models, might come later though
+- fancy gui
+- no coupling to vendor tech (it's spring, and it stays in spring)
+
 
 ## comments 
 Nothing's ever perfect. Feedback is welcome! 

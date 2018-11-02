@@ -1,6 +1,6 @@
-package de.bitrecycling.timeshizz.repository;
+package de.bitrecycling.timeshizz.client.repository;
 
-import de.bitrecycling.timeshizz.model.Client;
+import de.bitrecycling.timeshizz.client.model.Client;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 

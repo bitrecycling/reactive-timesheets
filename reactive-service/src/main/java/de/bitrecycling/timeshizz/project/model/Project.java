@@ -1,4 +1,4 @@
-package de.bitrecycling.timeshizz.model;
+package de.bitrecycling.timeshizz.project.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

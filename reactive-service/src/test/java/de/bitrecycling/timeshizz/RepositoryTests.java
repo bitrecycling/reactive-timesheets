@@ -1,13 +1,13 @@
 package de.bitrecycling.timeshizz;
 
-import de.bitrecycling.timeshizz.model.Client;
-import de.bitrecycling.timeshizz.model.Project;
-import de.bitrecycling.timeshizz.model.Task;
-import de.bitrecycling.timeshizz.model.TaskEntry;
-import de.bitrecycling.timeshizz.repository.ClientRepository;
-import de.bitrecycling.timeshizz.repository.ProjectRespository;
-import de.bitrecycling.timeshizz.repository.TaskEntryRepository;
-import de.bitrecycling.timeshizz.repository.TaskRepository;
+import de.bitrecycling.timeshizz.client.model.Client;
+import de.bitrecycling.timeshizz.client.repository.ClientRepository;
+import de.bitrecycling.timeshizz.project.model.Project;
+import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
+import de.bitrecycling.timeshizz.task.model.Task;
+import de.bitrecycling.timeshizz.task.model.TaskEntry;
+import de.bitrecycling.timeshizz.task.repository.TaskEntryRepository;
+import de.bitrecycling.timeshizz.task.repository.TaskRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;

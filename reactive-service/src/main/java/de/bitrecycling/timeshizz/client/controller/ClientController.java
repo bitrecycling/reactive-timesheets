@@ -1,7 +1,7 @@
-package de.bitrecycling.timeshizz.controller;
+package de.bitrecycling.timeshizz.client.controller;
 
-import de.bitrecycling.timeshizz.model.Client;
-import de.bitrecycling.timeshizz.service.ClientService;
+import de.bitrecycling.timeshizz.client.model.Client;
+import de.bitrecycling.timeshizz.client.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;

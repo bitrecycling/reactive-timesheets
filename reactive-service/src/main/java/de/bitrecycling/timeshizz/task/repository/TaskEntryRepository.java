@@ -1,6 +1,6 @@
-package de.bitrecycling.timeshizz.repository;
+package de.bitrecycling.timeshizz.task.repository;
 
-import de.bitrecycling.timeshizz.model.TaskEntry;
+import de.bitrecycling.timeshizz.task.model.TaskEntry;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 /**
