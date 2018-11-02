@@ -22,14 +22,12 @@ A tool to be used by freelancers or consultants to keep track of their projects 
 - get report for all projects
 - all reports shall be able to be restricted to a time (from / to) 
 
-## requirements environment
-- AWS deployable
-- mongodb or other nosql storage for persistence
-- java 8+
-
 ## nonfunctional requirements
 - reactive / SpringBoot 2 (Spring 5)
 - clean structure / architecture
+- AWS deployable
+- mongodb or other nosql storage for persistence
+- java 8+
 
 ## project structure
 - reactive-service: contains the described springboot 2 / spring 5 reactive backend service
