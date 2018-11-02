@@ -12,15 +12,6 @@ In a far future, a minimized (jigsaw) executable jar shall be deployable on aws,
 ## The application in a nutshell
 A tool to be used by freelancers or consultants to keep track of their projects and time worked on tasks for those. A client has multiple projects, each projects has multiple tasks, each task has multiple entries. The reports from those entries can be used to create invoices or client-specific timesheets as proof-of-work. 
 
-## requirements environment
-- AWS deployable
-- mongodb or other nosql storage for persistence
-- java 8+
-
-## nonfunctional requirements
-- reactive / SpringBoot 2 (Spring 5)
-- clean structure / architecture
-
 ## use cases
 - register new client
 - register new project to existing client
@@ -30,6 +21,15 @@ A tool to be used by freelancers or consultants to keep track of their projects 
 - get report per client
 - get report for all projects
 - all reports shall be able to be restricted to a time (from / to) 
+
+## requirements environment
+- AWS deployable
+- mongodb or other nosql storage for persistence
+- java 8+
+
+## nonfunctional requirements
+- reactive / SpringBoot 2 (Spring 5)
+- clean structure / architecture
 
 ## project structure
 - reactive-service: contains the described springboot 2 / spring 5 reactive backend service
@@ -44,7 +44,6 @@ A tool to be used by freelancers or consultants to keep track of their projects 
 - immutable models, might come later though
 - fancy gui
 - no coupling to vendor tech (it's spring, and it stays in spring)
-
 
 ## comments 
 Nothing's ever perfect. Feedback is welcome! 
