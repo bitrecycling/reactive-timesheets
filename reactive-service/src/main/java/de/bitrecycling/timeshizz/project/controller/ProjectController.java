@@ -2,7 +2,6 @@ package de.bitrecycling.timeshizz.project.controller;
 
 import de.bitrecycling.timeshizz.project.model.Project;
 import de.bitrecycling.timeshizz.project.service.ProjectService;
-import de.bitrecycling.timeshizz.task.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -24,18 +23,21 @@ public class ProjectController {
         return projectService.all();
     }
 
+    @GetMapping(params = "clientId")
+    public Flux<Project> allByClientId(@RequestParam("clientId") String clientId){
+        return projectService.allByClientId(clientId);
+    }
+
     @PostMapping
-    public Mono<Project> create(@RequestBody Project project){
+    public Mono<Project> create(@RequestParam("name") String projectName,
+                                @RequestParam("description") String projectDescription,
+                                @RequestParam("clientId") String clientId){
+        Project project = Project.builder().name(projectName).description(projectDescription).clientId(clientId).build();
         return projectService.create(project);
     }
 
-    @PutMapping("/{id}")
-    public Mono<Task> addTask(@PathVariable("{id}") String projectId, String taskName){
-        return projectService.addTask(projectId, taskName);
-    }
-
     @DeleteMapping("/{id}")
-    public Mono<Void> delete(@PathVariable("{id}") String projectId){
+    public Mono<Void> delete(@PathVariable("id") String projectId){
         return projectService.delete(projectId);
     }
 }

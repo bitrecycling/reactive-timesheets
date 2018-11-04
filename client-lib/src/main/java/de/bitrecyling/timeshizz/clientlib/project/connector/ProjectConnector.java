@@ -1,6 +1,6 @@
-package de.bitrecyling.timeshizz.clientlib.project;
+package de.bitrecyling.timeshizz.clientlib.project.connector;
 
-import de.bitrecyling.timeshizz.clientlib.client.model.Client;
+import de.bitrecyling.timeshizz.clientlib.project.model.Project;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -12,6 +12,9 @@ import reactor.core.publisher.Mono;
 import javax.annotation.PostConstruct;
 
 /**
+ * ProjectConnector do not use directly, use the ProjectService to access the Project resource. No plausability or
+ * correctness checks here, simply communicates with the web service.
+ *
  * created by robo
  */
 @Service
@@ -33,19 +36,21 @@ public class ProjectConnector {
                 .build();
     }
 
-    public Flux<Client> loadAllProjects() {
+    public Flux<Project> loadAllProjects() {
 
         return webClient.get().uri(resourceUrl).exchange().flatMapMany(
-                clientResponse -> clientResponse.bodyToFlux(Client.class)
+                clientResponse -> clientResponse.bodyToFlux(Project.class)
         );
     }
 
-    public Mono<Client> createProject(Client client) {
-
+    public Mono<Project> createProject(Project project) {
         return webClient.post().uri(resourceUrl).body(
-                BodyInserters.fromFormData("name", client.getName()).with("address", client.getAddress())
+//                BodyInserters.fromObject(project)
+                BodyInserters.fromFormData("name", project.getName())
+                        .with("description", project.getDescription())
+                        .with("clientId", project.getClientId())
         ).exchange().flatMap(
-                clientResponse -> clientResponse.bodyToMono(Client.class));
+                clientResponse -> clientResponse.bodyToMono(Project.class));
     }
 
     public Mono<Void> deleteProject(String id) {

@@ -29,7 +29,10 @@ public class ProjectService {
     }
 
     public Flux<Project> byClientName(String clientName){
-        return clientRespository.findByName(clientName).flatMap(client -> projectRespository.findAllByClientId(client.getId()));
+        return clientRespository.findByName(clientName)
+                .flatMap(
+                        client -> projectRespository.findAllByClientId(client.getId())
+                );
     }
 
     public Mono<Project> byId(String id){
@@ -65,5 +68,9 @@ public class ProjectService {
      */
     public Mono<Void> delete(String projectId) {
         return projectRespository.deleteById(projectId);
+    }
+
+    public Flux<Project> allByClientId(String clientId) {
+        return projectRespository.findAllByClientId(clientId);
     }
 }

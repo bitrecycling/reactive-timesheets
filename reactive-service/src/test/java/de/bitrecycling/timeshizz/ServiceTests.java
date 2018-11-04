@@ -70,9 +70,25 @@ public class ServiceTests {
     }
 
     @Test
+    public void testClientByName(){
+        createTestData();
+        StepVerifier.create(clientService.byName("clientName")).expectNextMatches(
+            client -> "clientId".equals(client.getId())
+        ).verifyComplete();
+    }
+
+    @Test
+    public void testClientById(){
+        createTestData();
+        StepVerifier.create(clientService.byId("clientId")).expectNextMatches(
+                client -> "clientId".equals(client.getId())
+        ).verifyComplete();
+    }
+
+    @Test
     public void testProjectsByClient() {
         createTestData();
-        StepVerifier.create(projectService.byClientName("fullTestClient"))
+        StepVerifier.create(projectService.byClientName("clientName"))
                 .expectNextMatches(
                         project -> project.getName().equals("fullTestProjectName"))
                 .verifyComplete();

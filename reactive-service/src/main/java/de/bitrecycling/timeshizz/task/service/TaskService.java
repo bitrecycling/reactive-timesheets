@@ -21,11 +21,15 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
+    public Flux<Task> allByProjectId(String projectId) {
+        return taskRepository.findAllByProjectId(projectId);
+    }
+
     public Mono<Task> insert(Task task) {
         return taskRepository.insert(task);
     }
 
-    public Mono<Void> delete (String taskId){
+    public Mono<Void> delete(String taskId) {
         return taskRepository.deleteById(taskId);
     }
 }

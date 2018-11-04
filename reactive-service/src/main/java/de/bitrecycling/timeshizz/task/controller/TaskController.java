@@ -24,14 +24,19 @@ public class TaskController {
         return taskService.all();
     }
 
+    @GetMapping(params = "projectId")
+    public Flux<Task> allByProjectId(@RequestParam("projectId") String projectId){
+        return taskService.allByProjectId(projectId);
+    }
+
     @PostMapping
-    public Mono<Task> create(String taskName, String projectId){
+    public Mono<Task> create(@RequestParam("name") String taskName, @RequestParam("projectId") String projectId){
         Task task = Task.builder().name(taskName).projectId(projectId).build();
         return taskService.insert(task);
     }
 
-    @PostMapping("/{id}")
-    public Mono<Void> delete(@PathVariable("{id}") String taskId){
+    @DeleteMapping("/{id}")
+    public Mono<Void> delete(@PathVariable("id") String taskId){
         return taskService.delete(taskId);
     }
 }

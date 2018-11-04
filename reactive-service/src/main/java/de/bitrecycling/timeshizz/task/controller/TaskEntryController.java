@@ -26,16 +26,21 @@ public class TaskEntryController {
         return taskEntryService.all();
     }
 
+    @GetMapping(params = "taskId")
+    public Flux<TaskEntry> allByTaskId(@RequestParam("taskId") String taskId){
+        return taskEntryService.allByTaskId(taskId);
+    }
+
     @PostMapping
-    public Mono<TaskEntry> create(@RequestBody Integer durationMinutes, String taskId){
+    public Mono<TaskEntry> create(@RequestParam("durationMinutes") Integer durationMinutes, String taskId){
         Duration duration = Duration.ofMinutes(durationMinutes);
         TaskEntry taskEntry = TaskEntry.builder().duration(duration).taskId(taskId).build();
         return taskEntryService.insert(taskEntry);
 
     }
 
-    @PostMapping("/{id}")
-    public Mono<Void> delete(@PathVariable("{id}") String taskEntryId){
+    @DeleteMapping("/{id}")
+    public Mono<Void> delete(@PathVariable("id") String taskEntryId){
         return taskEntryService.delete(taskEntryId);
     }
 }

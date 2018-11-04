@@ -21,6 +21,10 @@ public class TaskEntryService {
         return taskEntryRepository.findAll();
     }
 
+    public Flux<TaskEntry> allByTaskId(String taskId) {
+        return taskEntryRepository.findAllByTaskId(taskId);
+    }
+
     public Mono<TaskEntry> insert(TaskEntry taskEntry) {
         return taskEntryRepository.insert(taskEntry);
     }
