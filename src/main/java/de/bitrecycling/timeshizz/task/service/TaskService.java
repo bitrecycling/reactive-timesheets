@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 /**
  * The task service
  * created by robo
@@ -31,5 +33,9 @@ public class TaskService {
 
     public Mono<Void> delete(String taskId) {
         return taskRepository.deleteById(taskId);
+    }
+
+    public Flux<Task> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to) {
+        return taskRepository.findByCreationTimeBetween(from, to);
     }
 }

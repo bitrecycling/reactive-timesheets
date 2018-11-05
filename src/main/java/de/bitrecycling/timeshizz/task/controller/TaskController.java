@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 /**
  * The task controller provides the endpoints to the task resource
  *
@@ -19,16 +21,42 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    /**
+     * get all tasks, can be used for reports or custom filtering
+     * @return
+     */
     @GetMapping
     public Flux<Task> all(){
         return taskService.all();
     }
 
+    /**
+     * get all task for given project
+     * @param projectId
+     * @return
+     */
     @GetMapping(params = "projectId")
     public Flux<Task> allByProjectId(@RequestParam("projectId") String projectId){
         return taskService.allByProjectId(projectId);
     }
 
+    /**
+     * find all tasks with creation datetime between the from and to datetimes.
+     * @param from
+     * @param to
+     * @return
+     */
+    @GetMapping(params = {"from","to"})
+    public Flux<Task> allByCreationTime(@RequestParam LocalDateTime from, @RequestParam LocalDateTime to){
+        return taskService.findByCreationTimeBetween(from, to);
+    }
+
+    /**
+     * create and persist a new task for the given project, with the given name
+     * @param taskName
+     * @param projectId
+     * @return
+     */
     @PostMapping
     public Mono<Task> create(@RequestParam("name") String taskName, @RequestParam("projectId") String projectId){
         Task task = Task.builder().name(taskName).projectId(projectId).build();

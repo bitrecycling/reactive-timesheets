@@ -19,6 +19,9 @@ import reactor.test.StepVerifier;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TimeshizzApplication.class)
@@ -73,6 +76,25 @@ public class RepositoryTests {
                 .expectNextMatches(
                         project -> project.getName().equals("fullTestProjectName"))
                 .verifyComplete();
+    }
+
+    @Test
+    public void testTasks(){
+        LocalDateTime now = LocalDateTime.now();
+        Task t1 = new Task("t1", "pid1");
+        Task t2 = new Task("t1", "pid1");
+        Task t3 = new Task("t1", "pid2");
+        Task t4 = new Task("t1", "pid2");
+        Task t5 = new Task("t1", "pid2");
+        List<Task> tasks = Arrays.asList(t1, t2, t3, t4, t5);
+        tasks.forEach(task -> taskRepository.insert(task).block());
+        StepVerifier.create(taskRepository.findAllByProjectId("pid1")).expectNextCount(2).verifyComplete();
+        StepVerifier.create(taskRepository.findAllByProjectId("pid2")).expectNextCount(3).verifyComplete();
+        StepVerifier.create(taskRepository.findByCreationTimeBetween(now, LocalDateTime.now()))
+                .expectNextCount(5).verifyComplete();
+        StepVerifier.create(taskRepository.findByCreationTimeBetween(now, now))
+                .expectNextCount(0).verifyComplete();
+        tasks.forEach(task -> taskRepository.delete(task).block());
     }
 
     private Client createTestData() {
