@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 /**
  * The task controller provides the endpoints to the task resource
- *
+ * <p>
  * created by robo
  */
 @RestController
@@ -24,17 +24,17 @@ public class TaskEntryController {
     private TaskEntryService taskEntryService;
 
     @GetMapping
-    public Flux<TaskEntry> all(){
+    public Flux<TaskEntry> all() {
         return taskEntryService.all();
     }
 
     @GetMapping(params = "taskId")
-    public Flux<TaskEntry> allByTaskId(@RequestParam("taskId") String taskId){
+    public Flux<TaskEntry> allByTaskId(@RequestParam("taskId") String taskId) {
         return taskEntryService.allByTaskId(taskId);
     }
 
     @PostMapping
-    public Mono<TaskEntry> create(@RequestParam("durationMinutes") Integer durationMinutes, String taskId){
+    public Mono<TaskEntry> create(@RequestParam("durationMinutes") Integer durationMinutes, String taskId) {
         Duration duration = Duration.ofMinutes(durationMinutes);
         TaskEntry taskEntry = TaskEntry.builder().duration(duration).taskId(taskId).build();
         return taskEntryService.insert(taskEntry);
@@ -43,17 +43,20 @@ public class TaskEntryController {
 
     /**
      * find all tasks with creation datetime between the from and to datetimes.
-     * @param from
-     * @param to
+     *
+     * @param fromString a string representation of a date like 2018-11-05T17:08:42.477Z
+     * @param toString a string representation of a date like 2018-11-05T17:08:42.477Z
      * @return
      */
-    @GetMapping(params = {"from","to"})
-    public Flux<TaskEntry> allByCreationTime(@RequestParam LocalDateTime from, @RequestParam LocalDateTime to){
+    @GetMapping(params = {"from", "to"})
+    public Flux<TaskEntry> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString) {
+        LocalDateTime from = LocalDateTime.parse(fromString);
+        LocalDateTime to = LocalDateTime.parse(toString);
         return taskEntryService.findByCreationTimeBetween(from, to);
     }
 
     @DeleteMapping("/{id}")
-    public Mono<Void> delete(@PathVariable("id") String taskEntryId){
+    public Mono<Void> delete(@PathVariable("id") String taskEntryId) {
         return taskEntryService.delete(taskEntryId);
     }
 }

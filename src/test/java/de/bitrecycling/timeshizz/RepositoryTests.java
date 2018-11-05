@@ -36,13 +36,13 @@ public class RepositoryTests {
     TaskRepository taskRepository;
     @Autowired
     TaskEntryRepository taskEntryRepository;
+    @Autowired
+    org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
+
 
     @After
     public void teardown() {
-        clientRepository.deleteAll().subscribe();
-        projectRespository.deleteAll().subscribe();
-        taskRepository.deleteAll().subscribe();
-        taskEntryRepository.deleteAll().subscribe();
+        mongoTemplate.getDb().drop();
     }
 
 
@@ -82,10 +82,10 @@ public class RepositoryTests {
     public void testTasks(){
         LocalDateTime now = LocalDateTime.now();
         Task t1 = new Task("t1", "pid1");
-        Task t2 = new Task("t1", "pid1");
-        Task t3 = new Task("t1", "pid2");
-        Task t4 = new Task("t1", "pid2");
-        Task t5 = new Task("t1", "pid2");
+        Task t2 = new Task("t2", "pid1");
+        Task t3 = new Task("t3", "pid2");
+        Task t4 = new Task("t4", "pid2");
+        Task t5 = new Task("t5", "pid2");
         List<Task> tasks = Arrays.asList(t1, t2, t3, t4, t5);
         tasks.forEach(task -> taskRepository.insert(task).block());
         StepVerifier.create(taskRepository.findAllByProjectId("pid1")).expectNextCount(2).verifyComplete();
@@ -94,7 +94,12 @@ public class RepositoryTests {
                 .expectNextCount(5).verifyComplete();
         StepVerifier.create(taskRepository.findByCreationTimeBetween(now, now))
                 .expectNextCount(0).verifyComplete();
-        tasks.forEach(task -> taskRepository.delete(task).block());
+        t1.setCreationTime(LocalDateTime.now().minusMinutes(1));
+        t2.setCreationTime(LocalDateTime.now().minusMinutes(1));
+        t5.setCreationTime(LocalDateTime.now().minusMinutes(1));
+        tasks.forEach(task -> taskRepository.save(task).block());
+        StepVerifier.create(taskRepository.findByCreationTimeBetween(now.minusMinutes(1), now))
+                .expectNextCount(3).verifyComplete();
     }
 
     private Client createTestData() {

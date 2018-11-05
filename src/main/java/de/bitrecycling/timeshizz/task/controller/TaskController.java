@@ -42,12 +42,14 @@ public class TaskController {
 
     /**
      * find all tasks with creation datetime between the from and to datetimes.
-     * @param from
-     * @param to
+     * @param fromString a string representation of a date like 2018-11-05T17:08:42.477Z
+     * @param toString a string representation of a date like 2018-11-05T17:08:42.477Z
      * @return
      */
     @GetMapping(params = {"from","to"})
-    public Flux<Task> allByCreationTime(@RequestParam LocalDateTime from, @RequestParam LocalDateTime to){
+    public Flux<Task> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString){
+        LocalDateTime from = LocalDateTime.parse(fromString);
+        LocalDateTime to = LocalDateTime.parse(toString);
         return taskService.findByCreationTimeBetween(from, to);
     }
 
