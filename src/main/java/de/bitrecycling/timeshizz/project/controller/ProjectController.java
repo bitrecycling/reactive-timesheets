@@ -23,6 +23,11 @@ public class ProjectController {
         return projectService.all();
     }
 
+    @GetMapping("/{id}")
+    public Mono<Project> byId(@PathVariable("id") String id){
+        return projectService.byId(id);
+    }
+
     @GetMapping(params = "clientId")
     public Flux<Project> allByClientId(@RequestParam("clientId") String clientId){
         return projectService.allByClientId(clientId);
