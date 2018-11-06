@@ -1,4 +1,5 @@
-# reactive service for project and activities tracking and reporting with spring boot 2 and webflux 
+# reactive timesheet service with spring boot 2 and webflux
+##  track and report your projects and activities  
 
 Started as a learning project, to explore reactive programming. Run the service and
 use one of the clients to record what tasks you have done on which project.
