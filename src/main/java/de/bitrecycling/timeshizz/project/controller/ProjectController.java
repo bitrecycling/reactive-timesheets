@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * The client controller provides the endpoints to the client resource
- *
+ * <p>
  * created by robo
  */
 @RestController
@@ -19,30 +19,31 @@ public class ProjectController {
     private ProjectService projectService;
 
     @GetMapping
-    public Flux<Project> all(){
+    public Flux<Project> all() {
         return projectService.all();
     }
 
     @GetMapping("/{id}")
-    public Mono<Project> byId(@PathVariable("id") String id){
+    public Mono<Project> byId(@PathVariable("id") String id) {
         return projectService.byId(id);
     }
 
     @GetMapping(params = "clientId")
-    public Flux<Project> allByClientId(@RequestParam("clientId") String clientId){
+    public Flux<Project> allByClientId(@RequestParam("clientId") String clientId) {
         return projectService.allByClientId(clientId);
     }
 
     @PostMapping
     public Mono<Project> create(@RequestParam("name") String projectName,
                                 @RequestParam("description") String projectDescription,
-                                @RequestParam("clientId") String clientId){
-        Project project = Project.builder().name(projectName).description(projectDescription).clientId(clientId).build();
+                                @RequestParam("rate") Double rate,
+                                @RequestParam("clientId") String clientId) {
+        Project project = new Project(projectName, projectDescription, rate, clientId);
         return projectService.create(project);
     }
 
     @DeleteMapping("/{id}")
-    public Mono<Void> delete(@PathVariable("id") String projectId){
+    public Mono<Void> delete(@PathVariable("id") String projectId) {
         return projectService.delete(projectId);
     }
 }

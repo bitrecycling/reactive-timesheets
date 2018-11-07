@@ -61,7 +61,7 @@ public class TaskController {
      */
     @PostMapping
     public Mono<Task> create(@RequestParam("name") String taskName, @RequestParam("projectId") String projectId){
-        Task task = Task.builder().name(taskName).projectId(projectId).build();
+        Task task = new Task(taskName,projectId);
         return taskService.insert(task);
     }
 

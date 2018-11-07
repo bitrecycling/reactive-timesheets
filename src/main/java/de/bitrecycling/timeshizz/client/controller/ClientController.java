@@ -34,7 +34,7 @@ public class ClientController {
     public Mono<Client> create(@RequestParam("name") String clientName,
                                @RequestParam("address") String clientAddress){
 
-        Client client = Client.builder().name(clientName).address(clientAddress).build();
+        Client client = new Client(clientName, clientAddress);
         return clientService.insert(client);
 
     }

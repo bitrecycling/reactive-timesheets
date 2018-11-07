@@ -21,35 +21,16 @@ public class TaskEntry {
     @Id
     private String id;
     private LocalDateTime creationTime = null;
-    private LocalDateTime start = null;
-    private LocalDateTime end = null;
-    private Duration duration = null;
+    private LocalDateTime startTime = null;
+    private Integer durationMinutes = null;
     private String taskId;
 
     private TaskEntry(){}
 
-    @Builder
-    public TaskEntry(LocalDateTime start, LocalDateTime end, String taskId){
-        this.start = start;
-        this.end = end;
+    public TaskEntry(LocalDateTime startTime, Integer durationMinutes, String taskId){
+        this.startTime=startTime;
+        this.durationMinutes = durationMinutes;
         this.taskId = taskId;
         this.creationTime = LocalDateTime.now();
-
-    }
-
-    @Builder
-    public TaskEntry(Duration duration, String taskId){
-        this.duration = duration;
-        this.taskId = taskId;
-        this.creationTime = LocalDateTime.now();
-    }
-
-
-    public Duration getDuration() {
-        if(start == null || end == null){
-            return duration;
-        }else {
-            return Duration.between(start,end);
-        }
     }
 }

@@ -48,20 +48,19 @@ public class RepositoryTests {
 
     @Test
     public void fullTurnaround() {
-        Client c = Client.builder().name("fullTestClient").address("fullTestClientAddress").build();
+        Client c = new Client("fullTestClient","fullTestClientAddress");
         c.setId("clientId");
-        clientRepository.insert(c).subscribe();
-        Project p = Project.builder().name("fullTestProjectName")
-                .description("fullTestProjectDescription").rate(100).clientId(c.getId()).build();
+        clientRepository.insert(c).block();
+        Project p = new Project("fullTestProjectName","fullTestProjectDescription",60.0,c.getId());
         p.setId("projectId");
-        projectRespository.insert(p).subscribe();
-        Task t = Task.builder().name("fullTestTaskName").projectId(p.getId()).build();
+        projectRespository.insert(p).block();
+        Task t = new Task("fullTestTaskName",p.getId());
         t.setId("taskId");
-        taskRepository.insert(t).subscribe();
-        TaskEntry te1 = new TaskEntry(LocalDateTime.now(), LocalDateTime.now().plusHours(5), t.getId());
-        TaskEntry te2 = new TaskEntry(Duration.between(LocalDateTime.now(), LocalDateTime.now().plusHours(3)), t.getId());
-        taskEntryRepository.insert(te1).subscribe();
-        taskEntryRepository.insert(te2).subscribe();
+        taskRepository.insert(t).block();
+        TaskEntry te1 = new TaskEntry(LocalDateTime.now(),120, t.getId());
+        TaskEntry te2 = new TaskEntry(LocalDateTime.now(),180, t.getId());
+        taskEntryRepository.insert(te1).block();
+        taskEntryRepository.insert(te2).block();
         StepVerifier.create(clientRepository.findAll()).expectNextMatches(
                 client -> {
                    return c.equals(client);
@@ -80,7 +79,7 @@ public class RepositoryTests {
 
     @Test
     public void testTasks(){
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime before = LocalDateTime.now().minusSeconds(2);
         Task t1 = new Task("t1", "pid1");
         Task t2 = new Task("t2", "pid1");
         Task t3 = new Task("t3", "pid2");
@@ -90,33 +89,32 @@ public class RepositoryTests {
         tasks.forEach(task -> taskRepository.insert(task).block());
         StepVerifier.create(taskRepository.findAllByProjectId("pid1")).expectNextCount(2).verifyComplete();
         StepVerifier.create(taskRepository.findAllByProjectId("pid2")).expectNextCount(3).verifyComplete();
-        StepVerifier.create(taskRepository.findByCreationTimeBetween(now, LocalDateTime.now()))
+        StepVerifier.create(taskRepository.findByCreationTimeBetween(before, LocalDateTime.now()))
                 .expectNextCount(5).verifyComplete();
-        StepVerifier.create(taskRepository.findByCreationTimeBetween(now, now))
+        StepVerifier.create(taskRepository.findByCreationTimeBetween(before, before))
                 .expectNextCount(0).verifyComplete();
         t1.setCreationTime(LocalDateTime.now().minusMinutes(1));
         t2.setCreationTime(LocalDateTime.now().minusMinutes(1));
         t5.setCreationTime(LocalDateTime.now().minusMinutes(1));
         tasks.forEach(task -> taskRepository.save(task).block());
-        StepVerifier.create(taskRepository.findByCreationTimeBetween(now.minusMinutes(1), now))
+        StepVerifier.create(taskRepository.findByCreationTimeBetween(before.minusMinutes(1), before))
                 .expectNextCount(3).verifyComplete();
     }
 
     private Client createTestData() {
-        Client c = Client.builder().name("fullTestClient").address("fullTestClientAddress").build();
+        Client c = new Client("fullTestClient","fullTestClientAddress");
         c.setId("clientId");
-        clientRepository.insert(c).subscribe();
-        Project p = Project.builder().name("fullTestProjectName")
-                .description("fullTestProjectDescription").rate(100).clientId(c.getId()).build();
+        clientRepository.insert(c).block();
+        Project p = new Project("fullTestProjectName","fullTestProjectDescription",60.0,c.getId());
         p.setId("projectId");
-        projectRespository.insert(p).subscribe();
-        Task t = Task.builder().name("fullTestTaskName").projectId(p.getId()).build();
+        projectRespository.insert(p).block();
+        Task t = new Task("fullTestTaskName",p.getId());
         t.setId("taskId");
-        taskRepository.insert(t).subscribe();
-        TaskEntry te1 = new TaskEntry(LocalDateTime.now(), LocalDateTime.now().plusHours(5), t.getId());
-        TaskEntry te2 = new TaskEntry(Duration.between(LocalDateTime.now(), LocalDateTime.now().plusHours(3)), t.getId());
-        taskEntryRepository.insert(te1).subscribe();
-        taskEntryRepository.insert(te2).subscribe();
+        taskRepository.insert(t).block();
+        TaskEntry te1 = new TaskEntry(LocalDateTime.now(),120, t.getId());
+        TaskEntry te2 = new TaskEntry(LocalDateTime.now(),180, t.getId());
+        taskEntryRepository.insert(te1).block();
+        taskEntryRepository.insert(te2).block();
         return c;
     }
 }

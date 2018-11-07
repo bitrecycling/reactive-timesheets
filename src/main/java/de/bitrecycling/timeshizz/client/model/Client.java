@@ -25,8 +25,8 @@ public class Client {
 
     private Client(){}
 
-    @Builder
-    public Client(String id, String name, String address){
+
+    public Client(String name, String address){
         this.id = id;
         this.name = name;
         this.address = address;

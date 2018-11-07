@@ -24,20 +24,16 @@ public class Project {
     private String id;
     private String name = "no name";
     private String description = "no description";
+    private Double rate;
     private String clientId;
     private LocalDateTime creationTime;
-    /*
-        per hour rate for this project.
-     */
-    private Integer rate = 0;
 
     private Project(){}
 
-    @Builder
-    private Project(String name, String description, Integer rate, String clientId){
+    public Project(String name, String description, Double rate, String clientId){
         this.name = name;
         this.description = description;
-        this.rate = rate;
+        this.rate=rate;
         this.clientId = clientId;
         this.creationTime = LocalDateTime.now();
     }

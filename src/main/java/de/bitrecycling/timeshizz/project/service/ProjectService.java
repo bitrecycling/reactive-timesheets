@@ -44,16 +44,15 @@ public class ProjectService {
     }
 
     public Mono<Task> addTask(String projectId, String taskName){
-        Task task = Task.builder().projectId(projectId).name(taskName).build();
+        Task task = new Task(taskName, projectId);
         return taskRepository.insert(task);
     }
 
-    public Mono<Project> update(String projectId, String projectName, String projectDescription, Integer rate) {
+    public Mono<Project> update(String projectId, String projectName, String projectDescription) {
         return projectRespository.findById(projectId).flatMap(
                 p-> {
                     p.setName(projectName);
                     p.setDescription(projectDescription);
-                    p.setRate(rate);
                     return projectRespository.save(p);
                 }
         );

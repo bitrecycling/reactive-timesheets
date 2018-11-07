@@ -25,7 +25,6 @@ public class Task {
 
     private Task(){}
 
-    @Builder
     public Task(String name, String projectId){
         this.name = name;
         this.projectId = projectId;

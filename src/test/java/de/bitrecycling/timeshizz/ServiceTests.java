@@ -37,15 +37,14 @@ public class ServiceTests {
     ClientService clientService;
     @Autowired
     ProjectService projectService;
+    @Autowired
+    org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
+
 
     @After
     public void teardown() {
-        clientRepository.deleteAll().subscribe();
-        projectRespository.deleteAll().subscribe();
-        taskRepository.deleteAll().subscribe();
-        taskEntryRepository.deleteAll().subscribe();
+        mongoTemplate.getDb().drop();
     }
-
 
     @Test
     public void fullTurnaround() {
@@ -97,18 +96,17 @@ public class ServiceTests {
     private Client createTestData() {
         Client c = new Client("clientId", "clientName", "clientAddress",
                 LocalDateTime.of(1970, 1,1,1,1));
-        clientRepository.insert(c).subscribe();
-        Project p = Project.builder().name("fullTestProjectName")
-                .description("fullTestProjectDescription").rate(100).clientId(c.getId()).build();
+        clientRepository.insert(c).block();
+        Project p = new Project("fullTestProjectName","fullTestProjectDescription",60.0,c.getId());
         p.setId("projectId");
-        projectRespository.insert(p).subscribe();
-        Task t = Task.builder().name("fullTestTaskName").projectId(p.getId()).build();
+        projectRespository.insert(p).block();
+        Task t = new Task("fullTestTaskName",p.getId());
         t.setId("taskId");
-        taskRepository.insert(t).subscribe();
-        TaskEntry te1 = new TaskEntry(LocalDateTime.now(), LocalDateTime.now().plusHours(5), t.getId());
-        TaskEntry te2 = new TaskEntry(Duration.between(LocalDateTime.now(), LocalDateTime.now().plusHours(3)), t.getId());
-        taskEntryRepository.insert(te1).subscribe();
-        taskEntryRepository.insert(te2).subscribe();
+        taskRepository.insert(t).block();
+        TaskEntry te1 = new TaskEntry(LocalDateTime.now(),120, t.getId());
+        TaskEntry te2 = new TaskEntry(LocalDateTime.now(),180, t.getId());
+        taskEntryRepository.insert(te1).block();
+        taskEntryRepository.insert(te2).block();
         return c;
     }
 }

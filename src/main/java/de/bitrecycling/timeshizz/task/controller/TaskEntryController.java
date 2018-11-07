@@ -34,9 +34,9 @@ public class TaskEntryController {
     }
 
     @PostMapping
-    public Mono<TaskEntry> create(@RequestParam("durationMinutes") Integer durationMinutes, @RequestParam String taskId) {
-        Duration duration = Duration.ofMinutes(durationMinutes);
-        TaskEntry taskEntry = TaskEntry.builder().duration(duration).taskId(taskId).build();
+    public Mono<TaskEntry> create(@RequestParam("startTime") String startTimeString, @RequestParam("durationMinutes") Integer durationMinutes, @RequestParam("taskId") String taskId) {
+        LocalDateTime startTime = LocalDateTime.parse(startTimeString);
+        TaskEntry taskEntry = new TaskEntry(startTime,durationMinutes,taskId);
         return taskEntryService.insert(taskEntry);
 
     }
