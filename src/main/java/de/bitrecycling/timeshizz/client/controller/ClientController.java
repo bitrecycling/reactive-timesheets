@@ -53,6 +53,17 @@ public class ClientController {
         return clientService.update(clientId, clientName, clientAddress);
     }
 
+    /**
+     * load a specific client
+     * @param clientId
+     * @return
+     */
+    @GetMapping("/{id}")
+    public Mono<Client> update(@PathVariable("id") String clientId){
+
+        return clientService.byId(clientId);
+    }
+
     @DeleteMapping("/{id}")
     public Mono<Void> delete(@PathVariable("id") String clientId){
         return clientService.delete(clientId);
