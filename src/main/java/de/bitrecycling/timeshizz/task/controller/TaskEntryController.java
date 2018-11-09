@@ -3,6 +3,7 @@ package de.bitrecycling.timeshizz.task.controller;
 import de.bitrecycling.timeshizz.task.model.Task;
 import de.bitrecycling.timeshizz.task.model.TaskEntry;
 import de.bitrecycling.timeshizz.task.service.TaskEntryService;
+import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -10,6 +11,9 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The task controller provides the endpoints to the task resource
@@ -33,10 +37,22 @@ public class TaskEntryController {
         return taskEntryService.allByTaskId(taskId);
     }
 
+    /**
+     *
+     * @param startTimeString provide a natural language time string, like "15:23" or "in 5 minutes"
+     *                        or "2018-11-23 12:34". thanks to ocpsoft.prettytime!
+     * @param durationMinutes
+     * @param taskId
+     * @return
+     */
     @PostMapping
     public Mono<TaskEntry> create(@RequestParam("startTime") String startTimeString, @RequestParam("durationMinutes") Integer durationMinutes, @RequestParam("taskId") String taskId) {
-        LocalDateTime startTime = LocalDateTime.parse(startTimeString);
-        TaskEntry taskEntry = new TaskEntry(startTime,durationMinutes,taskId);
+        PrettyTimeParser prettyTimeParser = new PrettyTimeParser();
+        List<Date> parse = prettyTimeParser.parse(startTimeString);
+        LocalDateTime localDateTime = parse.get(0).toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        TaskEntry taskEntry = new TaskEntry(localDateTime,durationMinutes,taskId);
         return taskEntryService.insert(taskEntry);
 
     }
