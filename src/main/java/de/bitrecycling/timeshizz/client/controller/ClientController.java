@@ -3,7 +3,6 @@ package de.bitrecycling.timeshizz.client.controller;
 import de.bitrecycling.timeshizz.client.model.Client;
 import de.bitrecycling.timeshizz.client.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -67,16 +66,16 @@ public class ClientController {
 
     /**
      * update a client
-     * @param clientId
+     * @param id
      * @param client
      * @return
      */
     @PutMapping(name = "/{id}", consumes = "!application/json")
-    public Mono<Client> update(@PathVariable("id") String clientId,
+    public Mono<Client> update(@PathVariable("id") String id,
                                @RequestBody Client client){
 
-        if(!consistent(clientId, client)){
-            throw new RuntimeException("Error: path clientId and json clientId are not equal");
+        if(!consistent(id, client)){
+            throw new RuntimeException("Error: path id and json id are not equal:["+id+" vs "+client.getId()+"]");
         }
 
         return clientService.update(client);

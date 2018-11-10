@@ -33,7 +33,7 @@ public class ProjectController {
         return projectService.allByClientId(clientId);
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/x-www-form-urlencoded")
     public Mono<Project> create(@RequestParam("name") String projectName,
                                 @RequestParam("description") String projectDescription,
                                 @RequestParam("rate") Double rate,
@@ -42,8 +42,40 @@ public class ProjectController {
         return projectService.create(project);
     }
 
+    @PostMapping(consumes = "application/json")
+    public Mono<Project> create(@RequestBody Project project) {
+        return projectService.create(project);
+    }
+
+    @PutMapping(name="/{id}", consumes = "application/x-www-form-urlencoded")
+    public Mono<Project> update(@RequestParam("id") String id,
+                                @RequestParam("name") String projectName,
+                                @RequestParam("description") String projectDescription,
+                                @RequestParam("rate") Double rate,
+                                @RequestParam("clientId") String clientId) {
+
+        Project project = new Project(projectName, projectDescription, rate, clientId);
+        project.setId(id);
+        return projectService.save(project);
+    }
+
+    @PutMapping(name="/{id}", consumes = "application/json")
+    public Mono<Project> update(@RequestParam("id") String id, @RequestBody Project project) {
+        if(!consistent(id, project)) {
+            throw new RuntimeException("Error: path projectId and json clientId are not equal:["+id+" vs "+project.getId()+"]");
+        }
+        return projectService.save(project);
+    }
+
     @DeleteMapping("/{id}")
     public Mono<Void> delete(@PathVariable("id") String projectId) {
         return projectService.delete(projectId);
+    }
+
+    private boolean consistent(String id, Project project){
+        if(project.getId() != null){
+            return id.equals(project.getId());
+        }
+        return true;
     }
 }

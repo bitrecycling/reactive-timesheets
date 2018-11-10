@@ -1,6 +1,5 @@
 package de.bitrecycling.timeshizz.task.controller;
 
-import de.bitrecycling.timeshizz.task.model.Task;
 import de.bitrecycling.timeshizz.task.model.TaskEntry;
 import de.bitrecycling.timeshizz.task.service.TaskEntryService;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -45,16 +43,41 @@ public class TaskEntryController {
      * @param taskId
      * @return
      */
-    @PostMapping
+    @PostMapping(consumes = "application/x-www-form-urlencoded")
     public Mono<TaskEntry> create(@RequestParam("startTime") String startTimeString, @RequestParam("durationMinutes") Integer durationMinutes, @RequestParam("taskId") String taskId) {
-        PrettyTimeParser prettyTimeParser = new PrettyTimeParser();
-        List<Date> parse = prettyTimeParser.parse(startTimeString);
-        LocalDateTime localDateTime = parse.get(0).toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        TaskEntry taskEntry = new TaskEntry(localDateTime,durationMinutes,taskId);
+        LocalDateTime parsedTime = parseTime(startTimeString);
+        TaskEntry taskEntry = new TaskEntry(parsedTime,durationMinutes,taskId);
         return taskEntryService.insert(taskEntry);
 
+    }
+    @PostMapping(consumes = "application/json")
+    public Mono<TaskEntry> create(@RequestBody TaskEntry taskEntry) {
+        return taskEntryService.insert(taskEntry);
+
+    }
+
+    @PutMapping(name="{id}",consumes = "application/x-www-form-urlencoded")
+    public Mono<TaskEntry> create(@RequestParam("id") String id, @RequestParam("startTime") String startTimeString, @RequestParam("durationMinutes") Integer durationMinutes, @RequestParam("taskId") String taskId) {
+        LocalDateTime parsedTime = parseTime(startTimeString);
+        TaskEntry taskEntry = new TaskEntry(parsedTime,durationMinutes,taskId);
+        taskEntry.setId(id);
+        return taskEntryService.save(taskEntry);
+
+    }
+    @PutMapping(name = "{id}",consumes = "application/json")
+    public Mono<TaskEntry> create(@RequestParam("id")String id, @RequestBody TaskEntry taskEntry) {
+        if(!consistent(id, taskEntry)){
+            throw new RuntimeException("Error: path id and json id are not equal:["+id+" vs "+taskEntry.getId()+"]");
+        }
+        return taskEntryService.save(taskEntry);
+
+    }
+
+    private boolean consistent(String id, TaskEntry taskEntry) {
+        if(taskEntry.getId() != null){
+            return id.equals(taskEntry.getId());
+        }
+        return true;
     }
 
     /**
@@ -74,5 +97,14 @@ public class TaskEntryController {
     @DeleteMapping("/{id}")
     public Mono<Void> delete(@PathVariable("id") String taskEntryId) {
         return taskEntryService.delete(taskEntryId);
+    }
+
+    private LocalDateTime parseTime(String timeString){
+        PrettyTimeParser prettyTimeParser = new PrettyTimeParser();
+        List<Date> parse = prettyTimeParser.parse(timeString);
+        LocalDateTime parsedTime = parse.get(0).toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        return parsedTime;
     }
 }

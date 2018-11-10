@@ -41,4 +41,8 @@ public class TaskEntryService {
     public Flux<TaskEntry> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to) {
         return taskEntryRepository.findAllByCreationTimeBetween(from, to);
     }
+
+    public Mono<TaskEntry> save(TaskEntry taskEntry) {
+        return taskEntryRepository.save(taskEntry);
+    }
 }

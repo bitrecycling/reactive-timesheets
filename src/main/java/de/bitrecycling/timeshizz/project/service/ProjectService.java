@@ -77,4 +77,8 @@ public class ProjectService {
     public Flux<Project> allByClientId(String clientId) {
         return projectRespository.findAllByClientId(clientId);
     }
+
+    public Mono<Project> save(Project project) {
+        return  projectRespository.save(project);
+    }
 }
