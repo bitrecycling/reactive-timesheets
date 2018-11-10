@@ -1,8 +1,6 @@
 package de.bitrecycling.timeshizz.client.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,21 +13,16 @@ import java.time.LocalDateTime;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Document
 public class Client {
     @Id
     private String id;
+    @NonNull
     private String name;
+    @NonNull
     private String address;
     private LocalDateTime creationTime;
 
-    private Client(){}
-
-
-    public Client(String name, String address){
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.creationTime = LocalDateTime.now();
-    }
 }

@@ -1,9 +1,6 @@
 package de.bitrecycling.timeshizz.project.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,25 +13,21 @@ import java.time.LocalDateTime;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Document
 public class Project {
 
     @Id
-    @Setter
     private String id;
-    private String name = "no name";
-    private String description = "no description";
+    @NonNull
+    private String name;
+    @NonNull
+    private String description;
+    @NonNull
     private Double rate;
+    @NonNull
     private String clientId;
     private LocalDateTime creationTime;
 
-    private Project(){}
-
-    public Project(String name, String description, Double rate, String clientId){
-        this.name = name;
-        this.description = description;
-        this.rate=rate;
-        this.clientId = clientId;
-        this.creationTime = LocalDateTime.now();
-    }
 }

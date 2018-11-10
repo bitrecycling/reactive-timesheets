@@ -28,6 +28,9 @@ public class TaskService {
     }
 
     public Mono<Task> insert(Task task) {
+        if(task.getCreationTime() == null){
+            task.setCreationTime(LocalDateTime.now());
+        }
         return taskRepository.insert(task);
     }
 

@@ -3,6 +3,7 @@ package de.bitrecycling.timeshizz.client.controller;
 import de.bitrecycling.timeshizz.client.model.Client;
 import de.bitrecycling.timeshizz.client.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,7 +31,7 @@ public class ClientController {
      * @param clientAddress
      * @return
      */
-    @PostMapping
+    @PostMapping(consumes = "!application/json")
     public Mono<Client> create(@RequestParam("name") String clientName,
                                @RequestParam("address") String clientAddress){
 
@@ -40,17 +41,45 @@ public class ClientController {
     }
 
     /**
+     * create a new client {"name":"Client Name", "address":"Client Adress, 234521 Some City"}
+     * @param client
+     * @return
+     */
+    @PostMapping(consumes ="!application/x-www-form-urlencoded")
+    public Mono<Client> create(@RequestBody Client client){
+        return clientService.insert(client);
+    }
+
+    /**
      * update a client
      * @param clientName
      * @param clientAddress
      * @return
      */
-    @PutMapping("/{id}")
+    @PutMapping(name = "/{id}", consumes ="!application/x-www-form-urlencoded")
     public Mono<Client> update(@PathVariable("id") String clientId,
                                @RequestParam("name") String clientName,
                                @RequestParam("address") String clientAddress){
+        Client client = new Client(clientName,clientAddress);
+        client.setId(clientId);
+        return clientService.update(client);
+    }
 
-        return clientService.update(clientId, clientName, clientAddress);
+    /**
+     * update a client
+     * @param clientId
+     * @param client
+     * @return
+     */
+    @PutMapping(name = "/{id}", consumes = "!application/json")
+    public Mono<Client> update(@PathVariable("id") String clientId,
+                               @RequestBody Client client){
+
+        if(!consistent(clientId, client)){
+            throw new RuntimeException("Error: path clientId and json clientId are not equal");
+        }
+
+        return clientService.update(client);
     }
 
     /**
@@ -59,7 +88,7 @@ public class ClientController {
      * @return
      */
     @GetMapping("/{id}")
-    public Mono<Client> update(@PathVariable("id") String clientId){
+    public Mono<Client> getById(@PathVariable("id") String clientId){
 
         return clientService.byId(clientId);
     }
@@ -67,5 +96,10 @@ public class ClientController {
     @DeleteMapping("/{id}")
     public Mono<Void> delete(@PathVariable("id") String clientId){
         return clientService.delete(clientId);
+    }
+
+    private boolean consistent(String id, Client client){
+
+        return true;
     }
 }

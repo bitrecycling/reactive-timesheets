@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 /**
  * The project service
  *
@@ -40,6 +42,9 @@ public class ProjectService {
     }
 
     public Mono<Project> create(Project project){
+        if(project.getCreationTime() == null){
+            project.setCreationTime(LocalDateTime.now());
+        }
         return projectRespository.insert(project);
     }
 

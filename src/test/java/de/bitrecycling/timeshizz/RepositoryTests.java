@@ -80,16 +80,16 @@ public class RepositoryTests {
     @Test
     public void testTasks(){
         LocalDateTime before = LocalDateTime.now().minusSeconds(2);
-        Task t1 = new Task("t1", "pid1");
-        Task t2 = new Task("t2", "pid1");
-        Task t3 = new Task("t3", "pid2");
-        Task t4 = new Task("t4", "pid2");
-        Task t5 = new Task("t5", "pid2");
+        Task t1 = new Task(null, "t1", "pid1", before);
+        Task t2 = new Task(null, "t2", "pid1",before);
+        Task t3 = new Task(null,"t3", "pid2",before);
+        Task t4 = new Task(null,"t4","pid2",before);
+        Task t5 = new Task(null,"t5", "pid2",before);
         List<Task> tasks = Arrays.asList(t1, t2, t3, t4, t5);
         tasks.forEach(task -> taskRepository.insert(task).block());
         StepVerifier.create(taskRepository.findAllByProjectId("pid1")).expectNextCount(2).verifyComplete();
         StepVerifier.create(taskRepository.findAllByProjectId("pid2")).expectNextCount(3).verifyComplete();
-        StepVerifier.create(taskRepository.findByCreationTimeBetween(before, LocalDateTime.now()))
+        StepVerifier.create(taskRepository.findByCreationTimeBetween(before.minusSeconds(1), LocalDateTime.now()))
                 .expectNextCount(5).verifyComplete();
         StepVerifier.create(taskRepository.findByCreationTimeBetween(before, before))
                 .expectNextCount(0).verifyComplete();

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 /**
  * The project service
  * <p>
@@ -32,15 +34,17 @@ public class ClientService {
 
 
     public Mono<Client> insert(Client client) {
+        if(client.getCreationTime() == null){
+            client.setCreationTime(LocalDateTime.now());
+        }
         return clientRepository.insert(client);
     }
 
-    public Mono<Client> update(String clientId, String clientName, String clientAddress) {
-        return clientRepository.findById(clientId).flatMap(
+    public Mono<Client> update(Client client) {
+        return clientRepository.findById(client.getId()).flatMap(
                 c-> {
-                    c.setName(clientName);
-                    c.setAddress(clientAddress);
-                    return clientRepository.save(c);
+                    client.setCreationTime(c.getCreationTime());
+                    return clientRepository.save(client);
                 }
         );
 

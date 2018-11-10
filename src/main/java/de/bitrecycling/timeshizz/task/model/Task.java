@@ -1,8 +1,6 @@
 package de.bitrecycling.timeshizz.task.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,19 +13,16 @@ import java.time.LocalDateTime;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Document
 public class Task {
     @Id
     private String id;
+    @NonNull
     private String name;
-    private LocalDateTime creationTime;
+    @NonNull
     private String projectId;
+    private LocalDateTime creationTime;
 
-    private Task(){}
-
-    public Task(String name, String projectId){
-        this.name = name;
-        this.projectId = projectId;
-        this.creationTime = LocalDateTime.now();
-    }
 }

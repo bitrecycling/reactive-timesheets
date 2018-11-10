@@ -52,9 +52,10 @@ public class ServiceTests {
         clientService.byName(c.getName()).subscribe();
         StepVerifier.create(
                 clientService.all()).expectNextMatches(c::equals).verifyComplete();
-
+        c.setAddress("newClientAddress");
+        c.setName("newClientName");
         StepVerifier.create(
-                clientService.update(c.getId(), "newClientName", "newClientAddress")
+                clientService.update(c)
         ).expectNextMatches(
 
                 client -> {
