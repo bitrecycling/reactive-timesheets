@@ -2,10 +2,14 @@ package de.bitrecycling.timeshizz.client.controller;
 
 import de.bitrecycling.timeshizz.client.model.Client;
 import de.bitrecycling.timeshizz.client.service.ClientService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * The client controller provides the endpoints to the client resource
@@ -14,11 +18,13 @@ import reactor.core.publisher.Mono;
  */
 @RestController
 @RequestMapping("/clients")
+@Api(value = "Client Management", description = "CRUD for client resource")
 public class ClientController {
 
     @Autowired
     private ClientService clientService;
 
+    @ApiOperation(value = "get all clients", response = Flux.class)
     @GetMapping
     public Flux<Client> all(){
         return clientService.all();
@@ -30,6 +36,7 @@ public class ClientController {
      * @param clientAddress
      * @return
      */
+    @ApiOperation(value = "create new client", response = Flux.class)
     @PostMapping(consumes = "!application/json")
     public Mono<Client> create(@RequestParam("name") String clientName,
                                @RequestParam("address") String clientAddress){

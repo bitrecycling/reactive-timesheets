@@ -14,10 +14,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.test.StepVerifier;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,6 +101,43 @@ public class RepositoryTests {
         tasks.forEach(task -> taskRepository.save(task).block());
         StepVerifier.create(taskRepository.findByCreationTimeBetween(before.minusMinutes(1), before))
                 .expectNextCount(3).verifyComplete();
+    }
+
+
+    @Test
+    public void testTopTaskEntries(){
+        ArrayList<TaskEntry> taskEntries = new ArrayList<>();
+
+        for(int i=1; i<=20; i++){
+            TaskEntry taskEntry = new TaskEntry("id_" + i, LocalDateTime.parse("2018-11-11T15:30"), 30 + i,
+                    "nah" + (20 - i), LocalDateTime.parse("2018-11-11T15:30").minusMinutes(i));
+            taskEntries.add(taskEntry);
+            if(i%2==0)
+                taskEntryRepository.insert(taskEntry).block();
+        }
+        for(int i=1; i<=20; i++){
+            if(i%2==1)
+                taskEntryRepository.insert(taskEntries.get(i-1)).block();
+        }
+
+        Pageable pageable = Pageable.unpaged();
+        StepVerifier.create(taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable))
+                .expectNextMatches(
+                taskEntry -> taskEntries.get(19).equals(taskEntry)
+        ).expectNextMatches(
+                taskEntry -> taskEntries.get(18).equals(taskEntry))
+                .expectNextCount(18).verifyComplete();
+
+        StepVerifier.create(taskEntryRepository.findAllByOrderByCreationTimeDesc(pageable))
+                .expectNextMatches(
+                        taskEntry -> taskEntries.get(0).equals(taskEntry)
+                ).expectNextMatches(
+                taskEntry -> taskEntries.get(1).equals(taskEntry))
+                .expectNextCount(18).verifyComplete();
+
+        pageable = PageRequest.of(1,10);
+        StepVerifier.create(taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable))
+                .expectNextCount(10).verifyComplete();
     }
 
     private Client createTestData() {

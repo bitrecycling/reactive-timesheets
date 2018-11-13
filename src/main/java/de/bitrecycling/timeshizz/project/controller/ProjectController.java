@@ -2,6 +2,7 @@ package de.bitrecycling.timeshizz.project.controller;
 
 import de.bitrecycling.timeshizz.project.model.Project;
 import de.bitrecycling.timeshizz.project.service.ProjectService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
  */
 @RestController
 @RequestMapping("/projects")
+@Api(value = "Project Management", description = "CRUD for project resource")
 public class ProjectController {
     @Autowired
     private ProjectService projectService;

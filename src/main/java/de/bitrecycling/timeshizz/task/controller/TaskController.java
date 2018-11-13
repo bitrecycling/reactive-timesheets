@@ -2,6 +2,7 @@ package de.bitrecycling.timeshizz.task.controller;
 
 import de.bitrecycling.timeshizz.task.model.Task;
 import de.bitrecycling.timeshizz.task.service.TaskService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
  */
 @RestController
 @RequestMapping("/tasks")
+@Api(value = "Task Management", description = "CRUD for task resource")
 public class TaskController {
 
     @Autowired

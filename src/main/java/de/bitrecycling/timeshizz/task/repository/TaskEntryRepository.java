@@ -1,6 +1,9 @@
 package de.bitrecycling.timeshizz.task.repository;
 
 import de.bitrecycling.timeshizz.task.model.TaskEntry;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 
@@ -15,4 +18,6 @@ public interface TaskEntryRepository extends ReactiveMongoRepository<TaskEntry, 
     Flux<TaskEntry> findAllByTaskId(String taskId);
 
     Flux<TaskEntry> findAllByCreationTimeBetween(LocalDateTime from, LocalDateTime to);
+    Flux<TaskEntry> findAllByOrderByCreationTimeDesc(Pageable pageable);
+    Flux<TaskEntry> findAllByOrderByCreationTimeAsc(Pageable pageable);
 }

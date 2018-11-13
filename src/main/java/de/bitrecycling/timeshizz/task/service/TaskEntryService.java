@@ -3,6 +3,8 @@ package de.bitrecycling.timeshizz.task.service;
 import de.bitrecycling.timeshizz.task.model.TaskEntry;
 import de.bitrecycling.timeshizz.task.repository.TaskEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,6 +42,17 @@ public class TaskEntryService {
 
     public Flux<TaskEntry> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to) {
         return taskEntryRepository.findAllByCreationTimeBetween(from, to);
+    }
+
+    public Flux<TaskEntry> findPagedAscending(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable);
+    }
+
+    public Flux<TaskEntry> findPagedDescending(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return taskEntryRepository.findAllByOrderByCreationTimeDesc(pageable);
+
     }
 
     public Mono<TaskEntry> save(TaskEntry taskEntry) {
