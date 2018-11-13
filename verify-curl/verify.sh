@@ -92,32 +92,13 @@ PROJECT_NAME=`curl -s "http://localhost:8080/projects/${PROJECT_ID}" | jq '.name
 RATE=`curl -s "http://localhost:8080/projects/${PROJECT_ID}" | jq '.rate'`
 echo "REPORT FOR PROJECT: ${PROJECT_NAME}"
 echo "RATE=" ${RATE}
-#PROJECT_TASKS=`curl -s "http://localhost:8080/tasks?projectId=${PROJECT_ID}" | jq '. | .[]'`
-#PROJECT_TASKNAMES=`curl -s "http://localhost:8080/tasks?projectId=${PROJECT_ID}" | jq '. |.[] |.name'`
-#PROJECT_TASK_IDS=`curl -s "http://localhost:8080/tasks?projectId=${PROJECT_ID}" | jq '. |.[] |.id'`
-#PROJECT_TASK_NAMES_IDS=`curl -s "http://localhost:8080/tasks?projectId=${PROJECT_ID}" | jq -r '. |.[] |.id, .name'`
 
 PROJECT_TASK_NAMES_IDS=`curl -s "http://localhost:8080/tasks?projectId=${PROJECT_ID}" | jq -r '. |.[] |"\(.id) \(.name)"'`
-#echo ${PROJECT_TASK_NAMES_IDS}
-#curl -s "http://localhost:8080/tasks?projectId=${PROJECT_ID}" | jq -r '. |.[] |"\(.id) \(.name)"'
-# | jq "."`# > projectTasks.tmp
-#echo $PROJECT_TASKS
-#echo $PROJECT_TASK_NAMES_IDS
-#
-#function printTaskEntries(){
-#while IFS= read -r line
-#do
-#   AR=' ' read -a tasks <<< "$line"
-#   echo ${tasks[0]}
-#   curl "http://localhost:8080/taskentries?taskId=${tasks[1]}"
-#done < <(echo "$1")
-#}
-#
+
 function printTaskEntries(){
     IFS=' ' read -ra yo <<< "$1"
-    echo "name=${yo[1]} ${yo[2]}"
+    echo "Task '${yo[1]} ${yo[2]}'"
     curl -s "http://localhost:8080/taskentries?taskId=${yo[0]}" | jq -r '. | .[] |"at \(.creationTime) minutes \(.durationMinutes)"'
-
 }
 
 IFS=$'\n'
@@ -128,13 +109,5 @@ do
    :
    printTaskEntries $i
 done
-#while IFS= read -r line
-#do
-#    printTaskEntries $line
-#    echo "asdfjksdlgfjh $line"
-#done < <(echo ${PROJECT_NAME_ID})
-#echo $PROJECT_TASKS
-#cleanup
-#echo $PROJECT_TASKNAMES
-#echo $PROJECT_IDS
+
 rm *.tmp
