@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 public interface TaskRepository extends ReactiveMongoRepository<Task, String> {
 
-    Flux<Task> findAllByProjectId(String projectId);
+    Flux<Task> findAllByProjectIdOrderByCreationTimeDesc(String projectId);
 
     Flux<Task> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to);
 }

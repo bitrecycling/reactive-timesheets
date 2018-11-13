@@ -26,7 +26,7 @@ public class TaskEntryService {
     }
 
     public Flux<TaskEntry> allByTaskId(String taskId) {
-        return taskEntryRepository.findAllByTaskId(taskId);
+        return taskEntryRepository.findAllByTaskIdOrderByCreationTimeDesc(taskId);
     }
 
     public Mono<TaskEntry> insert(TaskEntry taskEntry) {

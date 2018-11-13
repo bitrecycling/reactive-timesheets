@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -89,8 +88,8 @@ public class RepositoryTests {
         Task t5 = new Task(null,"t5", "pid2",before);
         List<Task> tasks = Arrays.asList(t1, t2, t3, t4, t5);
         tasks.forEach(task -> taskRepository.insert(task).block());
-        StepVerifier.create(taskRepository.findAllByProjectId("pid1")).expectNextCount(2).verifyComplete();
-        StepVerifier.create(taskRepository.findAllByProjectId("pid2")).expectNextCount(3).verifyComplete();
+        StepVerifier.create(taskRepository.findAllByProjectIdOrderByCreationTimeDesc("pid1")).expectNextCount(2).verifyComplete();
+        StepVerifier.create(taskRepository.findAllByProjectIdOrderByCreationTimeDesc("pid2")).expectNextCount(3).verifyComplete();
         StepVerifier.create(taskRepository.findByCreationTimeBetween(before.minusSeconds(1), LocalDateTime.now()))
                 .expectNextCount(5).verifyComplete();
         StepVerifier.create(taskRepository.findByCreationTimeBetween(before, before))

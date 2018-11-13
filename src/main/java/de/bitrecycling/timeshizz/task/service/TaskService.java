@@ -24,7 +24,7 @@ public class TaskService {
     }
 
     public Flux<Task> allByProjectId(String projectId) {
-        return taskRepository.findAllByProjectId(projectId);
+        return taskRepository.findAllByProjectIdOrderByCreationTimeDesc(projectId);
     }
 
     public Mono<Task> insert(Task task) {
