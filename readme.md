@@ -14,6 +14,10 @@ and test single calls.
 In a future version, a minimized (jigsaw) executable jar shall be generated to be deployed to "the cloud" or as a
 containerized version (using docker or boxfuse). 
 
+![timeshizz screenshot](https://raw.githubusercontent.com/bitrecycling/reactive-timesheets-service/develop/readme/Screenshot.png)
+
+        
+      
 ## The application in a nutshell
 A tool to be used by freelancers or consultants to keep track of their projects and time worked on tasks for those.
 A client has multiple projects, each projects has multiple tasks, each task has multiple entries. The reports from those entries can be used to create invoices or client-specific timesheets as proof-of-work. 
