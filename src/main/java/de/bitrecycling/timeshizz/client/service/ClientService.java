@@ -21,7 +21,7 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     public Flux<Client> all() {
-        return clientRepository.findAll();
+        return clientRepository.findAllByOrderByCreationTimeDesc();
     }
 
     public Mono<Client> byId(String id) {

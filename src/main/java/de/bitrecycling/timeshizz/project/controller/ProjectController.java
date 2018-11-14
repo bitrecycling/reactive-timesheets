@@ -49,7 +49,7 @@ public class ProjectController {
         return projectService.create(project);
     }
 
-    @PutMapping(name="/{id}", consumes = "application/x-www-form-urlencoded")
+    @PutMapping(value = "/{id}", consumes = "application/x-www-form-urlencoded")
     public Mono<Project> update(@RequestParam("id") String id,
                                 @RequestParam("name") String projectName,
                                 @RequestParam("description") String projectDescription,
@@ -61,10 +61,10 @@ public class ProjectController {
         return projectService.save(project);
     }
 
-    @PutMapping(name="/{id}", consumes = "application/json")
+    @PutMapping(value = "/{id}", consumes = "application/json")
     public Mono<Project> update(@RequestParam("id") String id, @RequestBody Project project) {
-        if(!consistent(id, project)) {
-            throw new RuntimeException("Error: path projectId and json clientId are not equal:["+id+" vs "+project.getId()+"]");
+        if (!consistent(id, project)) {
+            throw new RuntimeException("Error: path projectId and json clientId are not equal:[" + id + " vs " + project.getId() + "]");
         }
         return projectService.save(project);
     }
@@ -74,8 +74,8 @@ public class ProjectController {
         return projectService.delete(projectId);
     }
 
-    private boolean consistent(String id, Project project){
-        if(project.getId() != null){
+    private boolean consistent(String id, Project project) {
+        if (project.getId() != null) {
             return id.equals(project.getId());
         }
         return true;

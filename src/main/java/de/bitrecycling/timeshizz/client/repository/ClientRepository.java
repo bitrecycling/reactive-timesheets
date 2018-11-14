@@ -11,4 +11,5 @@ import reactor.core.publisher.Flux;
  */
 public interface ClientRepository extends ReactiveMongoRepository<Client, String> {
     Flux<Client> findByName(String name);
+    Flux<Client> findAllByOrderByCreationTimeDesc();
 }

@@ -76,23 +76,23 @@ public class TaskController {
         return taskService.insert(task);
     }
 
-    @PutMapping(name = "{id}", consumes = "application/x-www-form-urlencoded")
-    public Mono<Task> put(@RequestParam("id") String id,@RequestParam("name") String taskName, @RequestParam("projectId") String projectId) {
+    @PutMapping(value = "/{id}", consumes = "application/x-www-form-urlencoded")
+    public Mono<Task> put(@RequestParam("id") String id, @RequestParam("name") String taskName, @RequestParam("projectId") String projectId) {
         Task task = new Task(taskName, projectId);
         task.setId(id);
         return taskService.save(task);
     }
 
-    @PutMapping(name = "{id}", consumes = "application/json")
+    @PutMapping(value = "/{id}", consumes = "application/json")
     public Mono<Task> put(@RequestParam("id") String id, @RequestBody Task task) {
-        if(!consistent(id, task)){
-            throw new RuntimeException("Error: path id and json id are not equal:["+id+" vs "+task.getId()+"]");
+        if (!consistent(id, task)) {
+            throw new RuntimeException("Error: path id and json id are not equal:[" + id + " vs " + task.getId() + "]");
         }
         return taskService.save(task);
     }
 
     private boolean consistent(String id, Task task) {
-        if(task.getId() != null){
+        if (task.getId() != null) {
             return id.equals(task.getId());
         }
         return true;

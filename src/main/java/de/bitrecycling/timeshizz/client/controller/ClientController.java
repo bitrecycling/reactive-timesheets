@@ -62,7 +62,7 @@ public class ClientController {
      * @param clientAddress
      * @return
      */
-    @PutMapping(name = "/{id}", consumes ="!application/x-www-form-urlencoded")
+    @PutMapping(value = "/{id}", consumes ="application/x-www-form-urlencoded")
     public Mono<Client> update(@PathVariable("id") String clientId,
                                @RequestParam("name") String clientName,
                                @RequestParam("address") String clientAddress){
@@ -77,7 +77,7 @@ public class ClientController {
      * @param client
      * @return
      */
-    @PutMapping(name = "/{id}", consumes = "!application/json")
+    @PutMapping(value = "/{id}", consumes = "application/json")
     public Mono<Client> update(@PathVariable("id") String id,
                                @RequestBody Client client){
 
@@ -105,7 +105,9 @@ public class ClientController {
     }
 
     private boolean consistent(String id, Client client){
-
+        if(client.getId() != null){
+            return id.equals(client.getId());
+        }
         return true;
     }
 }

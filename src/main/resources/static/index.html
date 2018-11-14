@@ -1,0 +1,236 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>reactive timesheets</title>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/moment.min.js"></script>
+    <link rel="stylesheet" href="./css/bulma/bulma.css">
+    <link rel="stylesheet" href="./css/custom.css">
+</head>
+<body>
+
+<div id="timeshizz" class="container">
+    <section class="hero is-dark is-small">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    timeshizz
+                </h1>
+            </div>
+        </div>
+    </section>
+    <br>
+    <!-- status: client and project -->
+    <div class="columns">
+        <div class="column is-half">
+            <div class="tags has-addons">
+                <div class="tags has-addons">
+                    <div v-if="showEditClient" class="tag is-medium is-info">edit client</div>
+                    <div v-if="!showEditClient"class="tag is-medium is-light" v-on:click="clearClient()">client</div>
+                    <div v-if="selectedClient" class="tag is-medium is-dark"
+                         v-on:click="showEditClient = !showEditClient">
+                        {{selectedClient.name}}
+                    </div>
+                    <div v-if="!showCreateClient && !selectedClient" class="tag is-medium is-info">select client</div>
+                    <div v-if="showCreateClient" class="tag is-medium is-info">create client</div>
+                    <div v-if="!selectedClient" class="tag is-medium">
+                        <a v-on:click="showCreateClient = !showCreateClient">
+                            +
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div v-if="selectedClient" class="tag is-white">
+                {{selectedClient.address}}
+            </div>
+        </div>
+
+        <div class="column is-half">
+            <div class="tags has-addons">
+                <div v-if="selectedClient" class="tag is-medium is-light" v-on:click="clearProject()">project</div>
+                <div v-if="!selectedProject && selectedClient && !showCreateProject" class="tag is-medium is-info">select project</div>
+                <div v-if="showCreateProject && !selectedProject" class="tag is-medium is-info">
+                    create project
+                </div>
+                <div v-if="selectedProject" class="tag is-medium is-dark">
+                    {{selectedProject.name}}
+                </div>
+                <div v-if="!selectedProject && selectedClient" class="tag is-medium">
+                    <a  v-on:click="showCreateProject = !showCreateProject   ">
+                        +
+                    </a>
+                </div>
+            </div>
+            <div v-if="selectedClient" class="tag is-white">
+                {{selectedProject.description}}
+            </div>
+        </div>
+    </div>
+
+    <!-- /status -->
+
+    <!-- client and project selection -->
+
+
+    <div class="columns">
+
+        <div v-if="!selectedClient && !showEditClient && !showCreateClient" class="column is-half">
+            <div class="">
+                <div class="box">
+                    <div class="column box" v-for="client in clients" v-on:click="clientSelected(client)">
+                            {{client.name}}
+                        <p class="is-size-7">{{client.address}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="showCreateClient && !showEditClient" class="column is-half">
+            <div class="box">
+                <label class="label">client name</label>
+                <input class="input is-small" v-model="clientName" type="text" rows="1">
+                <label class="label">client address</label>
+                <textarea class="textarea is-small" v-model="clientAddress" rows="4"></textarea>
+                <br>
+                <div v-if="showCreateClient" class="tags has-addons">
+
+                    <div class="tag is-medium is-success"
+                         v-on:click="showCreateClient = !showCreateClient;createClient()">
+                        create
+                    </div>
+                    <div class="tag is-medium" v-on:click="showCreateClient = !showCreateClient">
+                        cancel
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="showEditClient && !showCreateClient" class="column is-half">
+            <div class="box">
+                <label class="label">client name</label>
+                <input class="input is-small" v-model="selectedClient.name" type="text" rows="1">
+                <label class="label">client address</label>
+                <textarea class="textarea is-small" v-model="selectedClient.address" rows="4"></textarea>
+                <div v-if="showEditClient" class="tags has-addons">
+
+                    <div class="tag is-medium is-success"
+                         v-on:click="showEditClient = !showEditClient;saveClient()">
+                        save
+                    </div>
+                    <div class="tag is-medium" v-on:click="showEditClient = !showEditClient">
+                        cancel
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="selectedClient && !selectedProject && !showCreateProject" class="column is-half is-offset-half">
+            <div class="">
+                <div class="box">
+                    <div class="column box" v-for="project in projects" v-on:click="projectSelected(project)">
+                        {{project.name}}
+                        <p class="is-size-7">{{project.description}}</p>
+                        <p class="is-size-7">rate: {{project.rate}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="showCreateProject && !selectedProject" class="column is-half is-offset-half">
+            <div class="box">
+                <label class="label">project name</label>
+                <input class="input is-small" v-model="projectName" type="text" rows="1">
+                <label class="label">project description</label>
+                <textarea class="textarea is-small" v-model="projectDescription" rows="4"></textarea>
+                <label class="label">rate</label>
+                <input class="input is-small" v-model="projectRate" type="number">
+                <br>
+                <div v-if="showCreateProject" class="tags has-addons">
+
+                    <div class="tag is-medium is-success"
+                         v-on:click="showCreateProject = !showCreateProject;createProject()">
+                        create
+                    </div>
+                    <div class="tag is-medium" v-on:click="showCreateProject = !showCreateProject">
+                        cancel
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / client and project selection -->
+    <hr v-if="selectedProject">
+    <!-- tasks and task entries -->
+    <div class="columns">
+        <div v-if="selectedProject" class="column">
+            <div v-if="!showCreateTask" class="tags has-addons">
+                <div class="tag is-medium">
+                    tasks
+                </div>
+                <div class="tag is-medium">
+                    <a v-on:click="showCreateTask = !showCreateTask">
+                        +
+                    </a>
+                </div>
+            </div>
+            <div v-if="showCreateTask" class="tags has-addons">
+
+                <div class="tag is-medium is-success"
+                     v-on:click="showCreateTask = !showCreateTask;createTask()">
+                    create
+                </div>
+                <div class="tag is-medium" v-on:click="showCreateTask = !showCreateTask">
+                    cancel
+                </div>
+            </div>
+            <div v-if="selectedProject" class="column box" v-for="task in tasks" v-on:click="taskSelected(task)">
+                {{task.name}}
+            </div>
+        </div>
+        <div v-if="selectedTask" class="column">
+            <div v-if="!showCreateTaskEntry" class="tags has-addons">
+                <div class="tag is-medium">
+                    task entries
+                </div>
+                <div class="tag is-medium">
+                    <a v-on:click="showCreateTaskEntry = !showCreateTaskEntry">
+                        +
+                    </a>
+                </div>
+            </div>
+            <div v-if="showCreateTaskEntry" class="tags has-addons">
+                <div class="tag is-medium is-success"
+                     v-on:click="showCreateTaskEntry = !showCreateTaskEntry;createTaskEntry()">
+                    create
+                </div>
+                <div class="tag is-medium" v-on:click="showCreateTaskEntry = !showCreateTaskEntry">
+                    cancel
+                </div>
+            </div>
+            <!--task [{{ selectedTask.name }}]-->
+            <table class="table">
+                <thead>
+                <th>start</th>
+                <th>duration in minutes</th>
+                </thead>
+                <tbody>
+                <tr v-if="showCreateTaskEntry">
+                    <td><input v-model="taskEntryStartTime" class="input" type="text"></td>
+                    <td><input v-model="taskEntryDurationMinutes" class="input" type="number"></td>
+                </tr>
+                <tr v-for="taskEntry in taskEntries">
+                    <td>{{formatTime(taskEntry.startTime)}}</td>
+                    <td>{{taskEntry.durationMinutes}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!--// </script>-->
+<script src="js/index.js"></script>
+</body>
+
+</html>
