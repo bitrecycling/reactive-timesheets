@@ -62,7 +62,7 @@ public class ProjectController {
     }
 
     @PutMapping(value = "/{id}", consumes = "application/json")
-    public Mono<Project> update(@RequestParam("id") String id, @RequestBody Project project) {
+    public Mono<Project> update(@PathVariable("id") String id, @RequestBody Project project) {
         if (!consistent(id, project)) {
             throw new RuntimeException("Error: path projectId and json clientId are not equal:[" + id + " vs " + project.getId() + "]");
         }

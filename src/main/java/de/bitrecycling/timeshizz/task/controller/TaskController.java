@@ -45,6 +45,17 @@ public class TaskController {
     }
 
     /**
+     * get all task for given taskId
+     *
+     * @param taskId
+     * @return
+     */
+    @GetMapping("/{id}")
+    public Mono<Task> byId(@PathVariable("id") String taskId) {
+        return taskService.byId(taskId);
+    }
+
+    /**
      * find all tasks with creation datetime between the from and to datetimes.
      *
      * @param fromString a string representation of a date like 2018-11-05T17:08:42.477Z

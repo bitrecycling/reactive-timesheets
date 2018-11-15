@@ -23,6 +23,10 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
+    public Mono<Task> byId(String taskId){
+        return taskRepository.findById(taskId);
+    }
+
     public Flux<Task> allByProjectId(String projectId) {
         return taskRepository.findAllByProjectIdOrderByCreationTimeDesc(projectId);
     }
