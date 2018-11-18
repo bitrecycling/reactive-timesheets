@@ -14,8 +14,8 @@ and test single calls.
 In a future version, a minimized (jigsaw) executable jar shall be generated to be deployed to "the cloud" or as a
 containerized version (using docker or boxfuse). 
 
-![timeshizz screenshot](https://raw.githubusercontent.com/bitrecycling/reactive-timesheets-service/develop/readme/Screenshot.png)
-
+![timeshizz screenshot](https://raw.githubusercontent.com/bitrecycling/reactive-timesheets-service/develop/readme/Screenshot_dashboard.png)
+![timeshizz screenshot](https://raw.githubusercontent.com/bitrecycling/reactive-timesheets-service/develop/readme/Screenshot_track_time.png)
         
       
 ## The application in a nutshell

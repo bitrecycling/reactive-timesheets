@@ -44,87 +44,104 @@
         </nav>
     </div>
 </section>
-
 <section class="section" id="dashboard">
     <div class="container">
-        <div class="columns">
-            <div class="column">
-                <article class="message">
-                    <div class="message-header">
-                        recent task activities
-                    </div>
-                    <div class="message-body">
-                        <div class="content">
-                            <div v-for="tasks in recentTasks">
-                                <div v-for="task in tasks">
-                                    {{task.name}}<br>
-                                </div>
-                            </div>
-                            </ul>
-
+        <div class="tile is-ancestor">
+            <div class="tile is-parent is-5">
+                <div class="tile is-child">
+                    <article class="message is-info">
+                        <div class="message-header">
+                            recent activities
                         </div>
-                    </div>
-                </article>
-            </div>
-            <div class="column">
-                <article class="message is-info">
-                    <div class="message-header">
-                        recent active clients
-                    </div>
-                    <div class="message-body">
-                        <div class="content">
-                            <div v-for="client in recentClients">
-                                {{client.name}}<br>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-            </div>
-            <div class="column">
-                <article class="message is-info">
-                    <div class="message-header">
-                        recent active projects
-                    </div>
-                    <div class="message-body">
-                        <div class="content">
-                            <div v-for="projects in recentProjects">
+                        <div class="message-body">
+                            <div class="content">
+                                <div v-for="client in recentClients" class="content">
+                                    <strong>{{client.name}}</strong><br>
+                                    <div v-for="project in recentProjects[client.id]" class="box">
+                                        <strong>{{project.name}}</strong>
+                                        <ul>
+                                            <div v-for="task in recentTasks[project.id]">
+                                                <li> {{task.name}}</li>
+                                            </div>
+                                        </ul>
+                                    </div>
 
-                                <div v-for="project in projects">
-                                    {{project.name}}<br>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </article>
+                    </article>
+                </div>
             </div>
-            <div class="column">
-                <article class="message is-info">
-                    <div class="message-header">
-                        last week
-                    </div>
-                    <div class="message-body">
-                        <div class="content">
-                            <p>You need at least <strong>3 levels</strong> of hierarchy:</p>
+            <div class="tile is-5 is-vertical is-parent">
+                <div class="tile is-child">
+                    <article class="message is-info">
+                        <div class="message-header">
+                            last week project activities
                         </div>
-                    </div>
-                </article>
-            </div>
-            <div class="column">
-                <article class="message is-info">
-                    <div class="message-header">
-                        last month
-                    </div>
-                    <div class="message-body">
-                        <div class="content">
-                            <p>You need at least <strong>3 levels</strong> of hierarchy:</p>
+                        <div class="message-body">
+                            <div class="content">
+                                <div v-for="projects in recentProjects">
+
+                                    <div v-for="project in projects">
+                                        {{project.name}}<br>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </article>
+                    </article>
+                </div>
+                <div class="tile is-child">
+                    <article class="message is-info">
+                        <div class="message-header">
+                            last month clients (click to create report)
+                        </div>
+                        <div class="message-body">
+                            <div class="content">
+                                <div v-for="client in recentClients">
+                                    {{client.name}}<br>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="tile is-child">
+                    <article class="message is-info">
+                        <div class="message-header">
+                            new projects
+                        </div>
+                        <div class="message-body">
+                            <div class="content">
+                                <div v-for="projects in recentProjects">
+                                    <div v-for="project in projects">
+                                        {{project.name}}<br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="tile is-child">
+                    <article class="message is-info">
+                        <div class="message-header">
+                            new clients
+                        </div>
+                        <div class="message-body">
+                            <div class="content">
+                                <div v-for="projects in recentProjects">
+
+                                    <div v-for="project in projects">
+                                        {{project.name}}<br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
             </div>
+
         </div>
     </div>
 </section>
-
 
 <script src="js/index.js"></script>
 </body>
