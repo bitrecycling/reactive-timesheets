@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz.project.controller;
 
+import de.bitrecycling.timeshizz.common.controller.ControllerUtils;
 import de.bitrecycling.timeshizz.project.model.Project;
 import de.bitrecycling.timeshizz.project.service.ProjectService;
 import io.swagger.annotations.Api;
@@ -63,7 +64,7 @@ public class ProjectController {
 
     @PutMapping(value = "/{id}", consumes = "application/json")
     public Mono<Project> update(@PathVariable("id") String id, @RequestBody Project project) {
-        if (!consistent(id, project)) {
+        if (!ControllerUtils.consistent(id, project)) {
             throw new RuntimeException("Error: path projectId and json clientId are not equal:[" + id + " vs " + project.getId() + "]");
         }
         return projectService.save(project);
@@ -74,10 +75,4 @@ public class ProjectController {
         return projectService.delete(projectId);
     }
 
-    private boolean consistent(String id, Project project) {
-        if (project.getId() != null) {
-            return id.equals(project.getId());
-        }
-        return true;
-    }
 }

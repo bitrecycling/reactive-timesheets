@@ -1,18 +1,15 @@
 package de.bitrecycling.timeshizz.task.controller;
 
+import de.bitrecycling.timeshizz.common.controller.ControllerUtils;
 import de.bitrecycling.timeshizz.task.model.TaskEntry;
 import de.bitrecycling.timeshizz.task.service.TaskEntryService;
 import io.swagger.annotations.Api;
-import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
 
 /**
  * The task controller provides the endpoints to the task resource
@@ -34,7 +31,7 @@ public class TaskEntryController {
 
     @GetMapping(params = "taskId")
     public Flux<TaskEntry> allByTaskId(@RequestParam("taskId") String taskId) {
-        return taskEntryService.allByTaskId(taskId);
+        return taskEntryService.getAllByTaskId(taskId);
     }
 
     /**
@@ -46,7 +43,7 @@ public class TaskEntryController {
      */
     @PostMapping(consumes = "application/x-www-form-urlencoded")
     public Mono<TaskEntry> createByUrlParams(@RequestParam("startTime") String startTimeString, @RequestParam("durationMinutes") Integer durationMinutes, @RequestParam("taskId") String taskId) {
-        LocalDateTime parsedTime = parseTime(startTimeString);
+        LocalDateTime parsedTime = ControllerUtils.parseTime(startTimeString);
         TaskEntry taskEntry = new TaskEntry(parsedTime, durationMinutes, taskId);
         return taskEntryService.insert(taskEntry);
 
@@ -60,7 +57,7 @@ public class TaskEntryController {
 
     @PutMapping(name = "{id}", consumes = "application/x-www-form-urlencoded")
     public Mono<TaskEntry> saveByUrlParams(@RequestParam("id") String id, @RequestParam("startTime") String startTimeString, @RequestParam("durationMinutes") Integer durationMinutes, @RequestParam("taskId") String taskId) {
-        LocalDateTime parsedTime = parseTime(startTimeString);
+        LocalDateTime parsedTime = ControllerUtils.parseTime(startTimeString);
         TaskEntry taskEntry = new TaskEntry(parsedTime, durationMinutes, taskId);
         taskEntry.setId(id);
         return taskEntryService.save(taskEntry);
@@ -69,19 +66,13 @@ public class TaskEntryController {
 
     @PutMapping(name = "{id}", consumes = "application/json")
     public Mono<TaskEntry> saveByJson(@RequestParam("id") String id, @RequestBody TaskEntry taskEntry) {
-        if (!consistent(id, taskEntry)) {
+        if (!ControllerUtils.consistent(id, taskEntry)) {
             throw new RuntimeException("Error: path id and json id are not equal:[" + id + " vs " + taskEntry.getId() + "]");
         }
         return taskEntryService.save(taskEntry);
 
     }
 
-    private boolean consistent(String id, TaskEntry taskEntry) {
-        if (taskEntry.getId() != null) {
-            return id.equals(taskEntry.getId());
-        }
-        return true;
-    }
 
     /**
      * find all tasks with creation datetime between the from and to datetimes.
@@ -94,8 +85,34 @@ public class TaskEntryController {
     public Flux<TaskEntry> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString) {
         LocalDateTime from = LocalDateTime.parse(fromString);
         LocalDateTime to = LocalDateTime.parse(toString);
-        return taskEntryService.findByCreationTimeBetween(from, to);
+        return taskEntryService.getByCreationTimeBetween(from, to);
     }
+
+    /**
+     * find all tasks with start datetime between the from and to datetimes.
+     *
+     * @param fromString a string representation of a date like 2018-11-05T17:08:42.477Z
+     * @param toString   a string representation of a date like 2018-11-05T17:08:42.477Z
+     * @return
+     */
+    @GetMapping(params = {"start", "until"})
+    public Flux<TaskEntry> allByStartTime(@RequestParam("start") String fromString, @RequestParam("until") String toString) {
+        LocalDateTime from = LocalDateTime.parse(fromString);
+        LocalDateTime to = LocalDateTime.parse(toString);
+        return taskEntryService.getByStartTimeBetween(from, to);
+    }
+
+    /**
+     * find n most recent tasks
+     *
+     * @param count an integer indicating how many recent tasks shall be returned
+     * @return
+     */
+    @GetMapping(params = {"count"})
+    public Flux<TaskEntry> recentByStartTime(@RequestParam("count") Integer count) {
+        return taskEntryService.getMostRecentByStartTime(count);
+    }
+
 
     /**
      * find n tasks with creation datetime ordered ascending
@@ -110,9 +127,9 @@ public class TaskEntryController {
                                                     @RequestParam("page") Integer page,
                                                     @RequestParam("size") Integer size) {
         if ("asc".equals(order)) {
-            return taskEntryService.findPagedAscending(page, size);
+            return taskEntryService.getPagedAscending(page, size);
         }
-        return taskEntryService.findPagedDescending(page, size);
+        return taskEntryService.getPagedDescending(page, size);
     }
 
 
@@ -121,12 +138,5 @@ public class TaskEntryController {
         return taskEntryService.delete(taskEntryId);
     }
 
-    private LocalDateTime parseTime(String timeString) {
-        PrettyTimeParser prettyTimeParser = new PrettyTimeParser();
-        List<Date> parse = prettyTimeParser.parse(timeString);
-        LocalDateTime parsedTime = parse.get(0).toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        return parsedTime;
-    }
+
 }

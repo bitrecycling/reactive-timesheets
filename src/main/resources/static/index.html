@@ -11,37 +11,57 @@
 </head>
 <body>
 <section class="hero is-dark is-small">
+    <div class="hero-head">
+
+    </div>
+
     <div class="hero-body">
         <div class="container">
-            <h1 class="title">
+            <p class="title">
                 timeshizz
-            </h1>
+            </p>
+            <p class="subtitle">
+                reactive timesheets
+            </p>
         </div>
     </div>
-</section>
-<section class="section">
-    <div class="container">
-        <h1 class="title">dashboard</h1>
-    </div>
-</section>
-<section class="section">
-    <div class="container">
 
-        <h2 class="heading is-2"><a href="/track.html">record activities</a></h2>
-        <h2 class="heading is-2">create report</h2>
+    <div class="hero-foot">
+        <nav class="tabs is-boxed">
+            <div class="container">
+                <ul>
+                    <li class="is-active">
+                        <a>dashboard</a>
+                    </li>
+                    <li>
+                        <a href="/track.html">record activities</a>
+                    </li>
+                    <li>
+                        <a>create report</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     </div>
 </section>
+
 <section class="section" id="dashboard">
     <div class="container">
         <div class="columns">
             <div class="column">
-                <article class="message is-info">
+                <article class="message">
                     <div class="message-header">
-                        recent activities
+                        recent task activities
                     </div>
                     <div class="message-body">
                         <div class="content">
-                            {{recentTasks}}
+                            <div v-for="tasks in recentTasks">
+                                <div v-for="task in tasks">
+                                    {{task.name}}<br>
+                                </div>
+                            </div>
+                            </ul>
+
                         </div>
                     </div>
                 </article>
@@ -49,12 +69,29 @@
             <div class="column">
                 <article class="message is-info">
                     <div class="message-header">
-                        most active projects
+                        recent active clients
                     </div>
                     <div class="message-body">
                         <div class="content">
-                            <div v-for="client in clients">
-                                {{client.name}}
+                            <div v-for="client in recentClients">
+                                {{client.name}}<br>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <div class="column">
+                <article class="message is-info">
+                    <div class="message-header">
+                        recent active projects
+                    </div>
+                    <div class="message-body">
+                        <div class="content">
+                            <div v-for="projects in recentProjects">
+
+                                <div v-for="project in projects">
+                                    {{project.name}}<br>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -87,8 +124,6 @@
         </div>
     </div>
 </section>
-
-
 
 
 <script src="js/index.js"></script>

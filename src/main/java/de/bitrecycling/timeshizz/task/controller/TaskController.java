@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz.task.controller;
 
+import de.bitrecycling.timeshizz.common.controller.ControllerUtils;
 import de.bitrecycling.timeshizz.task.model.Task;
 import de.bitrecycling.timeshizz.task.service.TaskService;
 import io.swagger.annotations.Api;
@@ -96,17 +97,10 @@ public class TaskController {
 
     @PutMapping(value = "/{id}", consumes = "application/json")
     public Mono<Task> put(@RequestParam("id") String id, @RequestBody Task task) {
-        if (!consistent(id, task)) {
+        if (!ControllerUtils.consistent(id, task)) {
             throw new RuntimeException("Error: path id and json id are not equal:[" + id + " vs " + task.getId() + "]");
         }
         return taskService.save(task);
-    }
-
-    private boolean consistent(String id, Task task) {
-        if (task.getId() != null) {
-            return id.equals(task.getId());
-        }
-        return true;
     }
 
     @DeleteMapping("/{id}")

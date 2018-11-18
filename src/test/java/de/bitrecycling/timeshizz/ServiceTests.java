@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.test.StepVerifier;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @RunWith(SpringRunner.class)
@@ -105,7 +104,9 @@ public class ServiceTests {
         t.setId("taskId");
         taskRepository.insert(t).block();
         TaskEntry te1 = new TaskEntry(LocalDateTime.now(),120, t.getId());
+        te1.setCreationTime(LocalDateTime.now());
         TaskEntry te2 = new TaskEntry(LocalDateTime.now(),180, t.getId());
+        te2.setCreationTime(LocalDateTime.now());
         taskEntryRepository.insert(te1).block();
         taskEntryRepository.insert(te2).block();
         return c;

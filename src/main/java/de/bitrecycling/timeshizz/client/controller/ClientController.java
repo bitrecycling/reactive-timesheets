@@ -2,14 +2,13 @@ package de.bitrecycling.timeshizz.client.controller;
 
 import de.bitrecycling.timeshizz.client.model.Client;
 import de.bitrecycling.timeshizz.client.service.ClientService;
+import de.bitrecycling.timeshizz.common.controller.ControllerUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 /**
  * The client controller provides the endpoints to the client resource
@@ -81,7 +80,7 @@ public class ClientController {
     public Mono<Client> update(@PathVariable("id") String id,
                                @RequestBody Client client){
 
-        if(!consistent(id, client)){
+        if(!ControllerUtils.consistent(id, client)){
             throw new RuntimeException("Error: path id and json id are not equal:["+id+" vs "+client.getId()+"]");
         }
 
@@ -95,7 +94,6 @@ public class ClientController {
      */
     @GetMapping("/{id}")
     public Mono<Client> getById(@PathVariable("id") String clientId){
-
         return clientService.byId(clientId);
     }
 
@@ -104,10 +102,4 @@ public class ClientController {
         return clientService.delete(clientId);
     }
 
-    private boolean consistent(String id, Client client){
-        if(client.getId() != null){
-            return id.equals(client.getId());
-        }
-        return true;
-    }
 }

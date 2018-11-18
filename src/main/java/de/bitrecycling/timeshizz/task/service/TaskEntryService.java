@@ -25,8 +25,36 @@ public class TaskEntryService {
         return taskEntryRepository.findAll();
     }
 
-    public Flux<TaskEntry> allByTaskId(String taskId) {
+    public Flux<TaskEntry> getAllByTaskId(String taskId) {
         return taskEntryRepository.findAllByTaskIdOrderByCreationTimeDesc(taskId);
+    }
+
+    public Flux<TaskEntry> getMostRecentByCreationTime(Integer count) {
+        PageRequest of = PageRequest.of(0, count);
+        return taskEntryRepository.findAllByOrderByCreationTimeDesc(of);
+    }
+
+    public Flux<TaskEntry> getMostRecentByStartTime(Integer count) {
+        PageRequest of = PageRequest.of(0, count);
+        return taskEntryRepository.findAllByOrderByStartTimeDesc(of);
+    }
+
+    public Flux<TaskEntry> getByCreationTimeBetween(LocalDateTime from, LocalDateTime to) {
+        return taskEntryRepository.findAllByCreationTimeBetween(from, to);
+    }
+    public Flux<TaskEntry> getByStartTimeBetween(LocalDateTime from, LocalDateTime to) {
+        return taskEntryRepository.findAllByStartTimeBetween(from, to);
+    }
+
+    public Flux<TaskEntry> getPagedAscending(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable);
+    }
+
+    public Flux<TaskEntry> getPagedDescending(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return taskEntryRepository.findAllByOrderByCreationTimeDesc(pageable);
+
     }
 
     public Mono<TaskEntry> insert(TaskEntry taskEntry) {
@@ -36,26 +64,12 @@ public class TaskEntryService {
         return taskEntryRepository.insert(taskEntry);
     }
 
+    public Mono<TaskEntry> save(TaskEntry taskEntry) {
+        return taskEntryRepository.save(taskEntry);
+    }
+
     public Mono<Void> delete(String taskEntryId) {
         return taskEntryRepository.deleteById(taskEntryId);
     }
 
-    public Flux<TaskEntry> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to) {
-        return taskEntryRepository.findAllByCreationTimeBetween(from, to);
-    }
-
-    public Flux<TaskEntry> findPagedAscending(int page, int size){
-        Pageable pageable = PageRequest.of(page, size);
-        return taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable);
-    }
-
-    public Flux<TaskEntry> findPagedDescending(int page, int size){
-        Pageable pageable = PageRequest.of(page, size);
-        return taskEntryRepository.findAllByOrderByCreationTimeDesc(pageable);
-
-    }
-
-    public Mono<TaskEntry> save(TaskEntry taskEntry) {
-        return taskEntryRepository.save(taskEntry);
-    }
 }

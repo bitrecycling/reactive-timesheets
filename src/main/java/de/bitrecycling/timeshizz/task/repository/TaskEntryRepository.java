@@ -15,9 +15,11 @@ import java.time.LocalDateTime;
  * created by robo
  */
 public interface TaskEntryRepository extends ReactiveMongoRepository<TaskEntry, String> {
-    Flux<TaskEntry> findAllByTaskIdOrderByCreationTimeDesc(String taskId);
 
+    Flux<TaskEntry> findAllByTaskIdOrderByCreationTimeDesc(String taskId);
     Flux<TaskEntry> findAllByCreationTimeBetween(LocalDateTime from, LocalDateTime to);
+    Flux<TaskEntry> findAllByStartTimeBetween(LocalDateTime from, LocalDateTime to);
     Flux<TaskEntry> findAllByOrderByCreationTimeDesc(Pageable pageable);
+    Flux<TaskEntry> findAllByOrderByStartTimeDesc(Pageable pageable);
     Flux<TaskEntry> findAllByOrderByCreationTimeAsc(Pageable pageable);
 }

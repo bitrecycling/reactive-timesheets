@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz.task.model;
 
+import de.bitrecycling.timeshizz.common.model.Model;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Document
-public class Task {
+public class Task implements Model {
     @Id
     private String id;
     @NonNull
