@@ -14,8 +14,9 @@ and test single calls.
 In a future version, a minimized (jigsaw) executable jar shall be generated to be deployed to "the cloud" or as a
 containerized version (using docker or boxfuse). 
 
-<img src="https://raw.githubusercontent.com/bitrecycling/reactive-timesheets-service/develop/readme/Screenshot_dashboard.png" width="500" />
-<img src="https://raw.githubusercontent.com/bitrecycling/reactive-timesheets-service/develop/readme/Screenshot_track_time.png" width="500" />      
+ dashboard | record activities 
+--- | ---
+<img src="https://raw.githubusercontent.com/bitrecycling/reactive-timesheets-service/develop/readme/Screenshot_dashboard.png" width="400" /> | <img src="https://raw.githubusercontent.com/bitrecycling/reactive-timesheets-service/develop/readme/Screenshot_track_time.png" width="400" />    
 
 ## The application in a nutshell
 A tool to be used by freelancers or consultants to keep track of their projects and time worked on tasks for those.
