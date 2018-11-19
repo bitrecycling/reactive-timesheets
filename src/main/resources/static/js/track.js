@@ -27,7 +27,6 @@ var timeshizz = new Vue({
         clients: '',
         projects: '',
         tasks: '',
-
         taskEntries: ''
     },
     methods: {
