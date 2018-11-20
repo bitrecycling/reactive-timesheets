@@ -1,85 +1,90 @@
 var dashboard = new Vue({
     el: '#dashboard',
     data: {
-        clients: '',
-        recentTaskEntries: {},
-        recentTasks: {},
-        recentProjects: {},
-        recentClients: [],
-        lastWeekTaskEntries: {},
-        lastWeekTasks: {},
-        lastWeekProjects: {},
-        lastWeekClients: []
+        recent: {
+            taskEntries: {},
+            tasks: {},
+            projects: {},
+            clients: []
+        },
+        lastweek: {
+            taskEntries: {},
+            tasks: {},
+            projects: {},
+            clients: []
+        },
+        lastmonth: {
+            taskEntries: {},
+            tasks: {},
+            projects: {},
+            clients: []
+        }
     },
     methods: {
         sumProject: function(tasks){
             var that = this;
             var sum = 0;
             tasks.forEach(function(task){
-                var taskEntries = that.recentTaskEntries[task.id];
+                var taskEntries = that.recent.taskEntries[task.id];
                 taskEntries.forEach(function (taskentry) {
                     sum += taskentry.durationMinutes;
                 });
 
             });
             return sum;
-        },
+        }
     }
 });
 
 
-function getExistingClients() {
-    axios.get('/clients').then(
-        function (response) {
-            dashboard.clients = response.data;
-        }
-    );
-}
-
-function loadClientForProject(clientId) {
+function loadClientForProject(clientId, target) {
     axios.get('/clients/' + clientId).then(function (response) {
         var client = response.data;
-        dashboard.recentClients.push(client);
+        target.clients.push(client);
     });
 }
 
 
-function loadProjectForTask(projectId) {
+function loadProjectForTask(projectId, target) {
     axios.get('/projects/' + projectId).then(function (response) {
         var project = response.data;
-        var tmp = dashboard.recentProjects[project.clientId];
+        var tmp = target.projects[project.clientId];
         if (tmp) {
             tmp.push(project);
         } else {
-            dashboard.recentProjects[project.clientId] = [project];
-            loadClientForProject(project.clientId);
+            target.projects[project.clientId] = [project];
+            loadClientForProject(project.clientId, target);
         }
     });
 }
 
-function loadTaskForTaskEntry(taskId) {
+function loadTaskForTaskEntry(taskId, target) {
     axios.get('/tasks/' + taskId).then(function (response) {
         var task = response.data;
-        var tmp = dashboard.recentTasks[task.projectId];
+        var tmp = target.tasks[task.projectId];
         if (tmp) {
             tmp.push(task);
         } else {
-            dashboard.recentTasks[task.projectId] = [task];
-            loadProjectForTask(task.projectId);
+            target.tasks[task.projectId] = [task];
+            loadProjectForTask(task.projectId, target);
         }
     });
 }
 
-function getRecentTaskEntries(count) {
-    axios.get('/taskentries?count=' + count).then(
+function getTaskEntries(count, target) {
+    var url = '/taskentries';
+    if(count){
+        url+='?count=' + count;
+    }
+    axios.get(url).then(
         function (response) {
             response.data.forEach(function (taskEntry) {
-                var tmp = dashboard.recentTaskEntries[taskEntry.taskId];
+                var tmp = target.taskEntries[taskEntry.taskId];
                 if (tmp) {
                     tmp.push(taskEntry);
                 } else {
-                    dashboard.recentTaskEntries[taskEntry.taskId] = [taskEntry];
-                    loadTaskForTaskEntry(taskEntry.taskId);
+                    target.taskEntries[taskEntry.taskId] = [taskEntry];
+                    loadTaskForTaskEntry(taskEntry.taskId, target);
                 }
             });
 
@@ -89,4 +94,4 @@ function getRecentTaskEntries(count) {
 
 
 // getExistingClients();
-getRecentTaskEntries(20);
+getTaskEntries(20,dashboard.recent);

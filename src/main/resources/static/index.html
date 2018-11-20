@@ -4,10 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="robo">
     <title>reactive timesheets</title>
-    <script src="js/3rd-party/vue.js"></script>
-    <script src="js/3rd-party/axios.js"></script>
+    <script src="js/3rd-party/vue.min.js"></script>
+    <script src="js/3rd-party/axios.min.js"></script>
     <script src="js/3rd-party/moment.min.js"></script>
-    <link rel="stylesheet" href="./css/bulma/bulma.css">
+    <link rel="stylesheet" href="./css/bulma/bulma.min.css">
     <link rel="stylesheet" href="./css/custom.css">
 </head>
 <body>
@@ -56,12 +56,12 @@
                         </div>
                         <div class="message-body">
                             <div class="content">
-                                <div v-for="client in recentClients" class="content">
+                                <div v-for="client in recent.clients" class="content">
                                     <strong>{{client.name}}</strong><br>
-                                    <div v-for="project in recentProjects[client.id]" class="box">
-                                        <strong>{{project.name}} ({{sumProject(recentTasks[project.id])}} mins)</strong>
+                                    <div v-for="project in recent.projects[client.id]" class="box">
+                                        <strong>{{project.name}}</strong> ({{sumProject(recent.tasks[project.id])}} mins)
                                         <ul>
-                                            <div v-for="task in recentTasks[project.id]">
+                                            <div v-for="task in recent.tasks[project.id]">
                                                 <li> {{task.name}} </li>
 
                                             </div>
@@ -82,7 +82,7 @@
                         </div>
                         <div class="message-body">
                             <div class="content">
-                                <div v-for="projects in recentProjects">
+                                <div v-for="projects in recent.projects">
 
                                     <div v-for="project in projects">
                                         {{project.name}}<br>
@@ -99,7 +99,7 @@
                         </div>
                         <div class="message-body">
                             <div class="content">
-                                <div v-for="client in recentClients">
+                                <div v-for="client in recent.clients">
                                     {{client.name}}<br>
                                 </div>
                             </div>
@@ -113,7 +113,7 @@
                         </div>
                         <div class="message-body">
                             <div class="content">
-                                <div v-for="projects in recentProjects">
+                                <div v-for="projects in recent.projects">
                                     <div v-for="project in projects">
                                         {{project.name}}<br>
                                     </div>
@@ -129,7 +129,7 @@
                         </div>
                         <div class="message-body">
                             <div class="content">
-                                <div v-for="projects in recentProjects">
+                                <div v-for="projects in recent.projects">
 
                                     <div v-for="project in projects">
                                         {{project.name}}<br>

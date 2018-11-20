@@ -4,10 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="robo">
     <title>reactive timesheets</title>
-    <script src="js/3rd-party/vue.js"></script>
-    <script src="js/3rd-party/axios.js"></script>
+    <script src="js/3rd-party/vue.min.js"></script>
+    <script src="js/3rd-party/axios.min.js"></script>
     <script src="js/3rd-party/moment.min.js"></script>
-    <link rel="stylesheet" href="./css/bulma/bulma.css">
+    <link rel="stylesheet" href="./css/bulma/bulma.min.css">
     <link rel="stylesheet" href="./css/custom.css">
 </head>
 <body>
@@ -273,7 +273,7 @@
                         <!-- client list -->
                         <div v-if="!selectedClient">
                             <div class="column box" v-for="client in clients" v-on:click="clientSelected(client)">
-                                {{client.name}}
+                                <strong>{{client.name}}</strong> ({{countProjectsByClient(client.id)}})
                                 <p class="is-size-7">{{client.address}}</p>
                             </div>
                         </div>

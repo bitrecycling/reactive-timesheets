@@ -78,7 +78,13 @@ public class ProjectService {
         return projectRespository.findAllByClientId(clientId);
     }
 
+    public Mono<Long> countAllByClientId(String clientId) {
+        return projectRespository.findAllByClientId(clientId).count();
+    }
+
     public Mono<Project> save(Project project) {
         return  projectRespository.save(project);
     }
+
+
 }

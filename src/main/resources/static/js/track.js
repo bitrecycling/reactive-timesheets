@@ -46,6 +46,9 @@ var timeshizz = new Vue({
         saveProject: function () {
             saveProject(this.selectedProject);
         },
+        countProjectsByClient: function (clientId) {
+            return countProjectsByClient(clientId);
+        },
         createTask: function () {
             insertTask(this.taskName, this.selectedProject.id);
             this.taskName ='';
@@ -98,6 +101,8 @@ var timeshizz = new Vue({
 
     }
 });
+
+
 
 function insertClient(clientName, clientAddress) {
     // console.log('post data: name:' + clientName + ' address:' + clientAddress);
@@ -180,6 +185,16 @@ function deleteClient(clientId){
             console.log(error);
         });
 
+}
+
+function countProjectsByClient(clientId) {
+    var count=0;
+    axios.get('/projects/_count?clientId=' + clientId).then(
+        function (response) {
+           count = response.data;
+        }
+    );
+    return count;
 }
 
 function loadProjectsForClient(clientId) {

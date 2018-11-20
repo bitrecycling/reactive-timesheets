@@ -36,6 +36,11 @@ public class ProjectController {
         return projectService.allByClientId(clientId);
     }
 
+    @GetMapping(value = "/_count", params = "clientId")
+    public Mono<Long> countAllByClientId(@RequestParam("clientId") String clientId) {
+        return projectService.countAllByClientId(clientId);
+    }
+
     @PostMapping(consumes = "application/x-www-form-urlencoded")
     public Mono<Project> create(@RequestParam("name") String projectName,
                                 @RequestParam("description") String projectDescription,
