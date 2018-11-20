@@ -59,10 +59,11 @@
                                 <div v-for="client in recentClients" class="content">
                                     <strong>{{client.name}}</strong><br>
                                     <div v-for="project in recentProjects[client.id]" class="box">
-                                        <strong>{{project.name}}</strong>
+                                        <strong>{{project.name}} ({{sumProject(recentTasks[project.id])}} mins)</strong>
                                         <ul>
                                             <div v-for="task in recentTasks[project.id]">
-                                                <li> {{task.name}}</li>
+                                                <li> {{task.name}} </li>
+
                                             </div>
                                         </ul>
                                     </div>

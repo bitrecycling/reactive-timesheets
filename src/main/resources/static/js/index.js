@@ -5,7 +5,25 @@ var dashboard = new Vue({
         recentTaskEntries: {},
         recentTasks: {},
         recentProjects: {},
-        recentClients: []
+        recentClients: [],
+        lastWeekTaskEntries: {},
+        lastWeekTasks: {},
+        lastWeekProjects: {},
+        lastWeekClients: []
+    },
+    methods: {
+        sumProject: function(tasks){
+            var that = this;
+            var sum = 0;
+            tasks.forEach(function(task){
+                var taskEntries = that.recentTaskEntries[task.id];
+                taskEntries.forEach(function (taskentry) {
+                    sum += taskentry.durationMinutes;
+                });
+
+            });
+            return sum;
+        },
     }
 });
 
@@ -46,7 +64,7 @@ function loadTaskForTaskEntry(taskId) {
         if (tmp) {
             tmp.push(task);
         } else {
-            dashboard.recentTasks[task.projectId]=[task];
+            dashboard.recentTasks[task.projectId] = [task];
             loadProjectForTask(task.projectId);
         }
     });
@@ -60,7 +78,7 @@ function getRecentTaskEntries(count) {
                 if (tmp) {
                     tmp.push(taskEntry);
                 } else {
-                    dashboard.recentTaskEntries[taskEntry.taskId]=[taskEntry];
+                    dashboard.recentTaskEntries[taskEntry.taskId] = [taskEntry];
                     loadTaskForTaskEntry(taskEntry.taskId);
                 }
             });
