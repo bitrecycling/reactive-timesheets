@@ -24,6 +24,10 @@ var timeshizz = new Vue({
         selectedTask: '',
         selectedTaskEntry: '',
 
+        clientId: '',
+        projectId: '',
+        taskId: '',
+
         clients: '',
         projects: '',
         tasks: '',
@@ -63,15 +67,18 @@ var timeshizz = new Vue({
             this.showEditClient = false;
             this.showCreateClient = false;
             this.selectedClient='';
+            this.clientId='';
         },
         clearProject: function(){
             this.clearTask();
             this.selectedProject='';
+            this.projectId='';
 
         },
         clearTask: function(){
             this.clearTaskEntry();
             this.selectedTask='';
+            this.taskId='';
 
         },
         clearTaskEntry: function(){
@@ -98,7 +105,6 @@ var timeshizz = new Vue({
         formatTime: function(timeString){
             return prettyPrintIsoDateTime(timeString);
         }
-
     }
 });
 
@@ -233,4 +239,14 @@ function prettyPrintIsoDateTime(dateTimeString){
     return moment(dateTimeString).format("YYYY-MM-DD HH:mm ");
 }
 
+function init(){
+    var params = new URLSearchParams(window.location.search);
+    if(params){
+        timeshizz.clientId= params.get("client");
+        timeshizz.projectId = params.get("project");
+        timeshizz.taskId = params.get("task");
+    }
+}
+
 getExistingClients();
+init();

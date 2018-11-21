@@ -10,6 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * The task controller provides the endpoints to the task resource
@@ -77,8 +78,8 @@ public class TaskEntryController {
     /**
      * find all tasks with creation datetime between the from and to datetimes.
      *
-     * @param fromString a string representation of a date like 2018-11-05T17:08:42.477Z
-     * @param toString   a string representation of a date like 2018-11-05T17:08:42.477Z
+     * @param fromString a ISO string representation of a date like 2018-11-05T17:08:42.477Z
+     * @param toString   a ISO string representation of a date like 2018-11-05T17:08:42.477Z
      * @return
      */
     @GetMapping(params = {"from", "to"})
@@ -91,14 +92,14 @@ public class TaskEntryController {
     /**
      * find all tasks with start datetime between the from and to datetimes.
      *
-     * @param fromString a string representation of a date like 2018-11-05T17:08:42.477Z
-     * @param toString   a string representation of a date like 2018-11-05T17:08:42.477Z
+     * @param start a ISO string representation of a date like 2018-11-05T17:08:42.477Z
+     * @param until a ISO string representation of a date like 2018-11-05T17:08:42.477Z
      * @return
      */
     @GetMapping(params = {"start", "until"})
-    public Flux<TaskEntry> allByStartTime(@RequestParam("start") String fromString, @RequestParam("until") String toString) {
-        LocalDateTime from = LocalDateTime.parse(fromString);
-        LocalDateTime to = LocalDateTime.parse(toString);
+    public Flux<TaskEntry> allByStartTime(@RequestParam("start") String start, @RequestParam("until") String until) {
+        LocalDateTime from = LocalDateTime.parse(start);
+        LocalDateTime to = LocalDateTime.parse(until);
         return taskEntryService.getByStartTimeBetween(from, to);
     }
 

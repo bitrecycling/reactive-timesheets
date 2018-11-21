@@ -36,7 +36,7 @@
                         <a href="/">dashboard</a>
                     </li>
                     <li class="is-active">
-                        <a href="/track.hmtl">record activities</a>
+                        <a href="/track.hmtl">track activities</a>
                     </li>
                     <li>
                         <a>create report</a>
@@ -275,6 +275,7 @@
                             <div class="column box" v-for="client in clients" v-on:click="clientSelected(client)">
                                 <strong>{{client.name}}</strong> ({{countProjectsByClient(client.id)}})
                                 <p class="is-size-7">{{client.address}}</p>
+                                <div v-if="client.id == clientId">{{clientSelected(client)}}</div>
                             </div>
                         </div>
                         <!-- / client list -->
@@ -285,6 +286,7 @@
                                 {{project.name}}
                                 <p class="is-size-7">{{project.description}}</p>
                                 <p class="is-size-7">rate: {{project.rate}}</p>
+                                <div v-if="project.id == projectId">{{projectSelected(project)}}</div>
                             </div>
                         </div>
                         <!-- / project list -->
@@ -343,6 +345,7 @@
                                 <div v-for="entry in taskEntries">
                                     <div v-if="entry.taskId == task.id">{{entry.duration}}</div>
                                 </div>
+                                <div v-if="task.id == taskId">{{taskSelected(task)}}</div>
                             </div>
                         </div>
                     </div>

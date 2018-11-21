@@ -4,7 +4,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="robo">
     <title>reactive timesheets</title>
-    <script src="js/3rd-party/vue.min.js"></script>
+    <!--<script src="js/3rd-party/vue.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/vue/1.0.28/vue.js"></script>
     <script src="js/3rd-party/axios.min.js"></script>
     <script src="js/3rd-party/moment.min.js"></script>
     <link rel="stylesheet" href="./css/bulma/bulma.min.css">
@@ -35,7 +36,7 @@
                         <a href="/">dashboard</a>
                     </li>
                     <li>
-                        <a href="/track.html">record activities</a>
+                        <a href="/track.html">track activities</a>
                     </li>
                     <li>
                         <a>create report</a>
@@ -48,7 +49,7 @@
 <section class="section" id="dashboard">
     <div class="container">
         <div class="tile is-ancestor">
-            <div class="tile is-parent is-5">
+            <div class="tile is-parent is-4">
                 <div class="tile is-child">
                     <article class="message is-info">
                         <div class="message-header">
@@ -57,13 +58,44 @@
                         <div class="message-body">
                             <div class="content">
                                 <div v-for="client in recent.clients" class="content">
-                                    <strong>{{client.name}}</strong><br>
+                                    <strong><a href="track.html?client={{client.id}}"
+                                               class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
                                     <div v-for="project in recent.projects[client.id]" class="box">
-                                        <strong>{{project.name}}</strong> ({{sumProject(recent.tasks[project.id])}} mins)
-                                        <ul>
-                                            <div v-for="task in recent.tasks[project.id]">
-                                                <li> {{task.name}} </li>
-
+                                        <strong><a href="track.html?client={{client.id}}&project={{project.id}}"
+                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(recent.tasks[project.id], recent)}} mins)
+                                        <div v-for="task in recent.tasks[project.id]">
+                                            <a href="track.html?client={{client.id}}&project={{project.id}}&task={{task.id}}"
+                                               class="" style="text-decoration: none;">
+                                                - {{task.name}}
+                                            </a>
+                                        </div>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="tile is-4 is-parent">
+                <div class="tile is-child">
+                    <article class="message is-info">
+                        <div class="message-header">
+                            last week project activities
+                        </div>
+                        <div class="message-body">
+                            <div class="content">
+                                <div v-for="client in lastweek.clients" class="content">
+                                    <strong><a href="track.html?client={{client.id}}"
+                                               class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
+                                    <div v-for="project in lastweek.projects[client.id]" class="box">
+                                        <strong><a href="track.html?client={{client.id}}&project={{project.id}}"
+                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(lastweek.tasks[project.id], lastweek)}} mins)
+                                            <div v-for="task in lastweek.tasks[project.id]">
+                                                <a href="track.html?client={{client.id}}&project={{project.id}}&task={{task.id}}"
+                                                class="" style="text-decoration: none;">
+                                                    - {{task.name}}
+                                                </a>
                                             </div>
                                         </ul>
                                     </div>
@@ -74,71 +106,27 @@
                     </article>
                 </div>
             </div>
-            <div class="tile is-5 is-vertical is-parent">
+            <div class="tile is-4 is-parent">
                 <div class="tile is-child">
                     <article class="message is-info">
                         <div class="message-header">
-                            last week project activities
+                            last month reports
                         </div>
                         <div class="message-body">
                             <div class="content">
-                                <div v-for="projects in recent.projects">
+                                <div v-for="client in lastmonth.clients" class="content">
+                                    <strong><a href="report.html?client={{client.id}}"
+                                               class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
+                                    <div v-for="project in lastmonth.projects[client.id]" class="box">
+                                        <strong><a href="report.html?client={{client.id}}&project={{project.id}}"
+                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(lastmonth.tasks[project.id], lastmonth)}} mins)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
 
-                                    <div v-for="project in projects">
-                                        {{project.name}}<br>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-                <div class="tile is-child">
-                    <article class="message is-info">
-                        <div class="message-header">
-                            last month clients (click to create report)
-                        </div>
-                        <div class="message-body">
-                            <div class="content">
-                                <div v-for="client in recent.clients">
-                                    {{client.name}}<br>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-                <div class="tile is-child">
-                    <article class="message is-info">
-                        <div class="message-header">
-                            new projects
-                        </div>
-                        <div class="message-body">
-                            <div class="content">
-                                <div v-for="projects in recent.projects">
-                                    <div v-for="project in projects">
-                                        {{project.name}}<br>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-                <div class="tile is-child">
-                    <article class="message is-info">
-                        <div class="message-header">
-                            new clients
-                        </div>
-                        <div class="message-body">
-                            <div class="content">
-                                <div v-for="projects in recent.projects">
-
-                                    <div v-for="project in projects">
-                                        {{project.name}}<br>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
             </div>
 
         </div>
