@@ -46,6 +46,10 @@ public class TaskEntryService {
         return taskEntryRepository.findAllByStartTimeBetween(from, to);
     }
 
+    public Flux<TaskEntry> getByStartTimeBetween(LocalDateTime from, LocalDateTime to, String taskId) {
+        return taskEntryRepository.findAllByTaskIdAndStartTimeBetween(taskId, from, to);
+    }
+
     public Flux<TaskEntry> getPagedAscending(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
         return taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable);

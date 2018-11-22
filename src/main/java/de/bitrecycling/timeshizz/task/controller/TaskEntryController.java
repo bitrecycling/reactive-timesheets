@@ -90,7 +90,7 @@ public class TaskEntryController {
     }
 
     /**
-     * find all tasks with start datetime between the from and to datetimes.
+     * find all task entries with start datetime between the from and to datetimes.
      *
      * @param start a ISO string representation of a date like 2018-11-05T17:08:42.477Z
      * @param until a ISO string representation of a date like 2018-11-05T17:08:42.477Z
@@ -101,6 +101,22 @@ public class TaskEntryController {
         LocalDateTime from = LocalDateTime.parse(start);
         LocalDateTime to = LocalDateTime.parse(until);
         return taskEntryService.getByStartTimeBetween(from, to);
+    }
+
+    /**
+     * find all task entries with start datetime between the from and to datetimes.
+     *
+     * @param start a ISO string representation of a date like 2018-11-05T17:08:42.477Z
+     * @param until a ISO string representation of a date like 2018-11-05T17:08:42.477Z
+     * @return
+     */
+    @GetMapping(params = {"start", "until", "taskId"})
+    public Flux<TaskEntry> allByStartTime(@RequestParam("start") String start,
+                                          @RequestParam("until") String until,
+                                          @RequestParam("taskId") String taskId) {
+        LocalDateTime from = LocalDateTime.parse(start);
+        LocalDateTime to = LocalDateTime.parse(until);
+        return taskEntryService.getByStartTimeBetween(from, to, taskId);
     }
 
     /**

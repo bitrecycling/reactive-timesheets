@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="robo">
     <title>reactive timesheets</title>
-    <script src="js/3rd-party/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="js/3rd-party/axios.min.js"></script>
     <script src="js/3rd-party/moment.min.js"></script>
     <link rel="stylesheet" href="./css/bulma/bulma.min.css">
@@ -36,7 +36,7 @@
                         <a href="/">dashboard</a>
                     </li>
                     <li>
-                        <a href="/track.hmtl">track activities</a>
+                        <a href="/track.html">track activities</a>
                     </li>
                     <li class="is-active">
                         <a>create report</a>
@@ -47,28 +47,25 @@
     </div>
 </section>
 <br>
+
 <section>
     <div id="timeshizz">
-        <h1 class="heading subtitle is-3 has-text-centered">Report for {{selectedClient.name}}</h1>
+        <h1 class="heading subtitle is-3 has-text-centered">Report for {{client.name}}</h1>
         <hr>
-
 
         <!-- status: client and project -->
         <section class="container">
             <div class="content">
-
-
-                <h2 class="title is-5">{{selectedClient.name}}</h2>
-                <h3 class="subtitle is-6">{{selectedClient.address}}</h3>
+                <h2 class="title is-5">{{client.name}}</h2>
+                <h3 class="subtitle is-6">{{client.address}}</h3>
                 <h1 class="title"><br>&nbsp;<br></h1>
-
             </div>
         </section>
-        <section v-for="project in projects" class="container">
+        <section v-for="project in projects[client.id]" class="container">
             <div class="content">
-                <h1 class="title is-4">Project "{{project.name}}"</h1>
+                <h1 class="title is-4">Project "{{project.name}}" ({{project.id}})</h1>
                 <hr>
-                Timesheet from TODO 2018-10-1 to 2018-10-31
+                Timesheet from {{start()}} to {{end()}}
                 <table class="table">
                     <thead>
                     <tr>
@@ -77,43 +74,23 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>some activity</td>
-                        <td>180</td>
-                    </tr>
-                    <tr>
-                        <td>another activity</td>
-                        <td>300</td>
-                    </tr>
-                    <tr>
-                        <td>Scrum Ticket 241</td>
-                        <td>60</td>
-                    </tr>
-                    <tr>
-                        <td>Ticket 55</td>
-                        <td>120</td>
-                    </tr>
-                    <tr>
-                        <td>Level 42</td>
-                        <td>30</td>
-                    </tr>
-                    <tr>
-                        <td>yo</td>
-                        <td>360</td>
+                    <tr v-for="task in tasks[project.id]" v-if="taskEntries[task.id]">
+                        <td>{{task.name}}</td>
+                        <td>{{sumTaskEntriesForTask(task.id)}}</td>
                     </tr>
                     </tbody>
                     <thead>
                     <tr>
                         <th>total time spent</th>
-                        <th>120 hours and 40 minutes</th>
+                        <th>{{sumTasksForProject(project.id)}}</th>
                     </tr>
                     <tr>
                         <th>rate</th>
-                        <th>89 €</th>
+                        <th>{{project.rate}} €</th>
                     </tr>
                     <tr>
                         <th>subtotal</th>
-                        <th>10.42,23 €</th>
+                        <th>{{subtotal(project)}},00 €</th>
                     </tr>
                     </thead>
                 </table>
@@ -121,53 +98,18 @@
         </section>
         <section class="container">
             <div class="content">
-                <div class="title is-4">Grand Total: 16.666,00 €</div>
+                <div class="title is-4">Grand Total: {{total()}}</div>
             </div>
         </section>
 
         <!-- / status -->
-
-        <!-- client and project selection -->
-        <section class="container">
-            <div class="content">
-                <div class="columns">
-                    <div class="column is-half">
-                        <!-- client list -->
-                        <div v-if="!selectedClient">
-                            <div class="column box" v-for="client in clients" v-on:click="clientSelected(client)">
-                                <strong>{{client.name}}</strong> ({{countProjectsByClient(client.id)}})
-                                <p class="is-size-7">{{client.address}}</p>
-                                <div v-if="client.id == clientId">{{clientSelected(client)}}</div>
-                            </div>
-                        </div>
-                        <!-- / client list -->
-
-                        <!-- project list -->
-                        <div v-if="selectedClient && !selectedProject && !showCreateProject && !showEditClient">
-                            <div class="column box" v-for="project in projects" v-on:click="projectSelected(project)">
-                                {{project.name}}
-                                <p class="is-size-7">{{project.description}}</p>
-                                <p class="is-size-7">rate: {{project.rate}}</p>
-                                <div v-if="project.id == projectId">{{projectSelected(project)}}</div>
-                            </div>
-                        </div>
-                        <!-- / project list -->
-
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- / client and project selection -->
-
-        <!-- tasks and task entries -->
 
     </div>
 </section>
 
 
 <!--// </script>-->
-<script src="js/track.js"></script>
-<script src="js/index.js"></script>
+<script src="js/report.js"></script>
 </body>
 
 </html>
