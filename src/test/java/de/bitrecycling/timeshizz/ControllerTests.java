@@ -2,6 +2,7 @@ package de.bitrecycling.timeshizz;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -18,19 +19,19 @@ public class ControllerTests {
     @Autowired
     WebTestClient webTestClient;
 
+    @Before
+    public void setup() {
 
+    }
 
     @After
     public void teardown() {
 
     }
 
-
-    @Before
-    public void setup() {
+    @Test
+    public void testContext(){
 
     }
-
-
 
 }

@@ -36,14 +36,16 @@ public class ServiceTests {
     ClientService clientService;
     @Autowired
     ProjectService projectService;
-    @Autowired
-    org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
 
 
     @After
     public void teardown() {
-        mongoTemplate.getDb().drop();
+
     }
 
+    @Test
+    public void testContext(){
+
+    }
 
 }
