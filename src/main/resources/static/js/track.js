@@ -124,7 +124,6 @@ function insertClient(clientName, clientAddress) {
 }
 
 function saveClient(client) {
-    // console.log('post data: name:' + clientName + ' address:' + clientAddress);
     axios.put('/clients/'+client.id, client).then(function (response) {
         getExistingClients();
     })
