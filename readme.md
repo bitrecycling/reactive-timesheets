@@ -42,4 +42,4 @@ A client has multiple projects, each projects has multiple tasks, each task has 
 See the wiki for more details
 
 ## comments 
-Nothing's ever perfect. Feedback is welcome!
+Nothing's ever perfect. Feedback is welcome at @bitrecycling on twitter
