@@ -31,15 +31,31 @@ A client has multiple projects, each projects has multiple tasks, each task has 
 - get report per client: gather all projects and their tasks and taskentries for a client
 - all reports shall be able to be restricted to a time (from / to) 
 
-## how to run (locally for now)
-- install and start mongodb
-- clone the repo
+## how to run
++ install and start mongodb
++ clone the repo
++ set environment vars to point to your mongo installation:
+   + `export MONGODB_DATABASE=<database name you want to use>`
+   + `export MONGODB_HOST=<hostname or ip address of you mongodb>`
+   + `export MONGODB_HOST=<port mongodb listens to, default for mongo: 27017>`
 - build and run with `mvnw clean install spring-boot:run -DskipTests`
 - open browser and go to `http://hostname:8080` to access the webclient
 - open browser and go to `http://hostname:8080/swagger-ui` to access the swagger ui
 
-## more information on installation, design, implementation
-See the wiki for more details
+## run on aws
++ create 1 ec2 instance for mongodb (e.g. t2 micro with amazon linux)
++ install mongodb (e.g. using yum) on that instance
++ adapt mongodb config to listen to ip (change 127.0.0.1 to 0.0.0.0)
++ build reactive timesheets
++ create new java application with elastic beanstalk (this automatically creates another ec2 instance)
++ upload jar from target dir
++ adapt configuration and add "SERVER_PORT", value 5000
++ start application (takes a while)
++ wire ec2 instances: adapt mongodb instance security group to accept inbound traffic on mongodb port (usually 27017)
+from the security group or internal IP from the ec2 instance you installed reactive timesheets on 
+
+## more information
+See the wiki for some more details
 
 ## comments 
 Nothing's ever perfect. Feedback is welcome at @bitrecycling on twitter
