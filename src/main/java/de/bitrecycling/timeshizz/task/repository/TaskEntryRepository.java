@@ -1,8 +1,6 @@
 package de.bitrecycling.timeshizz.task.repository;
 
 import de.bitrecycling.timeshizz.task.model.TaskEntry;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
@@ -10,7 +8,7 @@ import reactor.core.publisher.Flux;
 import java.time.LocalDateTime;
 
 /**
- * The taskentry repository provides persistence the the taskentry model
+ * The taskEntry repository provides persistence the the taskEntry model
  *
  * created by robo
  */

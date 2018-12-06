@@ -10,10 +10,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
- * The task controller provides the endpoints to the task resource
+ * REST controller for the task entry resource. provides the usual CRUD-like operations in a restful manner.
  * <p>
  * created by robo
  */

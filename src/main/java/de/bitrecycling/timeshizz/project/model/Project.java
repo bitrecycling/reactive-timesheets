@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 /**
- * The persistent project model
+ * The project model. For brevity and simplicity this is both domain and persistent model.
  *
  * created by robo
  */

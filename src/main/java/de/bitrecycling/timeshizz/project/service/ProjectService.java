@@ -1,6 +1,7 @@
 package de.bitrecycling.timeshizz.project.service;
 
 import de.bitrecycling.timeshizz.client.repository.ClientRepository;
+import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import de.bitrecycling.timeshizz.project.model.Project;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
 import de.bitrecycling.timeshizz.task.model.Task;
@@ -38,7 +39,7 @@ public class ProjectService {
     }
 
     public Mono<Project> byId(String id){
-        return projectRespository.findById(id);
+        return projectRespository.findById(id).switchIfEmpty(Mono.error(new ResourceNotFoundException("project", id)));
     }
 
     public Mono<Project> create(Project project){
@@ -50,11 +51,11 @@ public class ProjectService {
 
     public Mono<Task> addTask(String projectId, String taskName){
         Task task = new Task(taskName, projectId);
-        return taskRepository.insert(task);
+        return byId(projectId).then(taskRepository.insert(task));
     }
 
     public Mono<Project> update(String projectId, String projectName, String projectDescription) {
-        return projectRespository.findById(projectId).flatMap(
+        return byId(projectId).flatMap(
                 p-> {
                     p.setName(projectName);
                     p.setDescription(projectDescription);
@@ -71,7 +72,7 @@ public class ProjectService {
      * @return
      */
     public Mono<Void> delete(String projectId) {
-        return projectRespository.deleteById(projectId);
+        return byId(projectId).then(projectRespository.deleteById(projectId));
     }
 
     public Flux<Project> allByClientId(String clientId) {
@@ -83,7 +84,7 @@ public class ProjectService {
     }
 
     public Mono<Project> save(Project project) {
-        return  projectRespository.save(project);
+        return byId(project.getId()).then(projectRespository.save(project));
     }
 
 

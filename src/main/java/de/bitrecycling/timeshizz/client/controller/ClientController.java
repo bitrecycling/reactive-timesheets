@@ -11,7 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * The client controller provides the endpoints to the client resource
+ * REST controller for the client resource. provides the usual CRUD-like operations in a restful manner.
  *
  * created by robo
  */
@@ -30,9 +30,9 @@ public class ClientController {
     }
 
     /**
-     * create a new client with name and address
-     * @param clientName
-     * @param clientAddress
+     * create a new client using url parameters
+     * @param clientName the name of the client
+     * @param clientAddress the address of the client
      * @return
      */
     @ApiOperation(value = "create new client", response = Flux.class)
@@ -46,9 +46,9 @@ public class ClientController {
     }
 
     /**
-     * create a new client {"name":"Client Name", "address":"Client Adress, 234521 Some City"}
-     * @param client
-     * @return
+     * create a new client using json, e.g. {"name":"Client Name", "address":"Client Adress, 234521 Some City"}
+     * @param client json
+     * @return the newly created client as json including the resource id.
      */
     @PostMapping(consumes ="!application/x-www-form-urlencoded")
     public Mono<Client> create(@RequestBody Client client){
@@ -56,9 +56,9 @@ public class ClientController {
     }
 
     /**
-     * update a client
-     * @param clientName
-     * @param clientAddress
+     * update a client using url parameters
+     * @param clientName the new name of the client
+     * @param clientAddress the new address of the client
      * @return
      */
     @PutMapping(value = "/{id}", consumes ="application/x-www-form-urlencoded")
@@ -71,9 +71,9 @@ public class ClientController {
     }
 
     /**
-     * update a client
-     * @param id
-     * @param client
+     * update a client using json
+     * @param id the id of the client to be updated
+     * @param client the json reflecting the changed and unchanged client data
      * @return
      */
     @PutMapping(value = "/{id}", consumes = "application/json")
@@ -89,7 +89,7 @@ public class ClientController {
 
     /**
      * load a specific client
-     * @param clientId
+     * @param clientId the id of the client to load
      * @return
      */
     @GetMapping("/{id}")
@@ -97,6 +97,11 @@ public class ClientController {
         return clientService.byId(clientId);
     }
 
+    /**
+     * delete client
+     * @param clientId the id as path variable of the client to be deleted
+     * @return
+     */
     @DeleteMapping("/{id}")
     public Mono<Void> delete(@PathVariable("id") String clientId){
         return clientService.delete(clientId);

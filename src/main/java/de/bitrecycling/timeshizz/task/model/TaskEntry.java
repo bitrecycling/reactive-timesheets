@@ -5,11 +5,10 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
- * The persistent taskentry model
+ * The taskentry model. For brevity and simplicity this is both domain and persistent model.
  *
  * by robo
  */

@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 
 /**
- * The task controller provides the endpoints to the task resource
+ * REST controller for the task resource. provides the usual CRUD-like operations in a restful manner.
  * <p>
  * created by robo
  */
