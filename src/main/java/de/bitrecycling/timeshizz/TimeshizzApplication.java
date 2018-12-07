@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 
 /**
  * The timeshizz application spring boot main class
@@ -35,7 +34,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
 //                .antMatchers("/index").permitAll()
-                .antMatchers("/*").hasRole("USER")
+                .antMatchers("/**").hasRole("USER")
                 .and()
                 .formLogin();
     }

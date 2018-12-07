@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz.task.service;
 
+import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import de.bitrecycling.timeshizz.task.model.Task;
 import de.bitrecycling.timeshizz.task.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ public class TaskService {
     }
 
     public Mono<Task> byId(String taskId){
-        return taskRepository.findById(taskId);
+        return taskRepository.findById(taskId)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("task", taskId)));
     }
 
     public Flux<Task> allByProjectId(String projectId) {
@@ -39,7 +41,7 @@ public class TaskService {
     }
 
     public Mono<Void> delete(String taskId) {
-        return taskRepository.deleteById(taskId);
+        return byId(taskId).then(taskRepository.deleteById(taskId));
     }
 
     public Flux<Task> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to) {
@@ -47,6 +49,6 @@ public class TaskService {
     }
 
     public Mono<Task> save(Task task) {
-        return taskRepository.save(task);
+        return byId(task.getId()).then(taskRepository.save(task));
     }
 }

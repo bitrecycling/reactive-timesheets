@@ -2,6 +2,7 @@ package de.bitrecycling.timeshizz.client.service;
 
 import de.bitrecycling.timeshizz.client.model.Client;
 import de.bitrecycling.timeshizz.client.repository.ClientRepository;
+import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -25,11 +26,13 @@ public class ClientService {
     }
 
     public Mono<Client> byId(String id) {
-        return clientRepository.findById(id);
+        return clientRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("client", id)));
     }
 
     public Flux<Client> byName(String clientName) {
-        return clientRepository.findByName(clientName);
+        return clientRepository.findByName(clientName)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("client with name " +clientName, null)));
     }
 
 
@@ -41,7 +44,7 @@ public class ClientService {
     }
 
     public Mono<Client> update(Client client) {
-        return clientRepository.findById(client.getId()).flatMap(
+        return byId(client.getId()).flatMap(
                 c-> {
                     client.setCreationTime(c.getCreationTime());
                     return clientRepository.save(client);
@@ -57,6 +60,6 @@ public class ClientService {
      * @return
      */
     public Mono<Void> delete(String clientId) {
-       return clientRepository.deleteById(clientId);
+       return byId(clientId).flatMap(client -> clientRepository.deleteById(client.getId()));
     }
 }

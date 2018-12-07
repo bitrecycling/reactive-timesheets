@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz.task.service;
 
+import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import de.bitrecycling.timeshizz.task.model.TaskEntry;
 import de.bitrecycling.timeshizz.task.repository.TaskEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,12 +69,17 @@ public class TaskEntryService {
         return taskEntryRepository.insert(taskEntry);
     }
 
+    public Mono<TaskEntry> byId(String id) {
+        return taskEntryRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("taskentry", id)));
+    }
+
     public Mono<TaskEntry> save(TaskEntry taskEntry) {
-        return taskEntryRepository.save(taskEntry);
+        return byId(taskEntry.getId()).then(taskEntryRepository.save(taskEntry));
     }
 
     public Mono<Void> delete(String taskEntryId) {
-        return taskEntryRepository.deleteById(taskEntryId);
+        return byId(taskEntryId).then(taskEntryRepository.deleteById(taskEntryId));
     }
 
 }

@@ -84,7 +84,8 @@ public class ProjectService {
     }
 
     public Mono<Project> save(Project project) {
-        return byId(project.getId()).then(projectRespository.save(project));
+        return byId(project.getId())
+                .then(projectRespository.save(project));
     }
 
 
