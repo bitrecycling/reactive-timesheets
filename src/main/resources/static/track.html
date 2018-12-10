@@ -38,7 +38,7 @@
                         <a href="/">dashboard</a>
                     </li>
                     <li class="is-active">
-                        <a href="/track.hmtl">track activities</a>
+                        <a href="/track.html">track activities</a>
                     </li>
                     <li>
                         <a href="/report.html">create report</a>
@@ -140,7 +140,7 @@
                                                 </div>
                                             </div>
                                             <div class="control">
-                                                <div class="tag is-medium is-danger">delete</div>
+                                                <div v-on:click="deleteClient()" class="tag is-medium is-danger">delete</div>
                                             </div>
                                         </div>
                                     </div>
@@ -246,7 +246,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="control">
-                                                    <div class="tag is-medium is-danger">delete</div>
+                                                    <div v-on:click="deleteProject()" class="tag is-medium is-danger">delete</div>
                                                 </div>
                                             </div>
                                         </div>

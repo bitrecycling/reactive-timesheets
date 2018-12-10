@@ -46,6 +46,7 @@ var timeshizz = new Vue({
             insertProject(this.projectName, this.projectDescription, this.projectRate, this.selectedClient.id);
             this.projectName = '';
             this.projectDescription = '';
+            this.projectRate = '';
         },
         saveProject: function () {
             saveProject(this.selectedProject);
@@ -68,12 +69,14 @@ var timeshizz = new Vue({
             this.showCreateClient = false;
             this.selectedClient='';
             this.clientId='';
+            loadProjectsForClient(this.selectedClient.id);
         },
         clearProject: function(){
             this.clearTask();
+            this.showEditProject = false;
+            this.showCreateProject = false;
             this.selectedProject='';
             this.projectId='';
-
         },
         clearTask: function(){
             this.clearTaskEntry();
@@ -86,7 +89,19 @@ var timeshizz = new Vue({
         },
         deleteClient:function () {
             deleteClient(this.selectedClient.id);
-            this.selectedClient = '';
+            this.clearClient();
+        },
+        deleteProject:function () {
+            deleteProject(this.selectedProject.id);
+            this.clearProject();
+        },
+        deleteTask:function () {
+            deleteTask(this.selectedTask.id);
+            this.clearTask();
+        },
+        deleteTaskEntry:function () {
+            deleteClient(this.selectedTaskEntry.id);
+            this.clearTaskEntry();
         },
         clientSelected: function (client) {
             this.selectedClient = client;
@@ -192,6 +207,35 @@ function deleteClient(clientId){
 
 }
 
+function deleteProject(projectId){
+    axios.delete('/projects/'+projectId).then(function (response) {
+        loadProjectsForClient(timeshizz.selectedClient.id);
+    })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+}
+
+function deleteTask(taskId){
+    axios.delete('/tasks/'+taskId).then(function (response) {
+        getExistingTasks();
+    })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+}
+function deleteTaskEntry(taskEntryId){
+    axios.delete('/taskentries/'+taskEntryId).then(function (response) {
+        getExistingTaskEntries();
+    })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+}
+
 function countProjectsByClient(clientId) {
     var count=0;
     axios.get('/projects/_count?clientId=' + clientId).then(
@@ -230,6 +274,30 @@ function getExistingClients() {
     axios.get('/clients').then(
         function (response) {
             timeshizz.clients = response.data;
+        }
+    );
+}
+
+function getExistingProjects() {
+    axios.get('/projects').then(
+        function (response) {
+            timeshizz.projects = response.data;
+        }
+    );
+}
+
+function getExistingTasks() {
+    axios.get('/tasks').then(
+        function (response) {
+            timeshizz.tasks = response.data;
+        }
+    );
+}
+
+function getExistingTaskEntries() {
+    axios.get('/taskentries').then(
+        function (response) {
+            timeshizz.taskEntries = response.data;
         }
     );
 }
