@@ -1,11 +1,8 @@
 package de.bitrecycling.timeshizz.project.service;
 
-import de.bitrecycling.timeshizz.client.repository.ClientRepository;
 import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import de.bitrecycling.timeshizz.project.model.Project;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
-import de.bitrecycling.timeshizz.task.model.Task;
-import de.bitrecycling.timeshizz.task.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -22,20 +19,9 @@ import java.time.LocalDateTime;
 public class ProjectService {
     @Autowired
     ProjectRespository projectRespository;
-    @Autowired
-    ClientRepository clientRespository;
-    @Autowired
-    TaskRepository taskRepository;
 
     public Flux<Project> all(){
         return projectRespository.findAll();
-    }
-
-    public Flux<Project> byClientName(String clientName){
-        return clientRespository.findByName(clientName)
-                .flatMap(
-                        client -> projectRespository.findAllByClientId(client.getId())
-                );
     }
 
     public Mono<Project> byId(String id){
@@ -49,11 +35,6 @@ public class ProjectService {
         return projectRespository.insert(project);
     }
 
-    public Mono<Task> addTask(String projectId, String taskName){
-        Task task = new Task(taskName, projectId);
-        return byId(projectId).then(taskRepository.insert(task));
-    }
-
     public Mono<Project> update(String projectId, String projectName, String projectDescription) {
         return byId(projectId).flatMap(
                 p-> {
@@ -62,7 +43,6 @@ public class ProjectService {
                     return projectRespository.save(p);
                 }
         );
-
     }
 
     /**
@@ -87,6 +67,4 @@ public class ProjectService {
         return byId(project.getId())
                 .then(projectRespository.save(project));
     }
-
-
 }

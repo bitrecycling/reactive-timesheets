@@ -10,6 +10,5 @@ import reactor.core.publisher.Flux;
  * created by robo
  */
 public interface ClientRepository extends ReactiveMongoRepository<Client, String> {
-    Flux<Client> findByName(String name);
     Flux<Client> findAllByOrderByCreationTimeDesc();
 }

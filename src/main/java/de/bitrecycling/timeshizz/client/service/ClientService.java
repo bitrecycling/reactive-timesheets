@@ -30,12 +30,6 @@ public class ClientService {
                 .switchIfEmpty(Mono.error(new ResourceNotFoundException("client", id)));
     }
 
-    public Flux<Client> byName(String clientName) {
-        return clientRepository.findByName(clientName)
-                .switchIfEmpty(Mono.error(new ResourceNotFoundException("client with name " +clientName, null)));
-    }
-
-
     public Mono<Client> insert(Client client) {
         if(client.getCreationTime() == null){
             client.setCreationTime(LocalDateTime.now());

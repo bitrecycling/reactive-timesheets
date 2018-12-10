@@ -30,11 +30,6 @@ public class TaskEntryService {
         return taskEntryRepository.findAllByTaskIdOrderByCreationTimeDesc(taskId);
     }
 
-    public Flux<TaskEntry> getMostRecentByCreationTime(Integer count) {
-        PageRequest of = PageRequest.of(0, count);
-        return taskEntryRepository.findAllByOrderByCreationTimeDesc(of);
-    }
-
     public Flux<TaskEntry> getMostRecentByStartTime(Integer count) {
         PageRequest of = PageRequest.of(0, count);
         return taskEntryRepository.findAllByOrderByStartTimeDesc(of);

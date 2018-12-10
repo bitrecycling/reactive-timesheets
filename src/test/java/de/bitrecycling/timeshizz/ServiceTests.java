@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz;
 
+import de.bitrecycling.timeshizz.client.model.Client;
 import de.bitrecycling.timeshizz.client.service.ClientService;
 import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import de.bitrecycling.timeshizz.project.service.ProjectService;
@@ -43,7 +44,13 @@ public class ServiceTests {
     @Test
     public void testError(){
         StepVerifier.create(clientService.byId("n/a")).verifyError(ResourceNotFoundException.class);
+        StepVerifier.create(clientService.delete("n/a")).verifyError(ResourceNotFoundException.class);
+        Client client = new Client();
+        client.setId("n/a");
+        StepVerifier.create(clientService.update(client)).verifyError(ResourceNotFoundException.class);
         StepVerifier.create(projectService.byId("n/a")).verifyError(ResourceNotFoundException.class);
+        StepVerifier.create(projectService.delete("n/a")).verifyError(ResourceNotFoundException.class);
+        StepVerifier.create(projectService.update("n/a", null, null)).verifyError(ResourceNotFoundException.class);
         StepVerifier.create(taskService.byId("n/a")).verifyError(ResourceNotFoundException.class);
         StepVerifier.create(taskEntryService.byId("n/a")).verifyError(ResourceNotFoundException.class);
     }
