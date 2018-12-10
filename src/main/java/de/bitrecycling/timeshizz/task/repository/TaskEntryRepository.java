@@ -17,7 +17,8 @@ public interface TaskEntryRepository extends ReactiveMongoRepository<TaskEntry, 
     Flux<TaskEntry> findAllByTaskIdOrderByCreationTimeDesc(String taskId);
     Flux<TaskEntry> findAllByCreationTimeBetween(LocalDateTime from, LocalDateTime to);
     Flux<TaskEntry> findAllByStartTimeBetween(LocalDateTime from, LocalDateTime to);
-    Flux<TaskEntry> findAllByTaskIdAndStartTimeBetween(String clienId, LocalDateTime from, LocalDateTime to);
+    Flux<TaskEntry> findAllByTaskId(String taskId);
+    Flux<TaskEntry> findAllByTaskIdAndStartTimeBetween(String taskId, LocalDateTime from, LocalDateTime to);
     Flux<TaskEntry> findAllByOrderByCreationTimeDesc(Pageable pageable);
     Flux<TaskEntry> findAllByOrderByStartTimeDesc(Pageable pageable);
     Flux<TaskEntry> findAllByOrderByCreationTimeAsc(Pageable pageable);

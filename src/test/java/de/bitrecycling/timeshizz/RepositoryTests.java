@@ -67,8 +67,14 @@ public class RepositoryTests {
                    return c.equals(client);
                 }).verifyComplete();
 
+        StepVerifier.create(taskEntryRepository.findAllByTaskId("taskId"))
+                .expectNextCount(2).verifyComplete();
+
     }
 
+    /**
+     * tests projects by particular client
+     */
     @Test
     public void testProjectsByClient() {
         Client c = createTestData();
@@ -78,6 +84,9 @@ public class RepositoryTests {
                 .verifyComplete();
     }
 
+    /**
+     * tests tasks created between given timespan
+     */
     @Test
     public void testTasks(){
         LocalDateTime before = LocalDateTime.now().minusSeconds(2);
@@ -103,8 +112,11 @@ public class RepositoryTests {
     }
 
 
+    /**
+     * tests ordering of taskentries by creation time
+     */
     @Test
-    public void testTopTaskEntries(){
+    public void testLatestCreatedTaskEntries(){
         ArrayList<TaskEntry> taskEntries = new ArrayList<>();
 
         for(int i=1; i<=20; i++){
