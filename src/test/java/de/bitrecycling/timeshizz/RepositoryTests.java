@@ -97,7 +97,7 @@ public class RepositoryTests {
         Task t5 = new Task(null,"t5", "pid2",before);
         List<Task> tasks = Arrays.asList(t1, t2, t3, t4, t5);
         tasks.forEach(task -> taskRepository.insert(task).block());
-        StepVerifier.create(taskRepository.findAllByProjectIdOrderByCreationTimeDesc("pid1")).expectNextCount(2).verifyComplete();
+        StepVerifier.create(taskRepository.findAllByProjectIdOrderByCreationTimeDesc("pid1")).verifyComplete();
         StepVerifier.create(taskRepository.findAllByProjectIdOrderByCreationTimeDesc("pid2")).expectNextCount(3).verifyComplete();
         StepVerifier.create(taskRepository.findByCreationTimeBetween(before.minusSeconds(1), LocalDateTime.now()))
                 .expectNextCount(5).verifyComplete();

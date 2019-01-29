@@ -120,6 +120,12 @@ function _sumTaskEntriesForTask(taskId) {
     return sum;
 }
 
+function getTaskEntriesForSingleDay(dayDate){
+    axios.get("/taskentries/?start="+getDayStart(dayDate)+"&until="+getDayEnd(dayDate)).then(function(response){
+        //TODO
+    });
+}
+
 function init() {
     var params = new URLSearchParams(window.location.search);
     if (params) {
@@ -141,5 +147,30 @@ function getLastMonthEnd(date){
     return new Date(d).toISOString().split('.')[0] ;
 }
 
+function getDayStart(dayDate){
+    var d = new Date(dayDate);
+    d.setHours(1,0,0,0);
+    return new Date(d).toISOString().split('.')[0] ;
+}
+function getDayEnd(dayDate){
+    var d = new Date(dayDate);
+    d.setHours(23,59,59,999);
+    return new Date(d).toISOString().split('.')[0] ;
+}
+
+function getSingleDaysBetween(startDate, endDate) {
+    var singleDays = [],
+        currentDay = startDate,
+        addDays = function(days) {
+            var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        };
+    while (currentDay <= endDate) {
+        singleDays.push(currentDay);
+        currentDay = addDays.call(currentDay, 1);
+    }
+    return singleDays;
+};
 
 init();
