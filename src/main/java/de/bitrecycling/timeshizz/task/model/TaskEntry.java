@@ -26,6 +26,10 @@ public class TaskEntry implements Model {
     private Integer durationMinutes;
     @NonNull
     private String taskId;
+    @NonNull
+    private String projectId;
+    @NonNull
+    private String clientId;
     private LocalDateTime creationTime;
 
 }

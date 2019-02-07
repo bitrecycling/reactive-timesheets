@@ -4,15 +4,13 @@ var timeshizz = new Vue({
     data: {
         clientId: '',
         projectId: '',
-
-        client: '',
-        projects: {},
-        tasks: {},
-        taskEntries: {},
-
-
+        report: ''
     },
     methods: {
+        reportForClient: function(clientId){
+          return loadProjectsForClient(clientId);
+        },
+
         formatTime: function (timeString) {
             return prettyPrintIsoDateTime(timeString);
         },
@@ -39,100 +37,29 @@ var timeshizz = new Vue({
 });
 
 
-function loadClient(clientId) {
-    axios.get('/clients/' + clientId).then(
+function loadClientReport(clientId) {
+    axios.get('/report/client/' + clientId+'?start=2000-01-01&end='+'2019-12-31').then(
         function (response) {
-            if (timeshizz.projectId) {
-                loadProject(timeshizz.projectId, clientId);
-            } else {
-                loadProjectsForClient(timeshizz.clientId);
-            }
-            timeshizz.client = response.data;
+            timeshizz.report = response.data;
+            console.log(response.data);
         }
     );
 }
 
-function loadProject(projectId, clientId) {
-    axios.get('/projects/' + projectId).then(
-        function (response) {
-            Vue.set(timeshizz.projects, clientId, [response.data]);
-            loadTasksForProject(projectId);
-        }
-    );
-}
-
-
-function loadProjectsForClient(clientId) {
-    axios.get('/projects/?clientId=' + clientId).then(
-        function (response) {
-            Vue.set(timeshizz.projects, clientId, response.data);
-            response.data.forEach(function (project) {
-                loadTasksForProject(project.id);
-            });
-        }
-    );
-}
-
-function loadTasksForProject(projectId) {
-    axios.get('/tasks/?projectId=' + projectId).then(
-        function (response) {
-            Vue.set(timeshizz.tasks, projectId, response.data);
-            response.data.forEach(function (task) {
-                loadTaskEntriesForTask(task, projectId);
-            });
-        }
-    );
-}
-
-function loadTaskEntriesForTask(task, projectId) {
-    axios.get('/taskentries/?start='+getLastMonthStart(new Date())+'&until='+getLastMonthEnd(new Date())+'&taskId=' + task.id).then(
-        function (response) {
-            if(response.data.length > 0){
-                Vue.set(timeshizz.taskEntries, task.id, response.data);
-            }
-
-        }
-    );
-}
 
 function prettyPrintIsoDateTime(dateTimeString) {
     return moment(dateTimeString).format("YYYY-MM-DD HH:mm ");
 }
 
 
-function _sumTasksForProject(projectId) {
-    var sum = 0;
-    if (timeshizz.tasks[projectId]) {
-        timeshizz.tasks[projectId].forEach(function (task) {
-            sum += _sumTaskEntriesForTask(task.id);
-        });
-    }
-    return sum;
-}
-
-function _sumTaskEntriesForTask(taskId) {
-    var sum = 0;
-    if (timeshizz.taskEntries[taskId]) {
-        timeshizz.taskEntries[taskId].forEach(function (taskEntry) {
-            sum += taskEntry.durationMinutes;
-        });
-    }
-    return sum;
-}
-
-function getTaskEntriesForSingleDay(dayDate){
-    axios.get("/taskentries/?start="+getDayStart(dayDate)+"&until="+getDayEnd(dayDate)).then(function(response){
-        //TODO
-    });
-}
 
 function init() {
     var params = new URLSearchParams(window.location.search);
     if (params) {
         timeshizz.clientId = params.get("client");
         timeshizz.projectId = params.get("project");
-        loadClient(timeshizz.clientId);
     }
+    loadClientReport(timeshizz.clientId);
 }
 
 function getLastMonthStart(date){

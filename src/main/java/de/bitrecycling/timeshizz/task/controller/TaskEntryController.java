@@ -42,25 +42,29 @@ public class TaskEntryController {
      * @return
      */
     @PostMapping(consumes = "application/x-www-form-urlencoded")
-    public Mono<TaskEntry> createByUrlParams(@RequestParam("startTime") String startTimeString, @RequestParam("durationMinutes") Integer durationMinutes, @RequestParam("taskId") String taskId) {
+    public Mono<TaskEntry> createByUrlParams(@RequestParam("startTime") String startTimeString,
+                                             @RequestParam("durationMinutes") Integer durationMinutes,
+                                             @RequestParam("taskId") String taskId
+                                             ) {
         LocalDateTime parsedTime = ControllerUtils.parseTime(startTimeString);
-        TaskEntry taskEntry = new TaskEntry(parsedTime, durationMinutes, taskId);
-        return taskEntryService.insert(taskEntry);
+//        TaskEntry taskEntry = new TaskEntry(parsedTime, durationMinutes, taskId);
+        return taskEntryService.insert(parsedTime, durationMinutes, taskId);
 
     }
 
     @PostMapping(consumes = "application/json")
     public Mono<TaskEntry> createByJson(@RequestBody TaskEntry taskEntry) {
-        return taskEntryService.insert(taskEntry);
+        return taskEntryService.insert(taskEntry.getStartTime(),
+                taskEntry.getDurationMinutes(),
+                taskEntry.getTaskId()
+                );
 
     }
 
     @PutMapping(name = "{id}", consumes = "application/x-www-form-urlencoded")
     public Mono<TaskEntry> saveByUrlParams(@RequestParam("id") String id, @RequestParam("startTime") String startTimeString, @RequestParam("durationMinutes") Integer durationMinutes, @RequestParam("taskId") String taskId) {
         LocalDateTime parsedTime = ControllerUtils.parseTime(startTimeString);
-        TaskEntry taskEntry = new TaskEntry(parsedTime, durationMinutes, taskId);
-        taskEntry.setId(id);
-        return taskEntryService.save(taskEntry);
+        return taskEntryService.save(id, parsedTime, durationMinutes, taskId);
 
     }
 

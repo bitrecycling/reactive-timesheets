@@ -1,25 +1,19 @@
 package de.bitrecycling.timeshizz.report;
 
 import de.bitrecycling.timeshizz.client.service.ClientService;
-import de.bitrecycling.timeshizz.project.model.Project;
+import de.bitrecycling.timeshizz.common.controller.ControllerUtils;
 import de.bitrecycling.timeshizz.project.service.ProjectService;
-import de.bitrecycling.timeshizz.task.model.Task;
-import de.bitrecycling.timeshizz.task.model.TaskEntry;
+import de.bitrecycling.timeshizz.task.model.FullTaskEntry;
 import de.bitrecycling.timeshizz.task.service.TaskEntryService;
 import de.bitrecycling.timeshizz.task.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
-@Controller
+@RestController
 @RequestMapping("/report")
 public class ReportController {
 
@@ -33,41 +27,32 @@ public class ReportController {
     TaskEntryService taskEntryService;
 
     /**
-     * This is so ugly, but given the the data approach (only parent ids) seems there is no elegant way to do it.
-     * Part of the ugliness comes from me not being able to combine fluxes in the desired way (nested and creating maps).
+     * get all taskEntries for given client in given timespan
+     *
      * @param id
      * @return
      */
-    @GetMapping(value = "/client/{id}", produces = "application/json")
-    public ResponseEntity<Report> clientReport(@PathVariable String id){
+    @GetMapping("/client/{id}")
+    public Mono<Report> clientReport(@PathVariable("id") String id, @RequestParam("start") String startTimeString, @RequestParam("end") String endTimeString) {
+        LocalDateTime startTime = ControllerUtils.parseTime(startTimeString);
+        LocalDateTime endTime = ControllerUtils.parseTime(endTimeString);
+
+        Flux<FullTaskEntry> fullTaskEntryFlux =
+                taskEntryService.getByClientAndByStartTimeBetween(id, startTime, endTime).flatMap(te ->
+                        taskService.byId(te.getTaskId()).flatMap(t ->
+                                projectService.byId(te.getProjectId()).flatMap(p ->
+                                        clientService.byId(id).flatMap(c ->
+                                        Mono.just(new FullTaskEntry(te, t, p, c))
+                                ))));
 
         Report report = new Report();
-        clientService.byId(id).subscribe(report::setClient);
-        Map<Project, List<Map.Entry<Task, List<TaskEntry>>>> res = new HashMap<>();
-        Map<String, Project> projects = projectService.allByClientId(id).collectMap(project -> project.getId()).block();
-        Map<Project, List<Task>> projectTasks = new HashMap<>();
-        projects.forEach(
-                (s, project) -> projectTasks.put(project,taskService.allByProjectId(s).collectList().block())
-        );
-        Map<Task, List<TaskEntry>> taskTaskEntries = new HashMap<>();
-        projectTasks.forEach((key,tasks)->
-                tasks.forEach(task->
-                        taskTaskEntries.put(task, taskEntryService.getAllByTaskId(task.getId()).collectList().block())
-                )
-        );
+        Mono<Report> reduce = fullTaskEntryFlux
+                .reduce(report, (r, te) ->{
+                            r.setClient(te.getClient());
+                            return r.addTaskEntry(te.getProject(), te.getTask(), te.getTaskEntry());
+                        }
+                );
 
-        projectTasks.forEach((key,tasks)->
-                tasks.forEach(task->
-                        res.put(key,taskTaskEntries.entrySet()
-                                .stream().filter(value->value.getKey().getProjectId().equals(key.getId()))
-                                .collect(Collectors.toList()))
-                )
-        );
-
-        report.setProjects(res);
-
-        return ResponseEntity.ok(report);
-
+        return reduce;
     }
-
 }

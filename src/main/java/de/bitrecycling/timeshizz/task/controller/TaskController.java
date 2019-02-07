@@ -79,20 +79,17 @@ public class TaskController {
      */
     @PostMapping(consumes = "application/x-www-form-urlencoded")
     public Mono<Task> create(@RequestParam("name") String taskName, @RequestParam("projectId") String projectId) {
-        Task task = new Task(taskName, projectId);
-        return taskService.insert(task);
+        return taskService.insert(taskName, projectId);
     }
 
     @PostMapping(consumes = "application/json")
     public Mono<Task> create(@RequestBody Task task) {
-        return taskService.insert(task);
+        return taskService.insert(task.getName(), task.getProjectId());
     }
 
     @PutMapping(value = "/{id}", consumes = "application/x-www-form-urlencoded")
     public Mono<Task> put(@RequestParam("id") String id, @RequestParam("name") String taskName, @RequestParam("projectId") String projectId) {
-        Task task = new Task(taskName, projectId);
-        task.setId(id);
-        return taskService.save(task);
+        return taskService.save(id, taskName);
     }
 
     @PutMapping(value = "/{id}", consumes = "application/json")

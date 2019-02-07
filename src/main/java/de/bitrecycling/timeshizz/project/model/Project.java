@@ -5,8 +5,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-
 /**
  * The project model. For brevity and simplicity this is both domain and persistent model.
  *
@@ -29,6 +27,4 @@ public class Project implements Model {
     private Double rate;
     @NonNull
     private String clientId;
-    private LocalDateTime creationTime;
-
 }

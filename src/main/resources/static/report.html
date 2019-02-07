@@ -52,33 +52,34 @@
 
 <section>
     <div id="timeshizz">
-        <h1 class="heading subtitle is-3 has-text-centered">Report for {{client.name}}</h1>
+        <h1 class="heading subtitle is-3 has-text-centered">Report for {{report.client.name}}</h1>
         <hr>
 
-        <!-- status: client and project -->
         <section class="container">
             <div class="content">
-                <h2 class="title is-5">{{client.name}}</h2>
-                <h3 class="subtitle is-6">{{client.address}}</h3>
+                <h2 class="title is-5">{{report.client.name}}</h2>
+                <h3 class="subtitle is-6">{{report.client.address}}</h3>
                 <h1 class="title"><br>&nbsp;<br></h1>
             </div>
         </section>
-        <section v-for="project in projects[client.id]" class="container">
+        Timesheet from {{start()}} to {{end()}}
+        <section v-for="project in report.projects" class="container">
             <div class="content">
                 <h1 class="title is-4">Project "{{project.name}}"</h1>
                 <hr>
-                Timesheet from {{start()}} to {{end()}}
+
                 <table class="table">
                     <thead>
                     <tr>
                         <th>activity</th>
-                        <th>time spent</th>
+                        <th>date / time spent</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="task in tasks[project.id]" v-if="taskEntries[task.id]">
+                    <tr v-for="task in project.tasks">
                         <td>{{task.name}}</td>
-                        <td>{{sumTaskEntriesForTask(task.id)}}</td>
+                        <td><div v-for="taskEntry in task.taskEntries">{{taskEntry.startTime}} Minutes spent:{{taskEntry.durationMinutes}}</div></td>
+
                     </tr>
                     </tbody>
                     <thead>
@@ -100,7 +101,7 @@
         </section>
         <section class="container">
             <div class="content">
-                <div class="title is-4">Grand Total: {{total()}}</div>
+                <!--<div class="title is-4">Grand Total: {{total()}}</div>-->
             </div>
         </section>
 

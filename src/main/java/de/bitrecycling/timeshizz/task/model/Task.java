@@ -24,6 +24,8 @@ public class Task implements Model {
     private String name;
     @NonNull
     private String projectId;
+    @NonNull
+    private String clientId;
     private LocalDateTime creationTime;
 
 }

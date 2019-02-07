@@ -1,0 +1,25 @@
+package de.bitrecycling.timeshizz.task.model;
+
+import de.bitrecycling.timeshizz.client.model.Client;
+import de.bitrecycling.timeshizz.project.model.Project;
+import lombok.Data;
+import lombok.NonNull;
+
+
+/**
+ * The full taskentry model. it contains also the project and client objects instead of just their ids.
+ * <p>
+ * by robo
+ */
+
+@Data
+public class FullTaskEntry {
+    @NonNull
+    private TaskEntry taskEntry;
+    @NonNull
+    private Task task;
+    @NonNull
+    private Project project;
+    @NonNull
+    private Client client;
+}

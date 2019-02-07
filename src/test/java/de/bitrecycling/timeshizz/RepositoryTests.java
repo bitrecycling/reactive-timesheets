@@ -55,11 +55,11 @@ public class RepositoryTests {
         Project p = new Project("fullTestProjectName","fullTestProjectDescription",60.0,c.getId());
         p.setId("projectId");
         projectRespository.insert(p).block();
-        Task t = new Task("fullTestTaskName",p.getId());
+        Task t = new Task("fullTestTaskName",p.getId(), c.getId());
         t.setId("taskId");
         taskRepository.insert(t).block();
-        TaskEntry te1 = new TaskEntry(LocalDateTime.now(),120, t.getId());
-        TaskEntry te2 = new TaskEntry(LocalDateTime.now(),180, t.getId());
+        TaskEntry te1 = new TaskEntry(LocalDateTime.now(),120, t.getId(), t.getProjectId(), t.getClientId());
+        TaskEntry te2 = new TaskEntry(LocalDateTime.now(),180, t.getId(), t.getProjectId(), t.getClientId());
         taskEntryRepository.insert(te1).block();
         taskEntryRepository.insert(te2).block();
         StepVerifier.create(clientRepository.findAll()).expectNextMatches(
@@ -90,14 +90,14 @@ public class RepositoryTests {
     @Test
     public void testTasks(){
         LocalDateTime before = LocalDateTime.now().minusSeconds(2);
-        Task t1 = new Task(null, "t1", "pid1", before);
-        Task t2 = new Task(null, "t2", "pid1",before);
-        Task t3 = new Task(null,"t3", "pid2",before);
-        Task t4 = new Task(null,"t4","pid2",before);
-        Task t5 = new Task(null,"t5", "pid2",before);
+        Task t1 = new Task(null, "t1", "pid1", "cid1", before);
+        Task t2 = new Task(null, "t2", "pid1","cid1",before);
+        Task t3 = new Task(null,"t3", "pid2","cid1",before);
+        Task t4 = new Task(null,"t4","pid2","cid1",before);
+        Task t5 = new Task(null,"t5", "pid2","cid1",before);
         List<Task> tasks = Arrays.asList(t1, t2, t3, t4, t5);
         tasks.forEach(task -> taskRepository.insert(task).block());
-        StepVerifier.create(taskRepository.findAllByProjectIdOrderByCreationTimeDesc("pid1")).verifyComplete();
+        StepVerifier.create(taskRepository.findAllByProjectIdOrderByCreationTimeDesc("pid1")).expectNextCount(2).verifyComplete();
         StepVerifier.create(taskRepository.findAllByProjectIdOrderByCreationTimeDesc("pid2")).expectNextCount(3).verifyComplete();
         StepVerifier.create(taskRepository.findByCreationTimeBetween(before.minusSeconds(1), LocalDateTime.now()))
                 .expectNextCount(5).verifyComplete();
@@ -112,6 +112,50 @@ public class RepositoryTests {
     }
 
 
+
+    /**
+     * tests taskEntries for client and created between given timespan
+     */
+    @Test
+    public void testTaskEntriesForClientBetween(){
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime beforeStartTime = startTime.minusSeconds(1);
+        LocalDateTime afterStartTime = startTime.plusSeconds(1);
+        LocalDateTime startTimePlus1Hr = startTime.plusHours(1);
+        LocalDateTime beforeStartTimePlus1Hr = startTimePlus1Hr.minusSeconds(1);
+        LocalDateTime afterStartTimePlus1Hr = startTimePlus1Hr.plusSeconds(1);
+
+        TaskEntry te1 = new TaskEntry(startTime, 60, "t1", "pid1", "cid1");
+        TaskEntry te2 = new TaskEntry(startTimePlus1Hr, 30, "t2", "pid1", "cid1");
+        TaskEntry te3 = new TaskEntry(startTime, 60, "t1", "pid1", "cid2");
+        TaskEntry te4 = new TaskEntry(startTimePlus1Hr, 45, "t1", "pid1", "cid2");
+        TaskEntry te5 = new TaskEntry(afterStartTimePlus1Hr, 30, "t1", "pid1", "cid2");
+
+        List<TaskEntry> taskEntries = Arrays.asList(te1, te2, te3, te4, te5);
+        taskEntries.forEach(task -> taskEntryRepository.insert(task).block());
+        StepVerifier.create(
+                taskEntryRepository.findAllByClientIdAndStartTimeBetweenOrderByStartTimeDesc(
+                        "cid1", beforeStartTime, afterStartTime)
+        ).expectNextMatches(taskEntry -> te1.equals(taskEntry)).verifyComplete();
+
+        StepVerifier.create(
+                taskEntryRepository.findAllByClientIdAndStartTimeBetweenOrderByStartTimeDesc(
+                        "cid1", beforeStartTime, startTimePlus1Hr)
+        ).expectNextCount(1).verifyComplete();
+
+        StepVerifier.create(
+                taskEntryRepository.findAllByClientIdAndStartTimeBetweenOrderByStartTimeDesc(
+                        "cid1", beforeStartTime, afterStartTimePlus1Hr)
+        ).expectNextCount(2).verifyComplete();
+        StepVerifier.create(
+                taskEntryRepository.findAllByClientIdAndStartTimeBetweenOrderByStartTimeDesc(
+                        "cid1", beforeStartTimePlus1Hr, afterStartTimePlus1Hr)
+        ).expectNextMatches(taskEntry -> te2.equals(taskEntry)).verifyComplete();
+
+
+    }
+
+
     /**
      * tests ordering of taskentries by creation time
      */
@@ -121,7 +165,7 @@ public class RepositoryTests {
 
         for(int i=1; i<=20; i++){
             TaskEntry taskEntry = new TaskEntry("id_" + i, LocalDateTime.parse("2018-11-11T15:30"), 30 + i,
-                    "nah" + (20 - i), LocalDateTime.parse("2018-11-11T15:30").minusMinutes(i));
+                    "nah" + (20 - i),"pid1","cid1", LocalDateTime.parse("2018-11-11T15:30").minusMinutes(i));
             taskEntries.add(taskEntry);
             if(i%2==0)
                 taskEntryRepository.insert(taskEntry).block();
@@ -158,11 +202,11 @@ public class RepositoryTests {
         Project p = new Project("fullTestProjectName","fullTestProjectDescription",60.0,c.getId());
         p.setId("projectId");
         projectRespository.insert(p).block();
-        Task t = new Task("fullTestTaskName",p.getId());
+        Task t = new Task("fullTestTaskName",p.getId(),"cid");
         t.setId("taskId");
         taskRepository.insert(t).block();
-        TaskEntry te1 = new TaskEntry(LocalDateTime.now(),120, t.getId());
-        TaskEntry te2 = new TaskEntry(LocalDateTime.now(),180, t.getId());
+        TaskEntry te1 = new TaskEntry(LocalDateTime.now(),120, t.getId(), "cid", "pid");
+        TaskEntry te2 = new TaskEntry(LocalDateTime.now(),180, t.getId(),"cid", "pid");
         taskEntryRepository.insert(te1).block();
         taskEntryRepository.insert(te2).block();
         return c;
