@@ -1,12 +1,12 @@
 package de.bitrecycling.timeshizz.project.service;
 
 import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
-import de.bitrecycling.timeshizz.project.model.Project;
+import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 /**
  * The project service
@@ -18,26 +18,24 @@ public class ProjectService {
     @Autowired
     ProjectRespository projectRespository;
 
-    public Flux<Project> all(){
+    public Iterable<ProjectEntity> all() {
         return projectRespository.findAll();
     }
 
-    public Mono<Project> byId(String id){
-        return projectRespository.findById(id).switchIfEmpty(Mono.error(new ResourceNotFoundException("project", id)));
+    public ProjectEntity byId(UUID id) {
+        return projectRespository.findById(id).orElseThrow(() -> new ResourceNotFoundException("project", id.toString()));
     }
 
-    public Mono<Project> create(Project project){
-        return projectRespository.insert(project);
+    public ProjectEntity create(ProjectEntity project) {
+        return projectRespository.save(project);
     }
 
-    public Mono<Project> update(String projectId, String projectName, String projectDescription) {
-        return byId(projectId).flatMap(
-                p-> {
-                    p.setName(projectName);
-                    p.setDescription(projectDescription);
-                    return projectRespository.save(p);
-                }
-        );
+    public ProjectEntity update(UUID projectId, String projectName, String projectDescription) {
+
+        final ProjectEntity projectEntity = byId(projectId);
+        projectEntity.setName(projectName);
+        projectEntity.setDescription(projectDescription);
+        return projectRespository.save(projectEntity);
     }
 
     /**
@@ -46,20 +44,19 @@ public class ProjectService {
      * @param projectId
      * @return
      */
-    public Mono<Void> delete(String projectId) {
-        return byId(projectId).then(projectRespository.deleteById(projectId));
+    public void delete(UUID projectId) {
+        projectRespository.deleteById(projectId);
     }
 
-    public Flux<Project> allByClientId(String clientId) {
+    public Iterable<ProjectEntity> allByClientId(UUID clientId) {
         return projectRespository.findAllByClientId(clientId);
     }
 
-    public Mono<Long> countAllByClientId(String clientId) {
-        return projectRespository.findAllByClientId(clientId).count();
+    public int countAllByClientId(UUID clientId) {
+        return projectRespository.findAllByClientId(clientId).size();
     }
 
-    public Mono<Project> save(Project project) {
-        return byId(project.getId())
-                .then(projectRespository.save(project));
+    public ProjectEntity save(ProjectEntity project) {
+        return projectRespository.save(project);
     }
 }

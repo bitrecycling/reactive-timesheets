@@ -59,3 +59,5 @@ See the wiki for some more details
 
 ## comments 
 Nothing's ever perfect. Feedback is welcome at @bitrecycling on twitter
+
+pg_ctl -D /usr/local/var/postgres start

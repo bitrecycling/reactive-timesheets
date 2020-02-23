@@ -1,14 +1,14 @@
 package de.bitrecycling.timeshizz.client.service;
 
-import de.bitrecycling.timeshizz.client.model.Client;
+import de.bitrecycling.timeshizz.client.model.ClientEntity;
 import de.bitrecycling.timeshizz.client.repository.ClientRepository;
 import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The project service
@@ -21,31 +21,26 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Flux<Client> all() {
+    public List<ClientEntity> all() {
         return clientRepository.findAllByOrderByCreationTimeDesc();
     }
 
-    public Mono<Client> byId(String id) {
-        return clientRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ResourceNotFoundException("client", id)));
+    public ClientEntity byId(UUID id) {
+        return clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("client", id.toString()));
+
     }
 
-    public Mono<Client> insert(Client client) {
-        if(client.getCreationTime() == null){
+    public ClientEntity insert(ClientEntity client) {
+        if (client.getCreationTime() == null) {
             client.setCreationTime(LocalDateTime.now());
         }
-        return clientRepository.insert(client);
+        return clientRepository.save(client);
     }
 
-    public Mono<Client> update(Client client) {
-        return byId(client.getId()).flatMap(
-                c-> {
-                    client.setCreationTime(c.getCreationTime());
-                    return clientRepository.save(client);
-                }
-        );
-
+    public ClientEntity update(ClientEntity client) {
+        return clientRepository.save(client);
     }
+
     /**
      * Just deletes the client, no cleanup here, associated projects, their tasks and taskentries will stay
      * in persistence
@@ -53,7 +48,7 @@ public class ClientService {
      * @param clientId
      * @return
      */
-    public Mono<Void> delete(String clientId) {
-       return byId(clientId).flatMap(client -> clientRepository.deleteById(client.getId()));
+    public void delete(UUID clientId) {
+        clientRepository.deleteById(clientId);
     }
 }

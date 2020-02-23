@@ -1,7 +1,7 @@
 package de.bitrecycling.timeshizz.task.model;
 
-import de.bitrecycling.timeshizz.client.model.Client;
-import de.bitrecycling.timeshizz.project.model.Project;
+import de.bitrecycling.timeshizz.client.model.ClientEntity;
+import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -15,11 +15,11 @@ import lombok.NonNull;
 @Data
 public class FullTaskEntry {
     @NonNull
-    private TaskEntry taskEntry;
+    private TaskEntryEntity taskEntry;
     @NonNull
-    private Task task;
+    private TaskEntity task;
     @NonNull
-    private Project project;
+    private ProjectEntity project;
     @NonNull
-    private Client client;
+    private ClientEntity client;
 }

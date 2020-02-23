@@ -1,14 +1,22 @@
 package de.bitrecycling.timeshizz.project.controller;
 
-import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
-import de.bitrecycling.timeshizz.common.controller.ControllerUtils;
-import de.bitrecycling.timeshizz.project.model.Project;
+import de.bitrecycling.timeshizz.project.model.ProjectEntity;
+import de.bitrecycling.timeshizz.project.model.ProjectJson;
+import de.bitrecycling.timeshizz.project.model.ProjectMapper;
 import de.bitrecycling.timeshizz.project.service.ProjectService;
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 /**
  * REST controller for the project resource. provides the usual CRUD-like operations in a restful manner.
@@ -18,16 +26,18 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/projects")
 @Api(value = "Project Management", description = "CRUD for project resource")
+@RequiredArgsConstructor
 public class ProjectController {
-    @Autowired
-    private ProjectService projectService;
+    
+    private final ProjectService projectService;
+    private final ProjectMapper projectMapper;
 
     /**
      * get all projects
      * @return
      */
     @GetMapping
-    public Flux<Project> all() {
+    public Iterable<ProjectEntity> all() {
         return projectService.all();
     }
 
@@ -37,7 +47,7 @@ public class ProjectController {
      * @return
      */
     @GetMapping("/{id}")
-    public Mono<Project> byId(@PathVariable("id") String id) {
+    public ProjectEntity byId(@PathVariable("id") UUID id) {
         return projectService.byId(id);
     }
 
@@ -47,7 +57,7 @@ public class ProjectController {
      * @return
      */
     @GetMapping(params = "clientId")
-    public Flux<Project> allByClientId(@RequestParam("clientId") String clientId) {
+    public Iterable<ProjectEntity> allByClientId(@RequestParam("clientId") UUID clientId) {
         return projectService.allByClientId(clientId);
     }
 
@@ -57,26 +67,10 @@ public class ProjectController {
      * @return
      */
     @GetMapping(value = "/_count", params = "clientId")
-    public Mono<Long> countAllByClientId(@RequestParam("clientId") String clientId) {
+    public int countAllByClientId(@RequestParam("clientId") UUID clientId) {
         return projectService.countAllByClientId(clientId);
     }
-
-    /**
-     * create a new project using url params.
-     * @param projectName the name of the project to create
-     * @param projectDescription the description of the project to create
-     * @param rate the hourly rate (no currency as of now) of the project to create
-     * @param clientId the client id the project is associated with
-     * @return
-     */
-    @PostMapping(consumes = "application/x-www-form-urlencoded")
-    public Mono<Project> create(@RequestParam("name") String projectName,
-                                @RequestParam("description") String projectDescription,
-                                @RequestParam("rate") Double rate,
-                                @RequestParam("clientId") String clientId) {
-        Project project = new Project(projectName, projectDescription, rate, clientId);
-        return projectService.create(project);
-    }
+    
 
     /**
      * create a project using json
@@ -84,42 +78,18 @@ public class ProjectController {
      * @return
      */
     @PostMapping(consumes = "application/json")
-    public Mono<Project> create(@RequestBody Project project) {
-        return projectService.create(project);
+    public ProjectEntity create(@RequestBody ProjectJson project) {
+        return projectService.create(projectMapper.toEntity(project));
     }
-
-    /**
-     * update / change existing project using URL params
-     * @param id
-     * @param projectName
-     * @param projectDescription
-     * @param rate
-     * @param clientId
-     * @return
-     */
-    @PutMapping(value = "/{id}", consumes = "application/x-www-form-urlencoded")
-    public Mono<Project> update(@RequestParam("id") String id,
-                                @RequestParam("name") String projectName,
-                                @RequestParam("description") String projectDescription,
-                                @RequestParam("rate") Double rate,
-                                @RequestParam("clientId") String clientId) {
-
-        Project project = new Project(projectName, projectDescription, rate, clientId);
-        project.setId(id);
-        return projectService.save(project);
-    }
+    
 
     /**
      * update / change existing project using json
-     * @param id
      * @param project
      * @return
      */
-    @PutMapping(value = "/{id}", consumes = "application/json")
-    public Mono<Project> update(@PathVariable("id") String id, @RequestBody Project project) {
-        if (!ControllerUtils.consistent(id, project)) {
-            throw new RuntimeException("Error: path projectId and json clientId are not equal:[" + id + " vs " + project.getId() + "]");
-        }
+    @PutMapping(consumes = "application/json")
+    public ProjectEntity update(@RequestBody ProjectEntity project) {
         return projectService.save(project);
     }
 
@@ -129,9 +99,7 @@ public class ProjectController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public Mono<Void> delete(@PathVariable("id") String projectId) {
-        return projectService.byId(projectId)
-                .switchIfEmpty(Mono.error(new ResourceNotFoundException("project", projectId)))
-                .and(projectService.delete(projectId));
+    public void delete(@PathVariable("id") UUID projectId) {
+        projectService.delete(projectId);
     }
 }

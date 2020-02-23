@@ -3,14 +3,15 @@ package de.bitrecycling.timeshizz.task.service;
 import de.bitrecycling.timeshizz.client.repository.ClientRepository;
 import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
-import de.bitrecycling.timeshizz.task.model.Task;
+import de.bitrecycling.timeshizz.task.model.TaskEntity;
 import de.bitrecycling.timeshizz.task.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The task service
@@ -28,40 +29,38 @@ public class TaskService {
     @Autowired
     ClientRepository clientRepository;
 
-    public Flux<Task> all() {
-        return taskRepository.findAll();
+    public List<TaskEntity> all() {
+        return (List<TaskEntity>) taskRepository.findAll();
     }
 
-    public Mono<Task> byId(String taskId){
-        return taskRepository.findById(taskId)
-                .switchIfEmpty(Mono.error(new ResourceNotFoundException("task", taskId)));
+    public TaskEntity byId(UUID taskId){
+        return taskRepository.findById(taskId).orElseThrow(()->new ResourceNotFoundException("task", taskId.toString()));
     }
 
-    public Flux<Task> allByProjectId(String projectId) {
+    public List<TaskEntity> allByProjectId(UUID projectId) {
         return taskRepository.findAllByProjectIdOrderByCreationTimeDesc(projectId);
     }
 
-    public Mono<Task> insert(String taskName, String projectId) {
-        Task task = new Task();
+    public TaskEntity insert(String taskName, UUID projectId) {
+        TaskEntity task = new TaskEntity();
         task.setName(taskName);
-        task.setProjectId(projectId);
-        Mono<Task> taskMono = projectRespository.findById(task.getProjectId())
-                .flatMap(project -> clientRepository.findById(project.getClientId())
-                        .flatMap(client -> {
-                            task.setClientId(client.getId());
-                            task.setCreationTime(LocalDateTime.now());
-                            return taskRepository.insert(task);
-                        }));
-
-
-        return taskMono;
+        final Optional<TaskEntity> savedTask = projectRespository.findById(projectId).map(p -> {
+            task.setProject(p);
+            task.setCreationTime(LocalDateTime.now());
+            taskRepository.save(task);
+            return task;
+        });
+        if(savedTask.isPresent()){
+            return savedTask.get();
+        }
+        throw new ResourceNotFoundException(taskName,"new");
     }
 
-    public Mono<Void> delete(String taskId) {
-        return byId(taskId).then(taskRepository.deleteById(taskId));
+    public void delete(UUID taskId) {
+        taskRepository.deleteById(taskId);
     }
 
-    public Flux<Task> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to) {
+    public List<TaskEntity> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to) {
         return taskRepository.findByCreationTimeBetween(from, to);
     }
 
@@ -70,8 +69,8 @@ public class TaskService {
      * @param task
      * @return
      */
-    public Mono<Task> save(Task task) {
-        return byId(task.getId()).then(taskRepository.save(task));
+    public TaskEntity save(TaskEntity task) {
+        return taskRepository.save(task);
     }
 
     /**
@@ -81,7 +80,9 @@ public class TaskService {
      * @param taskName
      * @return
      */
-    public Mono<Task> save(String id, String taskName) {
-        return byId(id).flatMap(task -> taskRepository.save(task));
+    public TaskEntity save(UUID id, String taskName) {
+        final TaskEntity task = byId(id);
+        task.setName(taskName);
+        return taskRepository.save(task);
     }
 }

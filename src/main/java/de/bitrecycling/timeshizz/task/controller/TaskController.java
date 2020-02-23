@@ -1,15 +1,23 @@
 package de.bitrecycling.timeshizz.task.controller;
 
-import de.bitrecycling.timeshizz.common.controller.ControllerUtils;
-import de.bitrecycling.timeshizz.task.model.Task;
+import de.bitrecycling.timeshizz.task.model.TaskEntity;
+import de.bitrecycling.timeshizz.task.model.TaskJson;
+import de.bitrecycling.timeshizz.task.model.TaskMapper;
 import de.bitrecycling.timeshizz.task.service.TaskService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * REST controller for the task resource. provides the usual CRUD-like operations in a restful manner.
@@ -24,13 +32,16 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private TaskMapper taskMapper;
+
     /**
      * get all tasks, can be used for reports or custom filtering
      *
      * @return
      */
     @GetMapping
-    public Flux<Task> all() {
+    public Iterable<TaskEntity> all() {
         return taskService.all();
     }
 
@@ -41,7 +52,7 @@ public class TaskController {
      * @return
      */
     @GetMapping(params = "projectId")
-    public Flux<Task> allByProjectId(@RequestParam("projectId") String projectId) {
+    public Iterable<TaskEntity> allByProjectId(@RequestParam("projectId") UUID projectId) {
         return taskService.allByProjectId(projectId);
     }
 
@@ -52,8 +63,8 @@ public class TaskController {
      * @return
      */
     @GetMapping("/{id}")
-    public Mono<Task> byId(@PathVariable("id") String taskId) {
-        return taskService.byId(taskId);
+    public TaskJson byId(@PathVariable("id") UUID taskId) {
+        return taskMapper.toJson(taskService.byId(taskId));
     }
 
     /**
@@ -64,44 +75,26 @@ public class TaskController {
      * @return
      */
     @GetMapping(params = {"from", "to"})
-    public Flux<Task> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString) {
+    public Iterable<TaskEntity> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString) {
         LocalDateTime from = LocalDateTime.parse(fromString);
         LocalDateTime to = LocalDateTime.parse(toString);
         return taskService.findByCreationTimeBetween(from, to);
     }
 
-    /**
-     * create and persist a new task for the given project, with the given name
-     *
-     * @param taskName
-     * @param projectId
-     * @return
-     */
-    @PostMapping(consumes = "application/x-www-form-urlencoded")
-    public Mono<Task> create(@RequestParam("name") String taskName, @RequestParam("projectId") String projectId) {
-        return taskService.insert(taskName, projectId);
-    }
 
     @PostMapping(consumes = "application/json")
-    public Mono<Task> create(@RequestBody Task task) {
+    public TaskEntity create(@RequestBody TaskJson task) {
         return taskService.insert(task.getName(), task.getProjectId());
     }
 
-    @PutMapping(value = "/{id}", consumes = "application/x-www-form-urlencoded")
-    public Mono<Task> put(@RequestParam("id") String id, @RequestParam("name") String taskName, @RequestParam("projectId") String projectId) {
-        return taskService.save(id, taskName);
-    }
 
-    @PutMapping(value = "/{id}", consumes = "application/json")
-    public Mono<Task> put(@RequestParam("id") String id, @RequestBody Task task) {
-        if (!ControllerUtils.consistent(id, task)) {
-            throw new RuntimeException("Error: path id and json id are not equal:[" + id + " vs " + task.getId() + "]");
-        }
-        return taskService.save(task);
+    @PutMapping(consumes = "application/json")
+    public TaskJson put(@RequestBody TaskEntity task) {
+        return taskMapper.toJson(taskService.save(task));
     }
 
     @DeleteMapping("/{id}")
-    public Mono<Void> delete(@PathVariable("id") String taskId) {
-        return taskService.delete(taskId);
+    public void delete(@PathVariable("id") UUID taskId) {
+        taskService.delete(taskId);
     }
 }

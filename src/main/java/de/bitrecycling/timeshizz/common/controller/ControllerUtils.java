@@ -1,7 +1,5 @@
 package de.bitrecycling.timeshizz.common.controller;
 
-import de.bitrecycling.timeshizz.common.model.Model;
-import de.bitrecycling.timeshizz.task.model.TaskEntry;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
 import java.time.LocalDateTime;
@@ -19,12 +17,5 @@ public class ControllerUtils {
                 .toLocalDateTime();
         return parsedTime;
     }
-
-    public static boolean consistent(String id, Model model){
-        if (model.getId() != null) {
-            return id.equals(model.getId());
-        }
-        return true;
-
-    }
+    
 }

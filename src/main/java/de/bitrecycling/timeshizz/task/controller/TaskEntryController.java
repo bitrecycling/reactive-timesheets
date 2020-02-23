@@ -1,15 +1,25 @@
 package de.bitrecycling.timeshizz.task.controller;
 
-import de.bitrecycling.timeshizz.common.controller.ControllerUtils;
-import de.bitrecycling.timeshizz.task.model.TaskEntry;
+import de.bitrecycling.timeshizz.task.model.TaskEntryEntity;
+import de.bitrecycling.timeshizz.task.model.TaskEntryJson;
+import de.bitrecycling.timeshizz.task.model.TaskMapper;
 import de.bitrecycling.timeshizz.task.service.TaskEntryService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for the task entry resource. provides the usual CRUD-like operations in a restful manner.
@@ -23,58 +33,31 @@ public class TaskEntryController {
 
     @Autowired
     private TaskEntryService taskEntryService;
+    
+    @Autowired
+    private TaskMapper taskMapper;
 
     @GetMapping
-    public Flux<TaskEntry> all() {
+    public Iterable<TaskEntryEntity> all() {
         return taskEntryService.all();
     }
 
     @GetMapping(params = "taskId")
-    public Flux<TaskEntry> allByTaskId(@RequestParam("taskId") String taskId) {
+    public List<TaskEntryEntity> allByTaskId(@RequestParam("taskId") UUID taskId) {
         return taskEntryService.getAllByTaskId(taskId);
     }
-
-    /**
-     * @param startTimeString provide a natural language time string, like "15:23" or "in 5 minutes"
-     *                        or "2018-11-23 12:34". thanks to ocpsoft.prettytime!
-     * @param durationMinutes
-     * @param taskId
-     * @return
-     */
-    @PostMapping(consumes = "application/x-www-form-urlencoded")
-    public Mono<TaskEntry> createByUrlParams(@RequestParam("startTime") String startTimeString,
-                                             @RequestParam("durationMinutes") Integer durationMinutes,
-                                             @RequestParam("taskId") String taskId
-                                             ) {
-        LocalDateTime parsedTime = ControllerUtils.parseTime(startTimeString);
-//        TaskEntry taskEntry = new TaskEntry(parsedTime, durationMinutes, taskId);
-        return taskEntryService.insert(parsedTime, durationMinutes, taskId);
-
-    }
+    
 
     @PostMapping(consumes = "application/json")
-    public Mono<TaskEntry> createByJson(@RequestBody TaskEntry taskEntry) {
-        return taskEntryService.insert(taskEntry.getStartTime(),
-                taskEntry.getDurationMinutes(),
-                taskEntry.getTaskId()
-                );
+    public TaskEntryJson createByJson(@RequestBody TaskEntryJson taskEntry) {
+        return taskMapper.toJson(taskEntryService.insert(taskMapper.toEntity(taskEntry)));
 
     }
+    
 
-    @PutMapping(name = "{id}", consumes = "application/x-www-form-urlencoded")
-    public Mono<TaskEntry> saveByUrlParams(@RequestParam("id") String id, @RequestParam("startTime") String startTimeString, @RequestParam("durationMinutes") Integer durationMinutes, @RequestParam("taskId") String taskId) {
-        LocalDateTime parsedTime = ControllerUtils.parseTime(startTimeString);
-        return taskEntryService.save(id, parsedTime, durationMinutes, taskId);
-
-    }
-
-    @PutMapping(name = "{id}", consumes = "application/json")
-    public Mono<TaskEntry> saveByJson(@RequestParam("id") String id, @RequestBody TaskEntry taskEntry) {
-        if (!ControllerUtils.consistent(id, taskEntry)) {
-            throw new RuntimeException("Error: path id and json id are not equal:[" + id + " vs " + taskEntry.getId() + "]");
-        }
-        return taskEntryService.save(taskEntry);
-
+    @PutMapping(consumes = "application/json")
+    public TaskEntryJson saveByJson(@RequestBody TaskEntryEntity taskEntry) {
+        return taskMapper.toJson(taskEntryService.save(taskEntry));
     }
 
 
@@ -86,10 +69,10 @@ public class TaskEntryController {
      * @return
      */
     @GetMapping(params = {"from", "to"})
-    public Flux<TaskEntry> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString) {
+    public Iterable<TaskEntryJson> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString) {
         LocalDateTime from = LocalDateTime.parse(fromString);
         LocalDateTime to = LocalDateTime.parse(toString);
-        return taskEntryService.getByCreationTimeBetween(from, to);
+        return taskEntryService.getByCreationTimeBetween(from, to).stream().map(t->taskMapper.toJson(t)).collect(Collectors.toList());
     }
 
     /**
@@ -100,10 +83,10 @@ public class TaskEntryController {
      * @return
      */
     @GetMapping(params = {"start", "until"})
-    public Flux<TaskEntry> allByStartTime(@RequestParam("start") String start, @RequestParam("until") String until) {
+    public Iterable<TaskEntryJson> allByStartTime(@RequestParam("start") String start, @RequestParam("until") String until) {
         LocalDateTime from = LocalDateTime.parse(start);
         LocalDateTime to = LocalDateTime.parse(until);
-        return taskEntryService.getByStartTimeBetween(from, to);
+        return taskEntryService.getByStartTimeBetween(from, to).stream().map(t->taskMapper.toJson(t)).collect(Collectors.toList());
     }
 
     /**
@@ -114,12 +97,12 @@ public class TaskEntryController {
      * @return
      */
     @GetMapping(params = {"start", "until", "taskId"})
-    public Flux<TaskEntry> allByStartTime(@RequestParam("start") String start,
-                                          @RequestParam("until") String until,
-                                          @RequestParam("taskId") String taskId) {
+    public Iterable<TaskEntryJson> allByStartTime(@RequestParam("start") String start,
+                                                @RequestParam("until") String until,
+                                                @RequestParam("taskId") UUID taskId) {
         LocalDateTime from = LocalDateTime.parse(start);
         LocalDateTime to = LocalDateTime.parse(until);
-        return taskEntryService.getByStartTimeBetween(from, to, taskId);
+        return taskEntryService.getByStartTimeBetween(from, to, taskId).stream().map(t->taskMapper.toJson(t)).collect(Collectors.toList());
     }
 
     /**
@@ -129,8 +112,8 @@ public class TaskEntryController {
      * @return
      */
     @GetMapping(params = {"count"})
-    public Flux<TaskEntry> recentByStartTime(@RequestParam("count") Integer count) {
-        return taskEntryService.getMostRecentByStartTime(count);
+    public Iterable<TaskEntryJson> recentByStartTime(@RequestParam("count") Integer count) {
+        return taskEntryService.getMostRecentByStartTime(count).stream().map(t->taskMapper.toJson(t)).collect(Collectors.toList());
     }
 
 
@@ -143,19 +126,19 @@ public class TaskEntryController {
      * @return
      */
     @GetMapping(params = {"order", "page", "size"})
-    public Flux<TaskEntry> allByCreationTimeOrdered(@RequestParam("order") String order,
-                                                    @RequestParam("page") Integer page,
-                                                    @RequestParam("size") Integer size) {
+    public Iterable<TaskEntryJson> allByCreationTimeOrdered(@RequestParam("order") String order,
+                                                          @RequestParam("page") Integer page,
+                                                          @RequestParam("size") Integer size) {
         if ("asc".equals(order)) {
-            return taskEntryService.getPagedAscending(page, size);
+            return taskEntryService.getPagedAscending(page, size).stream().map(t->taskMapper.toJson(t)).collect(Collectors.toList());
         }
-        return taskEntryService.getPagedDescending(page, size);
+        return taskEntryService.getPagedDescending(page, size).stream().map(t->taskMapper.toJson(t)).collect(Collectors.toList());
     }
 
 
     @DeleteMapping("/{id}")
-    public Mono<Void> delete(@PathVariable("id") String taskEntryId) {
-        return taskEntryService.delete(taskEntryId);
+    public void delete(@PathVariable("id") UUID taskEntryId) {
+        taskEntryService.delete(taskEntryId);
     }
 
 

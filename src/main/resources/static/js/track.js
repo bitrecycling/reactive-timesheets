@@ -127,10 +127,8 @@ var timeshizz = new Vue({
 
 function insertClient(clientName, clientAddress) {
     // console.log('post data: name:' + clientName + ' address:' + clientAddress);
-    var params = new URLSearchParams();
-    params.append('name', clientName);
-    params.append('address', clientAddress);
-    axios.post('/clients', params).then(function (response) {
+    let client = {name:clientName,address:clientAddress};
+    axios.post('/clients', client).then(function (response) {
         getExistingClients();
     })
         .catch(function (error) {
@@ -158,12 +156,13 @@ function saveProject(project) {
 
 
 function insertProject(projectName, projectDescription, projectRate, clientId) {
-    var params = new URLSearchParams();
-    params.append('name', projectName);
-    params.append('description', projectDescription);
-    params.append('rate', projectRate);
-    params.append('clientId', clientId);
-    axios.post('/projects', params).then(function (response) {
+    let project = {name:projectName,description:projectDescription,rate:projectRate,clientId:clientId};
+    // var params = new URLSearchParams();
+    // params.append('name', projectName);
+    // params.append('description', projectDescription);
+    // params.append('rate', projectRate);
+    // params.append('clientId', clientId);
+    axios.post('/projects', project).then(function (response) {
         loadProjectsForClient(clientId);
     })
         .catch(function (error) {

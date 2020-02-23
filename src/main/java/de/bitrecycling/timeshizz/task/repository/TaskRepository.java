@@ -1,19 +1,20 @@
 package de.bitrecycling.timeshizz.task.repository;
 
-import de.bitrecycling.timeshizz.task.model.Task;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import reactor.core.publisher.Flux;
+import de.bitrecycling.timeshizz.task.model.TaskEntity;
+import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The task repository provides persistence the the task model
  *
  * created by robo
  */
-public interface TaskRepository extends ReactiveMongoRepository<Task, String> {
+public interface TaskRepository extends CrudRepository<TaskEntity, UUID> {
 
-    Flux<Task> findAllByProjectIdOrderByCreationTimeDesc(String projectId);
+    List<TaskEntity> findAllByProjectIdOrderByCreationTimeDesc(UUID projectId);
 
-    Flux<Task> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to);
+    List<TaskEntity> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to);
 }
