@@ -6,6 +6,7 @@ import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -18,7 +19,7 @@ public class ProjectService {
     @Autowired
     ProjectRespository projectRespository;
 
-    public Iterable<ProjectEntity> all() {
+    public List<ProjectEntity> all() {
         return projectRespository.findAll();
     }
 
@@ -48,7 +49,7 @@ public class ProjectService {
         projectRespository.deleteById(projectId);
     }
 
-    public Iterable<ProjectEntity> allByClientId(UUID clientId) {
+    public List<ProjectEntity> allByClientId(UUID clientId) {
         return projectRespository.findAllByClientId(clientId);
     }
 

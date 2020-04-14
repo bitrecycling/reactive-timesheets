@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz.client.model;
 
+import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -34,5 +37,7 @@ public class ClientEntity {
     @NonNull
     private String address;
     private LocalDateTime creationTime;
+    @OneToMany()
+    private List<ProjectEntity> projects;
 
 }

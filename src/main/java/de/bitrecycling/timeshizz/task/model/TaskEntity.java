@@ -10,10 +10,14 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -36,8 +40,10 @@ public class TaskEntity {
     @NonNull
     private String name;
     @NonNull
-    @OneToOne
+    @ManyToOne(optional = false)
     private ProjectEntity project;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "task")
+    private List<TaskEntryEntity> taskEntries = new ArrayList<>();
     
     private LocalDateTime creationTime;
 

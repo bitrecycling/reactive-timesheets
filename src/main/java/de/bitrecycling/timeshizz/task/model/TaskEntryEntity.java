@@ -11,7 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -36,9 +36,9 @@ public class TaskEntryEntity {
     private LocalDateTime startTime;
     @NonNull
     private Integer durationMinutes;
-    @NonNull
-    @OneToOne
+    @ManyToOne(optional = false)
+//    @JoinColumn(referencedColumnName = "id", insertable=false, updatable=false)
     private TaskEntity task;
     private LocalDateTime creationTime;
-
+    
 }

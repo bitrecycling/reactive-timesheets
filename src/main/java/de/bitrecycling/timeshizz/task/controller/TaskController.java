@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -41,7 +42,7 @@ public class TaskController {
      * @return
      */
     @GetMapping
-    public Iterable<TaskEntity> all() {
+    public List<TaskEntity> all() {
         return taskService.all();
     }
 
@@ -52,7 +53,7 @@ public class TaskController {
      * @return
      */
     @GetMapping(params = "projectId")
-    public Iterable<TaskEntity> allByProjectId(@RequestParam("projectId") UUID projectId) {
+    public List<TaskEntity> allByProjectId(@RequestParam("projectId") UUID projectId) {
         return taskService.allByProjectId(projectId);
     }
 
@@ -75,7 +76,7 @@ public class TaskController {
      * @return
      */
     @GetMapping(params = {"from", "to"})
-    public Iterable<TaskEntity> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString) {
+    public List<TaskEntity> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString) {
         LocalDateTime from = LocalDateTime.parse(fromString);
         LocalDateTime to = LocalDateTime.parse(toString);
         return taskService.findByCreationTimeBetween(from, to);

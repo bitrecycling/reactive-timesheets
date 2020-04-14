@@ -13,4 +13,5 @@ import java.util.UUID;
  */
 public interface ClientRepository extends CrudRepository<ClientEntity, UUID> {
     List<ClientEntity> findAllByOrderByCreationTimeDesc();
+    List<ClientEntity> findAll();
 }

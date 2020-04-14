@@ -5,10 +5,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
-    @Mapping(source = "entity.task.id", target = "taskId")
+    @Mapping(source = "id", target = "taskId")
     public TaskEntryJson toJson(TaskEntryEntity entity);
     public TaskEntryEntity toEntity(TaskEntryJson taskEntryJson);
-    @Mapping(source = "entity.project.id", target = "projectId")
+    @Mapping(source = "id", target = "projectId")
     public TaskJson toJson(TaskEntity entity);
     public TaskEntity toEntity(TaskJson json);
 }

@@ -5,14 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 /**
@@ -23,7 +22,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Entity
 public class ProjectEntity {
 
@@ -39,6 +38,6 @@ public class ProjectEntity {
     @NonNull
     private Double rate;
     @NonNull
-    @OneToOne
+    @ManyToOne(optional = false)
     private ClientEntity client;
 }

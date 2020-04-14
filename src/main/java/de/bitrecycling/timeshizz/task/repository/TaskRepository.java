@@ -15,6 +15,5 @@ import java.util.UUID;
 public interface TaskRepository extends CrudRepository<TaskEntity, UUID> {
 
     List<TaskEntity> findAllByProjectIdOrderByCreationTimeDesc(UUID projectId);
-
     List<TaskEntity> findByCreationTimeBetween(LocalDateTime from, LocalDateTime to);
 }

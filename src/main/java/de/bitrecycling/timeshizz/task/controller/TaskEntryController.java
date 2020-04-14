@@ -38,7 +38,7 @@ public class TaskEntryController {
     private TaskMapper taskMapper;
 
     @GetMapping
-    public Iterable<TaskEntryEntity> all() {
+    public List<TaskEntryEntity> all() {
         return taskEntryService.all();
     }
 
@@ -69,7 +69,7 @@ public class TaskEntryController {
      * @return
      */
     @GetMapping(params = {"from", "to"})
-    public Iterable<TaskEntryJson> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString) {
+    public List<TaskEntryJson> allByCreationTime(@RequestParam("from") String fromString, @RequestParam("to") String toString) {
         LocalDateTime from = LocalDateTime.parse(fromString);
         LocalDateTime to = LocalDateTime.parse(toString);
         return taskEntryService.getByCreationTimeBetween(from, to).stream().map(t->taskMapper.toJson(t)).collect(Collectors.toList());
@@ -83,7 +83,7 @@ public class TaskEntryController {
      * @return
      */
     @GetMapping(params = {"start", "until"})
-    public Iterable<TaskEntryJson> allByStartTime(@RequestParam("start") String start, @RequestParam("until") String until) {
+    public List<TaskEntryJson> allByStartTime(@RequestParam("start") String start, @RequestParam("until") String until) {
         LocalDateTime from = LocalDateTime.parse(start);
         LocalDateTime to = LocalDateTime.parse(until);
         return taskEntryService.getByStartTimeBetween(from, to).stream().map(t->taskMapper.toJson(t)).collect(Collectors.toList());
@@ -97,7 +97,7 @@ public class TaskEntryController {
      * @return
      */
     @GetMapping(params = {"start", "until", "taskId"})
-    public Iterable<TaskEntryJson> allByStartTime(@RequestParam("start") String start,
+    public List<TaskEntryJson> allByStartTime(@RequestParam("start") String start,
                                                 @RequestParam("until") String until,
                                                 @RequestParam("taskId") UUID taskId) {
         LocalDateTime from = LocalDateTime.parse(start);
@@ -112,7 +112,7 @@ public class TaskEntryController {
      * @return
      */
     @GetMapping(params = {"count"})
-    public Iterable<TaskEntryJson> recentByStartTime(@RequestParam("count") Integer count) {
+    public List<TaskEntryJson> recentByStartTime(@RequestParam("count") Integer count) {
         return taskEntryService.getMostRecentByStartTime(count).stream().map(t->taskMapper.toJson(t)).collect(Collectors.toList());
     }
 
@@ -126,7 +126,7 @@ public class TaskEntryController {
      * @return
      */
     @GetMapping(params = {"order", "page", "size"})
-    public Iterable<TaskEntryJson> allByCreationTimeOrdered(@RequestParam("order") String order,
+    public List<TaskEntryJson> allByCreationTimeOrdered(@RequestParam("order") String order,
                                                           @RequestParam("page") Integer page,
                                                           @RequestParam("size") Integer size) {
         if ("asc".equals(order)) {

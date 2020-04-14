@@ -20,6 +20,7 @@ public interface TaskEntryRepository extends CrudRepository<TaskEntryEntity, UUI
     List<TaskEntryEntity> findAllByStartTimeBetween(LocalDateTime from, LocalDateTime to);
     List<TaskEntryEntity> findAllByTaskIdAndStartTimeBetween(UUID taskId, LocalDateTime from, LocalDateTime to);
     List<TaskEntryEntity> findAllByTaskId(UUID taskId);
+    List<TaskEntryEntity> findAll();
     List<TaskEntryEntity> findAllByOrderByCreationTimeDesc(Pageable pageable);
     List<TaskEntryEntity> findAllByOrderByStartTimeDesc(Pageable pageable);
     List<TaskEntryEntity> findAllByOrderByCreationTimeAsc(Pageable pageable);

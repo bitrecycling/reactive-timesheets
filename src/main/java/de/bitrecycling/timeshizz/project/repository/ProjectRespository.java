@@ -14,4 +14,5 @@ import java.util.UUID;
  */
 public interface ProjectRespository extends CrudRepository<ProjectEntity, UUID> {
     List<ProjectEntity> findAllByClientId(UUID clientId);
+    List<ProjectEntity> findAll();
 }

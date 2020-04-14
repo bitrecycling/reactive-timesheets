@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -37,7 +38,7 @@ public class ProjectController {
      * @return
      */
     @GetMapping
-    public Iterable<ProjectEntity> all() {
+    public List<ProjectEntity> all() {
         return projectService.all();
     }
 
@@ -57,7 +58,7 @@ public class ProjectController {
      * @return
      */
     @GetMapping(params = "clientId")
-    public Iterable<ProjectEntity> allByClientId(@RequestParam("clientId") UUID clientId) {
+    public List<ProjectEntity> allByClientId(@RequestParam("clientId") UUID clientId) {
         return projectService.allByClientId(clientId);
     }
 

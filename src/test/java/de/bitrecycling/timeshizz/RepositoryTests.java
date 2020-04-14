@@ -13,13 +13,21 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * these tests just ensure, that the db, models and queries work as expected
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TimeshizzApplication.class)
 @AutoConfigureMockMvc
@@ -36,166 +44,116 @@ public class RepositoryTests {
     
 
 
+    @Transactional
     @Test
-    public void fullTurnaround() {
-        ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress",LocalDateTime.now());
+    public void relationshipsOK() {
+        ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress",LocalDateTime.now(), null);
         clientRepository.save(c);
         ProjectEntity p = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
         projectRespository.save(p);
-        TaskEntity t = new TaskEntity(null,"fullTestTaskName",p, LocalDateTime.now());
+        TaskEntity t = new TaskEntity(null,"fullTestTaskName", p, null, LocalDateTime.now());
         taskRepository.save(t);
         TaskEntryEntity te1 = new TaskEntryEntity(null,LocalDateTime.now(),120, t, LocalDateTime.now());
         TaskEntryEntity te2 = new TaskEntryEntity(null,LocalDateTime.now(),180, t,LocalDateTime.now());
         taskEntryRepository.save(te1);
         taskEntryRepository.save(te2);
-
-        final Iterable<ClientEntity> all = clientRepository.findAll();
+        taskRepository.save(t);
+        final List<ClientEntity> all = clientRepository.findAll();
         //expect 1st client is c
         assertThat(all).hasSize(1);
         assertThat(all.iterator().next()).isEqualTo(c);
-        final List<TaskEntryEntity> taskId = taskEntryRepository.findAllByTaskId(t.getId());
+        final List<TaskEntryEntity> allByTaskId = taskEntryRepository.findAllByTaskId(t.getId());
         //expect 2 results
-        assertThat(taskId).hasSize(2);
-        assertThat(taskId).containsExactlyInAnyOrder(te1,te2);
+        assertThat(allByTaskId).hasSize(2);
+        assertThat(allByTaskId).containsExactlyInAnyOrder(te1,te2);
     }
-//
-//    /**
-//     * tests projects by particular client
-//     */
-//    @Test
-//    public void testProjectsByClient() {
-//        ClientEntity c = createTestData();
-//        StepVerifier.create(projectRespository.findAllByClientId(c.getId()))
-//                .expectNextMatches(
-//                        project -> project.getName().equals("fullTestProjectName"))
-//                .verifyComplete();
-//    }
-//
-//    /**
-//     * tests tasks created between given timespan
-//     */
-//    @Test
-//    public void testTasks(){
-//        LocalDateTime before = LocalDateTime.now().minusSeconds(2);
-//        TaskEntity t1 = new TaskEntity(null, "t1", "pid1", "cid1", before);
-//        TaskEntity t2 = new TaskEntity(null, "t2", "pid1","cid1",before);
-//        TaskEntity t3 = new TaskEntity(null,"t3", "pid2","cid1",before);
-//        TaskEntity t4 = new TaskEntity(null,"t4","pid2","cid1",before);
-//        TaskEntity t5 = new TaskEntity(null,"t5", "pid2","cid1",before);
-//        List<TaskEntity> tasks = Arrays.asList(t1, t2, t3, t4, t5);
-//        tasks.forEach(task -> taskRepository.save(task));
-//        StepVerifier.create(taskRepository.findAllByProjectIdOrderByCreationTimeDesc("pid1")).expectNextCount(2).verifyComplete();
-//        StepVerifier.create(taskRepository.findAllByProjectIdOrderByCreationTimeDesc("pid2")).expectNextCount(3).verifyComplete();
-//        StepVerifier.create(taskRepository.findByCreationTimeBetween(before.minusSeconds(1), LocalDateTime.now()))
-//                .expectNextCount(5).verifyComplete();
-//        StepVerifier.create(taskRepository.findByCreationTimeBetween(before, before))
-//                .expectNextCount(0).verifyComplete();
-//        t1.setCreationTime(LocalDateTime.now().minusMinutes(1));
-//        t2.setCreationTime(LocalDateTime.now().minusMinutes(1));
-//        t5.setCreationTime(LocalDateTime.now().minusMinutes(1));
-//        tasks.forEach(task -> taskRepository.save(task));
-//        StepVerifier.create(taskRepository.findByCreationTimeBetween(before.minusMinutes(1), before))
-//                .expectNextCount(3).verifyComplete();
-//    }
-//
-//
-//
-//    /**
-//     * tests taskEntries for client and created between given timespan
-//     */
-//    @Test
-//    public void testTaskEntriesForClientBetween(){
-//        LocalDateTime startTime = LocalDateTime.now();
-//        LocalDateTime beforeStartTime = startTime.minusSeconds(1);
-//        LocalDateTime afterStartTime = startTime.plusSeconds(1);
-//        LocalDateTime startTimePlus1Hr = startTime.plusHours(1);
-//        LocalDateTime beforeStartTimePlus1Hr = startTimePlus1Hr.minusSeconds(1);
-//        LocalDateTime afterStartTimePlus1Hr = startTimePlus1Hr.plusSeconds(1);
-//
-//        TaskEntryEntity te1 = new TaskEntryEntity(startTime, 60, "t1", "pid1", "cid1");
-//        TaskEntryEntity te2 = new TaskEntryEntity(startTimePlus1Hr, 30, "t2", "pid1", "cid1");
-//        TaskEntryEntity te3 = new TaskEntryEntity(startTime, 60, "t1", "pid1", "cid2");
-//        TaskEntryEntity te4 = new TaskEntryEntity(startTimePlus1Hr, 45, "t1", "pid1", "cid2");
-//        TaskEntryEntity te5 = new TaskEntryEntity(afterStartTimePlus1Hr, 30, "t1", "pid1", "cid2");
-//
-//        List<TaskEntryEntity> taskEntries = Arrays.asList(te1, te2, te3, te4, te5);
-//        taskEntries.forEach(task -> taskEntryRepository.save(task));
-//        StepVerifier.create(
-//                taskEntryRepository.findAllByClientIdAndStartTimeBetweenOrderByStartTimeDesc(
-//                        "cid1", beforeStartTime, afterStartTime)
-//        ).expectNextMatches(taskEntry -> te1.equals(taskEntry)).verifyComplete();
-//
-//        StepVerifier.create(
-//                taskEntryRepository.findAllByClientIdAndStartTimeBetweenOrderByStartTimeDesc(
-//                        "cid1", beforeStartTime, startTimePlus1Hr)
-//        ).expectNextCount(1).verifyComplete();
-//
-//        StepVerifier.create(
-//                taskEntryRepository.findAllByClientIdAndStartTimeBetweenOrderByStartTimeDesc(
-//                        "cid1", beforeStartTime, afterStartTimePlus1Hr)
-//        ).expectNextCount(2).verifyComplete();
-//        StepVerifier.create(
-//                taskEntryRepository.findAllByClientIdAndStartTimeBetweenOrderByStartTimeDesc(
-//                        "cid1", beforeStartTimePlus1Hr, afterStartTimePlus1Hr)
-//        ).expectNextMatches(taskEntry -> te2.equals(taskEntry)).verifyComplete();
-//
-//
-//    }
-//
-//
-//    /**
-//     * tests ordering of taskentries by creation time
-//     */
-//    @Test
-//    public void testLatestCreatedTaskEntries(){
-//        ArrayList<TaskEntryEntity> taskEntries = new ArrayList<>();
-//
-//        for(int i=1; i<=20; i++){
-//            TaskEntryEntity taskEntry = new TaskEntryEntity("id_" + i, LocalDateTime.parse("2018-11-11T15:30"), 30 + i,
-//                    "nah" + (20 - i),"pid1","cid1", LocalDateTime.parse("2018-11-11T15:30").minusMinutes(i));
-//            taskEntries.add(taskEntry);
-//            if(i%2==0)
-//                taskEntryRepository.save(taskEntry);
-//        }
-//        for(int i=1; i<=20; i++){
-//            if(i%2==1)
-//                taskEntryRepository.save(taskEntries.get(i-1));
-//        }
-//
-//        Pageable pageable = Pageable.unpaged();
-//        StepVerifier.create(taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable))
-//                .expectNextMatches(
-//                taskEntry -> taskEntries.get(19).equals(taskEntry)
-//        ).expectNextMatches(
-//                taskEntry -> taskEntries.get(18).equals(taskEntry))
-//                .expectNextCount(18).verifyComplete();
-//
-//        StepVerifier.create(taskEntryRepository.findAllByOrderByCreationTimeDesc(pageable))
-//                .expectNextMatches(
-//                        taskEntry -> taskEntries.get(0).equals(taskEntry)
-//                ).expectNextMatches(
-//                taskEntry -> taskEntries.get(1).equals(taskEntry))
-//                .expectNextCount(18).verifyComplete();
-//
-//        pageable = PageRequest.of(1,10);
-//        StepVerifier.create(taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable))
-//                .expectNextCount(10).verifyComplete();
-//    }
-//
-//    private ClientEntity createTestData() {
-//        ClientEntity c = new ClientEntity("fullTestClient","fullTestClientAddress");
-//        c.setId("clientId");
-//        clientRepository.save(c);
-//        ProjectEntity p = new ProjectEntity("fullTestProjectName","fullTestProjectDescription",60.0,c.getId());
-//        p.setId("projectId");
-//        projectRespository.save(p);
-//        TaskEntity t = new TaskEntity("fullTestTaskName",p.getId(),"cid");
-//        t.setId("taskId");
-//        taskRepository.save(t);
-//        TaskEntryEntity te1 = new TaskEntryEntity(LocalDateTime.now(),120, t.getId(), "cid", "pid");
-//        TaskEntryEntity te2 = new TaskEntryEntity(LocalDateTime.now(),180, t.getId(),"cid", "pid");
-//        taskEntryRepository.save(te1);
-//        taskEntryRepository.save(te2);
-//        return c;
-//    }
+
+    /**
+     * tests projects by particular client
+     */
+    @Test
+    public void testProjectsByClientQuery() {
+        ClientEntity c = createTestData();
+        final List<ProjectEntity> allByClientId = projectRespository.findAllByClientId(c.getId());
+        assertThat(allByClientId.iterator().next().getName()).isEqualTo("fullTestProjectName");
+    }
+
+    /**
+     * tests tasks created between given timespan
+     */
+    @Test
+    public void testProjectTasksAndCreationTimeQueries(){
+        ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null);
+        clientRepository.save(c);
+        ProjectEntity p1 = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
+        ProjectEntity p2 = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
+        projectRespository.save(p1);
+        projectRespository.save(p2);
+
+        LocalDateTime before = LocalDateTime.now().minusSeconds(2);
+        TaskEntity t1 = new TaskEntity(null, "t1", p1, null,before);
+        TaskEntity t2 = new TaskEntity(null, "t2", p1, null,before);
+        TaskEntity t3 = new TaskEntity(null,"t3", p2, null,before);
+        TaskEntity t4 = new TaskEntity(null,"t4",p2, null,before);
+        TaskEntity t5 = new TaskEntity(null,"t5", p2, null,before);
+        List<TaskEntity> tasks = Arrays.asList(t1, t2, t3, t4, t5);
+        tasks.forEach(task -> taskRepository.save(task));
+        assertThat(taskRepository.findAllByProjectIdOrderByCreationTimeDesc(p1.getId()).size()).isEqualTo(2);
+        assertThat(taskRepository.findAllByProjectIdOrderByCreationTimeDesc(p2.getId()).size()).isEqualTo(3);
+        assertThat(taskRepository.findByCreationTimeBetween(before.minusSeconds(1), LocalDateTime.now()).size()).isEqualTo(5);
+        assertThat(taskRepository.findByCreationTimeBetween(before.minusNanos(2), before.minusNanos(1)).size()).isEqualTo(0);
+        t1.setCreationTime(before.minusMinutes(1));
+        t2.setCreationTime(before.minusMinutes(1));
+        t5.setCreationTime(before.minusMinutes(1));
+        tasks.forEach(task -> taskRepository.save(task));
+        assertThat(taskRepository.findByCreationTimeBetween(before.minusMinutes(2), before.minusSeconds(1)).size()).isEqualTo(3);
+    }
+
+
+    /**
+     * tests ordering of taskentries by creation time
+     */
+    @Transactional
+    @Test
+    public void testLatestCreatedTaskEntries(){
+        ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null);
+        clientRepository.save(c);
+        ProjectEntity p= new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
+        projectRespository.save(p);
+        ArrayList<TaskEntryEntity> taskEntries = new ArrayList<>();
+        TaskEntity t = new TaskEntity(null,"fullTestTaskName",p,null,LocalDateTime.now());
+        taskRepository.save(t);
+        for(int i=1; i<=20; i++){
+            TaskEntryEntity taskEntry = new TaskEntryEntity(null, LocalDateTime.parse("2018-11-11T15:30"), 60, t, LocalDateTime.parse("2018-11-11T15:30").minusMinutes(i));
+            taskEntries.add(taskEntry);
+            if(i%2==0)
+                taskEntryRepository.save(taskEntry);
+        }
+        for(int i=1; i<=20; i++){
+            if(i%2==1)
+                taskEntryRepository.save(taskEntries.get(i-1));
+        }
+
+        Pageable pageable = Pageable.unpaged();
+        assertThat(taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable).get(0)).isEqualTo(taskEntries.get(19));
+        assertThat(taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable).get(1)).isEqualTo(taskEntries.get(18));
+        assertThat(taskEntryRepository.findAllByOrderByCreationTimeDesc(pageable).get(0)).isEqualTo(taskEntries.get(0));
+        assertThat(taskEntryRepository.findAllByOrderByCreationTimeDesc(pageable).get(1)).isEqualTo(taskEntries.get(1));
+        pageable = PageRequest.of(1,10);
+        assertThat(taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable).size()).isEqualTo(10);
+    }
+
+    private ClientEntity createTestData() {
+        ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null);
+        clientRepository.save(c);
+        ProjectEntity p = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
+        projectRespository.save(p);
+        TaskEntity t = new TaskEntity(null,"fullTestTaskName",p,null,LocalDateTime.now());
+        taskRepository.save(t);
+        TaskEntryEntity te1 = new TaskEntryEntity(null,LocalDateTime.now(),120, t, LocalDateTime.now());
+        TaskEntryEntity te2 = new TaskEntryEntity(null,LocalDateTime.now(),180, t,LocalDateTime.now());
+        taskEntryRepository.save(te1);
+        taskEntryRepository.save(te2);
+        return c;
+    }
 }

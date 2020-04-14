@@ -30,7 +30,7 @@ public class TaskEntryService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Iterable<TaskEntryEntity> all() {
+    public List<TaskEntryEntity> all() {
         return taskEntryRepository.findAll();
     }
 
