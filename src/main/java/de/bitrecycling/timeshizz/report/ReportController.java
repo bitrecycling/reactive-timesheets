@@ -1,10 +1,10 @@
 package de.bitrecycling.timeshizz.report;
 
+import de.bitrecycling.timeshizz.activity.service.ActivityEntryService;
+import de.bitrecycling.timeshizz.activity.service.ActivityService;
 import de.bitrecycling.timeshizz.client.service.ClientService;
-import de.bitrecycling.timeshizz.common.controller.ControllerUtils;
+import de.bitrecycling.timeshizz.common.NlpTime;
 import de.bitrecycling.timeshizz.project.service.ProjectService;
-import de.bitrecycling.timeshizz.task.service.TaskEntryService;
-import de.bitrecycling.timeshizz.task.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,9 +23,9 @@ public class ReportController {
     @Autowired
     ProjectService projectService;
     @Autowired
-    TaskService taskService;
+    ActivityService activityService;
     @Autowired
-    TaskEntryService taskEntryService;
+    ActivityEntryService activityEntryService;
 
     /**
      * get all taskEntries for given client in given timespan
@@ -35,23 +35,23 @@ public class ReportController {
      */
     @GetMapping("/client/{id}")
     public ReportEntity clientReport(@PathVariable("id") String id, @RequestParam("start") String startTimeString, @RequestParam("end") String endTimeString) {
-        LocalDateTime startTime = ControllerUtils.parseTime(startTimeString);
-        LocalDateTime endTime = ControllerUtils.parseTime(endTimeString);
+        LocalDateTime startTime = NlpTime.parseTimeFromNlpString(startTimeString);
+        LocalDateTime endTime = NlpTime.parseTimeFromNlpString(endTimeString);
 
         throw new RuntimeException("not implemented");
-//        Flux<FullTaskEntry> fullTaskEntryFlux =
+//        Flux<FullActivityEntry> fullActivityEntryFlux =
 //                taskEntryService.getByClientAndByStartTimeBetween(id, startTime, endTime).flatMap(te ->
-//                        taskService.byId(te.getTaskId()).flatMap(t ->
+//                        taskService.byId(te.getActivityId()).flatMap(t ->
 //                                projectService.byId(te.getProjectId()).flatMap(p ->
 //                                        clientService.byId(id).flatMap(c ->
-//                                        Mono.just(new FullTaskEntry(te, t, p, c))
+//                                        Mono.just(new FullActivityEntry(te, t, p, c))
 //                                ))));
 //
 //        ReportEntity report = new ReportEntity();
-//        Mono<ReportEntity> reduce = fullTaskEntryFlux
+//        Mono<ReportEntity> reduce = fullActivityEntryFlux
 //                .reduce(report, (r, te) ->{
 //                            r.setClient(te.getClient());
-//                            return r.addTaskEntry(te.getProject(), te.getTask(), te.getTaskEntry());
+//                            return r.addActivityEntry(te.getProject(), te.getActivity(), te.getActivityEntry());
 //                        }
 //                );
 //

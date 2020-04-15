@@ -2,32 +2,32 @@ var dashboard = new Vue({
     el: '#dashboard',
     data: {
         recent: {
-            taskEntries: {},
-            tasks: {},
+            activityEntries: {},
+            activities: {},
             projects: {},
             clients: []
         },
         lastweek: {
-            taskEntries: {},
-            tasks: {},
+            activityEntries: {},
+            activities: {},
             projects: {},
             clients: []
         },
         lastmonth: {
-            taskEntries: {},
-            tasks: {},
+            activityEntries: {},
+            activities: {},
             projects: {},
             clients: []
         }
     },
     methods: {
-        sumProject: function(tasks, target){
+        sumProject: function(activities, target){
             var that = this;
             var sum = 0;
-            tasks.forEach(function(task){
-                var taskEntries = target.taskEntries[task.id];
-                taskEntries.forEach(function (taskentry) {
-                    sum += taskentry.durationMinutes;
+            activities.forEach(function(activity){
+                var activityEntries = target.activityEntries[activity.id];
+                activityEntries.forEach(function (activityentry) {
+                    sum += activityentry.durationMinutes;
                 });
 
             });
@@ -45,7 +45,7 @@ function loadClientForProject(clientId, target) {
 }
 
 
-function loadProjectForTask(projectId, target) {
+function loadProjectForActivity(projectId, target) {
     axios.get('/projects/' + projectId).then(function (response) {
         var project = response.data;
         var tmp = target.projects[project.clientId];
@@ -58,30 +58,30 @@ function loadProjectForTask(projectId, target) {
     });
 }
 
-function loadTaskForTaskEntry(taskId, target) {
-    axios.get('/tasks/' + taskId).then(function (response) {
-        var task = response.data;
-        var tmp = target.tasks[task.projectId];
+function loadActivityForActivityEntry(activityId, target) {
+    axios.get('/activities/' + activityId).then(function (response) {
+        var activity = response.data;
+        var tmp = target.activities[activity.projectId];
         if (tmp) {
-            tmp.push(task);
+            tmp.push(activity);
         } else {
-            target.tasks[task.projectId] = [task];
-            loadProjectForTask(task.projectId, target);
+            target.activities[activity.projectId] = [activity];
+            loadProjectForActivity(activity.projectId, target);
         }
     });
 }
 
-function getTaskEntriesBetween(fromDate, toDate, target) {
-    var url = '/taskentries?start='+fromDate+'&until='+toDate;
+function getActivityEntriesBetween(fromDate, toDate, target) {
+    var url = '/activityentries?start='+fromDate+'&until='+toDate;
     axios.get(url).then(
         function (response) {
-            response.data.forEach(function (taskEntry) {
-                var tmp = target.taskEntries[taskEntry.taskId];
+            response.data.forEach(function (activityEntry) {
+                var tmp = target.activityEntries[activityEntry.activityId];
                 if (tmp) {
-                    tmp.push(taskEntry);
+                    tmp.push(activityEntry);
                 } else {
-                    target.taskEntries[taskEntry.taskId] = [taskEntry];
-                    loadTaskForTaskEntry(taskEntry.taskId, target);
+                    target.activityEntries[activityEntry.activityId] = [activityEntry];
+                    loadActivityForActivityEntry(activityEntry.activityId, target);
                 }
             });
 
@@ -89,20 +89,20 @@ function getTaskEntriesBetween(fromDate, toDate, target) {
     );
 }
 
-function getMostRecentTaskEntries(count, target) {
-    var url = '/taskentries';
+function getMostRecentActivityEntries(count, target) {
+    var url = '/activityentries';
     if(count){
         url+='?count=' + count;
     }
     axios.get(url).then(
         function (response) {
-            response.data.forEach(function (taskEntry) {
-                var tmp = target.taskEntries[taskEntry.taskId];
+            response.data.forEach(function (activityEntry) {
+                var tmp = target.activityEntries[activityEntry.activityId];
                 if (tmp) {
-                    tmp.push(taskEntry);
+                    tmp.push(activityEntry);
                 } else {
-                    target.taskEntries[taskEntry.taskId] = [taskEntry];
-                    loadTaskForTaskEntry(taskEntry.taskId, target);
+                    target.activityEntries[activityEntry.activityId] = [activityEntry];
+                    loadActivityForActivityEntry(activityEntry.activityId, target);
                 }
             });
 
@@ -142,6 +142,6 @@ function getLastMonthEnd(date){
 
 
 // getExistingClients();
-getMostRecentTaskEntries(20,dashboard.recent);
-getTaskEntriesBetween(getLastWeekStart(new Date()), getLastWeekEnd(new Date()), dashboard.lastweek);
-getTaskEntriesBetween(getLastMonthStart(new Date()), getLastMonthEnd(new Date()), dashboard.lastmonth);
+getMostRecentActivityEntries(20,dashboard.recent);
+getActivityEntriesBetween(getLastWeekStart(new Date()), getLastWeekEnd(new Date()), dashboard.lastweek);
+getActivityEntriesBetween(getLastMonthStart(new Date()), getLastMonthEnd(new Date()), dashboard.lastmonth);

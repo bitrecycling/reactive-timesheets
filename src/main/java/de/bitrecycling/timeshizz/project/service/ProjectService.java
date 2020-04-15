@@ -1,5 +1,7 @@
 package de.bitrecycling.timeshizz.project.service;
 
+import de.bitrecycling.timeshizz.client.model.ClientEntity;
+import de.bitrecycling.timeshizz.client.repository.ClientRepository;
 import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
@@ -18,6 +20,8 @@ import java.util.UUID;
 public class ProjectService {
     @Autowired
     ProjectRespository projectRespository;
+    @Autowired
+    ClientRepository clientRepository;
 
     public List<ProjectEntity> all() {
         return projectRespository.findAll();
@@ -27,7 +31,9 @@ public class ProjectService {
         return projectRespository.findById(id).orElseThrow(() -> new ResourceNotFoundException("project", id.toString()));
     }
 
-    public ProjectEntity create(ProjectEntity project) {
+    public ProjectEntity createProjectForClient(ProjectEntity project, UUID clientId) {
+        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(() -> new RuntimeException(String.format("client [%] not found", clientId)));
+        project.setClient(client);
         return projectRespository.save(project);
     }
 

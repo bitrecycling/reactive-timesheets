@@ -80,7 +80,7 @@ public class ProjectController {
      */
     @PostMapping(consumes = "application/json")
     public ProjectEntity create(@RequestBody ProjectJson project) {
-        return projectService.create(projectMapper.toEntity(project));
+        return projectService.createProjectForClient(projectMapper.toEntity(project), project.getClientId());
     }
     
 

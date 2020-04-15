@@ -5,5 +5,5 @@ It provides RESTful http endpoints for each entity. Those are
 
 - clients ("/clients")
 - projects ("/projects")
-- tasks ("/tasks")
-- taskentries ("/taskentries")
+- activities ("/activities")
+- activityentries ("/activityFeFntries")

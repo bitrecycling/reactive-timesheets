@@ -1,9 +1,9 @@
 package de.bitrecycling.timeshizz;
 
+import de.bitrecycling.timeshizz.activity.service.ActivityEntryService;
+import de.bitrecycling.timeshizz.activity.service.ActivityService;
 import de.bitrecycling.timeshizz.client.service.ClientService;
 import de.bitrecycling.timeshizz.project.service.ProjectService;
-import de.bitrecycling.timeshizz.task.service.TaskEntryService;
-import de.bitrecycling.timeshizz.task.service.TaskService;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +20,9 @@ public class ServiceTests {
     @Autowired
     ProjectService projectService;
     @Autowired
-    TaskService taskService;
+    ActivityService activityService;
     @Autowired
-    TaskEntryService taskEntryService;
+    ActivityEntryService activityEntryService;
 
 
     @After

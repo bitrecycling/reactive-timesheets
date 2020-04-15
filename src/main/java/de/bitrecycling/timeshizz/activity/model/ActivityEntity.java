@@ -1,5 +1,6 @@
-package de.bitrecycling.timeshizz.task.model;
+package de.bitrecycling.timeshizz.activity.model;
 
+import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,20 +13,23 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
- * The taskentry model. For brevity and simplicity this is both domain and persistent model.
+ * The activitymodel. For brevity and simplicity this is both domain and persistent model.
  *
- * by robo
+ * created by robo
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class TaskEntryEntity {
+public class ActivityEntity {
     
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -33,12 +37,14 @@ public class TaskEntryEntity {
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     @NonNull
-    private LocalDateTime startTime;
+    private String name;
     @NonNull
-    private Integer durationMinutes;
     @ManyToOne(optional = false)
-//    @JoinColumn(referencedColumnName = "id", insertable=false, updatable=false)
-    private TaskEntity task;
-    private LocalDateTime creationTime;
+    private ProjectEntity project;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "activity")
+    @OneToMany()
+    private List<ActivityEntryEntity> activityEntries = new ArrayList<>();
     
+    private LocalDateTime creationTime;
+
 }

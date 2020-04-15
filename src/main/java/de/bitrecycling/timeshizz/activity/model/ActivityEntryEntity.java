@@ -1,6 +1,5 @@
-package de.bitrecycling.timeshizz.task.model;
+package de.bitrecycling.timeshizz.activity.model;
 
-import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,27 +9,23 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
- * The task model. For brevity and simplicity this is both domain and persistent model.
+ * The activityentry model. For brevity and simplicity this is both domain and persistent model.
  *
- * created by robo
+ * by robo
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class TaskEntity {
+public class ActivityEntryEntity {
     
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -38,13 +33,13 @@ public class TaskEntity {
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     @NonNull
-    private String name;
+    private LocalDateTime startTime;
     @NonNull
-    @ManyToOne(optional = false)
-    private ProjectEntity project;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "task")
-    private List<TaskEntryEntity> taskEntries = new ArrayList<>();
-    
+    private Integer durationMinutes;
+//    @ManyToOne(optional = false)
+//    @JoinColumn(referencedColumnName = "id", insertable=false, updatable=false)
+    @ManyToOne
+    private ActivityEntity activity;
     private LocalDateTime creationTime;
-
+    
 }

@@ -1,13 +1,13 @@
 package de.bitrecycling.timeshizz;
 
+import de.bitrecycling.timeshizz.activity.model.ActivityEntity;
+import de.bitrecycling.timeshizz.activity.model.ActivityEntryEntity;
+import de.bitrecycling.timeshizz.activity.repository.ActivityEntryRepository;
+import de.bitrecycling.timeshizz.activity.repository.ActivityRepository;
 import de.bitrecycling.timeshizz.client.model.ClientEntity;
 import de.bitrecycling.timeshizz.client.repository.ClientRepository;
 import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
-import de.bitrecycling.timeshizz.task.model.TaskEntity;
-import de.bitrecycling.timeshizz.task.model.TaskEntryEntity;
-import de.bitrecycling.timeshizz.task.repository.TaskEntryRepository;
-import de.bitrecycling.timeshizz.task.repository.TaskRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +38,9 @@ public class RepositoryTests {
     @Autowired
     ProjectRespository projectRespository;
     @Autowired
-    TaskRepository taskRepository;
+    ActivityRepository activityRepository;
     @Autowired
-    TaskEntryRepository taskEntryRepository;
+    ActivityEntryRepository activityEntryRepository;
     
 
 
@@ -51,21 +51,21 @@ public class RepositoryTests {
         clientRepository.save(c);
         ProjectEntity p = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
         projectRespository.save(p);
-        TaskEntity t = new TaskEntity(null,"fullTestTaskName", p, null, LocalDateTime.now());
-        taskRepository.save(t);
-        TaskEntryEntity te1 = new TaskEntryEntity(null,LocalDateTime.now(),120, t, LocalDateTime.now());
-        TaskEntryEntity te2 = new TaskEntryEntity(null,LocalDateTime.now(),180, t,LocalDateTime.now());
-        taskEntryRepository.save(te1);
-        taskEntryRepository.save(te2);
-        taskRepository.save(t);
+        ActivityEntity t = new ActivityEntity(null,"fullTestActivityName", p, null, LocalDateTime.now());
+        activityRepository.save(t);
+        ActivityEntryEntity te1 = new ActivityEntryEntity(null,LocalDateTime.now(),120, t, LocalDateTime.now());
+        ActivityEntryEntity te2 = new ActivityEntryEntity(null,LocalDateTime.now(),180, t,LocalDateTime.now());
+        activityEntryRepository.save(te1);
+        activityEntryRepository.save(te2);
+        activityRepository.save(t);
         final List<ClientEntity> all = clientRepository.findAll();
         //expect 1st client is c
         assertThat(all).hasSize(1);
         assertThat(all.iterator().next()).isEqualTo(c);
-        final List<TaskEntryEntity> allByTaskId = taskEntryRepository.findAllByTaskId(t.getId());
+        final List<ActivityEntryEntity> allByActivityId = activityEntryRepository.findAllByActivityId(t.getId());
         //expect 2 results
-        assertThat(allByTaskId).hasSize(2);
-        assertThat(allByTaskId).containsExactlyInAnyOrder(te1,te2);
+        assertThat(allByActivityId).hasSize(2);
+        assertThat(allByActivityId).containsExactlyInAnyOrder(te1,te2);
     }
 
     /**
@@ -82,7 +82,7 @@ public class RepositoryTests {
      * tests tasks created between given timespan
      */
     @Test
-    public void testProjectTasksAndCreationTimeQueries(){
+    public void testProjectActivitysAndCreationTimeQueries(){
         ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null);
         clientRepository.save(c);
         ProjectEntity p1 = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
@@ -91,22 +91,22 @@ public class RepositoryTests {
         projectRespository.save(p2);
 
         LocalDateTime before = LocalDateTime.now().minusSeconds(2);
-        TaskEntity t1 = new TaskEntity(null, "t1", p1, null,before);
-        TaskEntity t2 = new TaskEntity(null, "t2", p1, null,before);
-        TaskEntity t3 = new TaskEntity(null,"t3", p2, null,before);
-        TaskEntity t4 = new TaskEntity(null,"t4",p2, null,before);
-        TaskEntity t5 = new TaskEntity(null,"t5", p2, null,before);
-        List<TaskEntity> tasks = Arrays.asList(t1, t2, t3, t4, t5);
-        tasks.forEach(task -> taskRepository.save(task));
-        assertThat(taskRepository.findAllByProjectIdOrderByCreationTimeDesc(p1.getId()).size()).isEqualTo(2);
-        assertThat(taskRepository.findAllByProjectIdOrderByCreationTimeDesc(p2.getId()).size()).isEqualTo(3);
-        assertThat(taskRepository.findByCreationTimeBetween(before.minusSeconds(1), LocalDateTime.now()).size()).isEqualTo(5);
-        assertThat(taskRepository.findByCreationTimeBetween(before.minusNanos(2), before.minusNanos(1)).size()).isEqualTo(0);
+        ActivityEntity t1 = new ActivityEntity(null, "t1", p1, null,before);
+        ActivityEntity t2 = new ActivityEntity(null, "t2", p1, null,before);
+        ActivityEntity t3 = new ActivityEntity(null,"t3", p2, null,before);
+        ActivityEntity t4 = new ActivityEntity(null,"t4",p2, null,before);
+        ActivityEntity t5 = new ActivityEntity(null,"t5", p2, null,before);
+        List<ActivityEntity> activities = Arrays.asList(t1, t2, t3, t4, t5);
+        activities.forEach(activity-> activityRepository.save(activity));
+        assertThat(activityRepository.findAllByProjectIdOrderByCreationTimeDesc(p1.getId()).size()).isEqualTo(2);
+        assertThat(activityRepository.findAllByProjectIdOrderByCreationTimeDesc(p2.getId()).size()).isEqualTo(3);
+        assertThat(activityRepository.findByCreationTimeBetween(before.minusSeconds(1), LocalDateTime.now()).size()).isEqualTo(5);
+        assertThat(activityRepository.findByCreationTimeBetween(before.minusNanos(2), before.minusNanos(1)).size()).isEqualTo(0);
         t1.setCreationTime(before.minusMinutes(1));
         t2.setCreationTime(before.minusMinutes(1));
         t5.setCreationTime(before.minusMinutes(1));
-        tasks.forEach(task -> taskRepository.save(task));
-        assertThat(taskRepository.findByCreationTimeBetween(before.minusMinutes(2), before.minusSeconds(1)).size()).isEqualTo(3);
+        activities.forEach(activity-> activityRepository.save(activity));
+        assertThat(activityRepository.findByCreationTimeBetween(before.minusMinutes(2), before.minusSeconds(1)).size()).isEqualTo(3);
     }
 
 
@@ -115,32 +115,32 @@ public class RepositoryTests {
      */
     @Transactional
     @Test
-    public void testLatestCreatedTaskEntries(){
+    public void testLatestCreatedActivityEntries(){
         ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null);
         clientRepository.save(c);
         ProjectEntity p= new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
         projectRespository.save(p);
-        ArrayList<TaskEntryEntity> taskEntries = new ArrayList<>();
-        TaskEntity t = new TaskEntity(null,"fullTestTaskName",p,null,LocalDateTime.now());
-        taskRepository.save(t);
+        ArrayList<ActivityEntryEntity> taskEntries = new ArrayList<>();
+        ActivityEntity t = new ActivityEntity(null,"fullTestActivityName",p,null,LocalDateTime.now());
+        activityRepository.save(t);
         for(int i=1; i<=20; i++){
-            TaskEntryEntity taskEntry = new TaskEntryEntity(null, LocalDateTime.parse("2018-11-11T15:30"), 60, t, LocalDateTime.parse("2018-11-11T15:30").minusMinutes(i));
+            ActivityEntryEntity taskEntry = new ActivityEntryEntity(null, LocalDateTime.parse("2018-11-11T15:30"), 60, t, LocalDateTime.parse("2018-11-11T15:30").minusMinutes(i));
             taskEntries.add(taskEntry);
             if(i%2==0)
-                taskEntryRepository.save(taskEntry);
+                activityEntryRepository.save(taskEntry);
         }
         for(int i=1; i<=20; i++){
             if(i%2==1)
-                taskEntryRepository.save(taskEntries.get(i-1));
+                activityEntryRepository.save(taskEntries.get(i-1));
         }
 
         Pageable pageable = Pageable.unpaged();
-        assertThat(taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable).get(0)).isEqualTo(taskEntries.get(19));
-        assertThat(taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable).get(1)).isEqualTo(taskEntries.get(18));
-        assertThat(taskEntryRepository.findAllByOrderByCreationTimeDesc(pageable).get(0)).isEqualTo(taskEntries.get(0));
-        assertThat(taskEntryRepository.findAllByOrderByCreationTimeDesc(pageable).get(1)).isEqualTo(taskEntries.get(1));
+        assertThat(activityEntryRepository.findAllByOrderByCreationTimeAsc(pageable).get(0)).isEqualTo(taskEntries.get(19));
+        assertThat(activityEntryRepository.findAllByOrderByCreationTimeAsc(pageable).get(1)).isEqualTo(taskEntries.get(18));
+        assertThat(activityEntryRepository.findAllByOrderByCreationTimeDesc(pageable).get(0)).isEqualTo(taskEntries.get(0));
+        assertThat(activityEntryRepository.findAllByOrderByCreationTimeDesc(pageable).get(1)).isEqualTo(taskEntries.get(1));
         pageable = PageRequest.of(1,10);
-        assertThat(taskEntryRepository.findAllByOrderByCreationTimeAsc(pageable).size()).isEqualTo(10);
+        assertThat(activityEntryRepository.findAllByOrderByCreationTimeAsc(pageable).size()).isEqualTo(10);
     }
 
     private ClientEntity createTestData() {
@@ -148,12 +148,12 @@ public class RepositoryTests {
         clientRepository.save(c);
         ProjectEntity p = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
         projectRespository.save(p);
-        TaskEntity t = new TaskEntity(null,"fullTestTaskName",p,null,LocalDateTime.now());
-        taskRepository.save(t);
-        TaskEntryEntity te1 = new TaskEntryEntity(null,LocalDateTime.now(),120, t, LocalDateTime.now());
-        TaskEntryEntity te2 = new TaskEntryEntity(null,LocalDateTime.now(),180, t,LocalDateTime.now());
-        taskEntryRepository.save(te1);
-        taskEntryRepository.save(te2);
+        ActivityEntity t = new ActivityEntity(null,"fullTestActivityName",p,null,LocalDateTime.now());
+        activityRepository.save(t);
+        ActivityEntryEntity te1 = new ActivityEntryEntity(null,LocalDateTime.now(),120, t, LocalDateTime.now());
+        ActivityEntryEntity te2 = new ActivityEntryEntity(null,LocalDateTime.now(),180, t,LocalDateTime.now());
+        activityEntryRepository.save(te1);
+        activityEntryRepository.save(te2);
         return c;
     }
 }

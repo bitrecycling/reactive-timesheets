@@ -6,32 +6,32 @@ var timeshizz = new Vue({
         projectName: '',
         projectDescription: '',
         projectRate: '',
-        taskName: '',
-        taskEntryStartTime: '',
-        taskEntryDurationMinutes: '',
+        activityName: '',
+        activityEntryStartTime: '',
+        activityEntryDurationMinutes: '',
 
         showCreateClient: false,
         showEditClient: false,
         showCreateProject: false,
         showEditProject: false,
-        showCreateTask: false,
-        showEditTask: false,
-        showCreateTaskEntry: false,
-        showEditTaskEntry: false,
+        showCreateActivity: false,
+        showEditActivity: false,
+        showCreateActivityEntry: false,
+        showEditActivityEntry: false,
 
         selectedClient: '',
         selectedProject: '',
-        selectedTask: '',
-        selectedTaskEntry: '',
+        selectedActivity: '',
+        selectedActivityEntry: '',
 
         clientId: '',
         projectId: '',
-        taskId: '',
+        activityId: '',
 
         clients: '',
         projects: '',
-        tasks: '',
-        taskEntries: ''
+        activities: '',
+        activityEntries: ''
     },
     methods: {
         createClient: function () {
@@ -54,14 +54,14 @@ var timeshizz = new Vue({
         countProjectsByClient: function (clientId) {
             return countProjectsByClient(clientId);
         },
-        createTask: function () {
-            insertTask(this.taskName, this.selectedProject.id);
-            this.taskName ='';
+        createActivity: function () {
+            insertActivity(this.activityName, this.selectedProject.id);
+            this.activityName ='';
         },
-        createTaskEntry: function () {
-            insertTaskEntry(this.taskEntryStartTime, this.taskEntryDurationMinutes, this.selectedTask.id);
-            this.taskEntryStartTime='';
-            this.taskEntryDurationMinutes='';
+        createActivityEntry: function () {
+            insertActivityEntry(this.activityEntryStartTime, this.activityEntryDurationMinutes, this.selectedActivity.id);
+            this.activityEntryStartTime='';
+            this.activityEntryDurationMinutes='';
         },
         clearClient: function(){
             this.clearProject();
@@ -72,20 +72,20 @@ var timeshizz = new Vue({
             loadProjectsForClient(this.selectedClient.id);
         },
         clearProject: function(){
-            this.clearTask();
+            this.clearActivity();
             this.showEditProject = false;
             this.showCreateProject = false;
             this.selectedProject='';
             this.projectId='';
         },
-        clearTask: function(){
-            this.clearTaskEntry();
-            this.selectedTask='';
-            this.taskId='';
+        clearActivity: function(){
+            this.clearActivityEntry();
+            this.selectedActivity='';
+            this.activityId='';
 
         },
-        clearTaskEntry: function(){
-            this.selectedTaskEntry='';
+        clearActivityEntry: function(){
+            this.selectedActivityEntry='';
         },
         deleteClient:function () {
             deleteClient(this.selectedClient.id);
@@ -95,13 +95,13 @@ var timeshizz = new Vue({
             deleteProject(this.selectedProject.id);
             this.clearProject();
         },
-        deleteTask:function () {
-            deleteTask(this.selectedTask.id);
-            this.clearTask();
+        deleteActivity:function () {
+            deleteActivity(this.selectedActivity.id);
+            this.clearActivity();
         },
-        deleteTaskEntry:function () {
-            deleteClient(this.selectedTaskEntry.id);
-            this.clearTaskEntry();
+        deleteActivityEntry:function () {
+            deleteClient(this.selectedActivityEntry.id);
+            this.clearActivityEntry();
         },
         clientSelected: function (client) {
             this.selectedClient = client;
@@ -111,11 +111,11 @@ var timeshizz = new Vue({
         projectSelected: function (project) {
             this.selectedProject=project;
             this.showCreateClient = false;
-            loadTasksForProject(project.id);
+            loadActivitysForProject(project.id);
         },
-        taskSelected: function (task) {
-            this.selectedTask = task;
-            loadTaskEntriesForTask(task.id);
+        activitySelected: function (activity) {
+            this.selectedActivity = activity;
+            loadActivityEntriesForActivity(activity.id);
         },
         formatTime: function(timeString){
             return prettyPrintIsoDateTime(timeString);
@@ -170,25 +170,20 @@ function insertProject(projectName, projectDescription, projectRate, clientId) {
         });
 }
 
-function insertTask(taskName, projectId) {
-    var params = new URLSearchParams();
-    params.append('name', taskName);
-    params.append('projectId', projectId);
-    axios.post('/tasks', params).then(function (response) {
-        loadTasksForProject(projectId);
+function insertActivity(activityName, projectId) {
+    let acticvity = {name:activityName, projectId:projectId}
+    axios.post('/activities', acticvity).then(function (response) {
+        loadActivitysForProject(projectId);
     })
         .catch(function (error) {
             console.log(error);
         });
 }
 
-function insertTaskEntry(startTime, durationMinutes, taskId) {
-    var params = new URLSearchParams();
-    params.append('startTime', startTime);
-    params.append('durationMinutes', durationMinutes);
-    params.append('taskId', taskId);
-    axios.post('/taskentries', params).then(function (response) {
-        loadTaskEntriesForTask(taskId);
+function insertActivityEntry(startTime, durationMinutes, activityId) {
+    let activityEntry = {startTime:startTime,durationMinutes:durationMinutes,activityId:activityId}
+    axios.post('/activityentries', activityEntry).then(function (response) {
+        loadActivityEntriesForActivity(activityId);
     })
         .catch(function (error) {
             console.log(error);
@@ -216,18 +211,18 @@ function deleteProject(projectId){
 
 }
 
-function deleteTask(taskId){
-    axios.delete('/tasks/'+taskId).then(function (response) {
-        getExistingTasks();
+function deleteActivity(activityId){
+    axios.delete('/activities/'+activityId).then(function (response) {
+        getExistingActivitys();
     })
         .catch(function (error) {
             console.log(error);
         });
 
 }
-function deleteTaskEntry(taskEntryId){
-    axios.delete('/taskentries/'+taskEntryId).then(function (response) {
-        getExistingTaskEntries();
+function deleteActivityEntry(activityEntryId){
+    axios.delete('/activityentries/'+activityEntryId).then(function (response) {
+        getExistingActivityEntries();
     })
         .catch(function (error) {
             console.log(error);
@@ -253,18 +248,18 @@ function loadProjectsForClient(clientId) {
     );
 }
 
-function loadTasksForProject(projectId) {
-    axios.get('/tasks/?projectId=' + projectId).then(
+function loadActivitysForProject(projectId) {
+    axios.get('/activities/?projectId=' + projectId).then(
         function (response) {
-            timeshizz.tasks = response.data;
+            timeshizz.activities = response.data;
         }
     );
 }
 
-function loadTaskEntriesForTask(taskId) {
-    axios.get('/taskentries/?taskId=' + taskId).then(
+function loadActivityEntriesForActivity(activityId) {
+    axios.get('/activityentries/?activityId=' + activityId).then(
         function (response) {
-            timeshizz.taskEntries = response.data;
+            timeshizz.activityEntries = response.data;
         }
     );
 }
@@ -285,18 +280,18 @@ function getExistingProjects() {
     );
 }
 
-function getExistingTasks() {
-    axios.get('/tasks').then(
+function getExistingActivitys() {
+    axios.get('/activities').then(
         function (response) {
-            timeshizz.tasks = response.data;
+            timeshizz.activities = response.data;
         }
     );
 }
 
-function getExistingTaskEntries() {
-    axios.get('/taskentries').then(
+function getExistingActivityEntries() {
+    axios.get('/activityentries').then(
         function (response) {
-            timeshizz.taskEntries = response.data;
+            timeshizz.activityEntries = response.data;
         }
     );
 }
@@ -310,7 +305,7 @@ function init(){
     if(params){
         timeshizz.clientId= params.get("client");
         timeshizz.projectId = params.get("project");
-        timeshizz.taskId = params.get("task");
+        timeshizz.activityId = params.get("activity");
     }
 }
 

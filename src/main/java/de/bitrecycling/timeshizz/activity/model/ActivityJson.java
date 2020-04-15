@@ -1,4 +1,4 @@
-package de.bitrecycling.timeshizz.task.model;
+package de.bitrecycling.timeshizz.activity.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class TaskJson {
+public class ActivityJson {
     @Id
     private UUID id;
     @NonNull

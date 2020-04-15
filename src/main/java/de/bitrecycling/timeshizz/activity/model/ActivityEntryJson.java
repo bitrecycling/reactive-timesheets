@@ -1,4 +1,4 @@
-package de.bitrecycling.timeshizz.task.model;
+package de.bitrecycling.timeshizz.activity.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,15 +13,15 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskEntryJson {
+public class ActivityEntryJson {
     @Id
     private UUID id;
     @NonNull
-    private LocalDateTime startTime;
+    private String startTime;
     @NonNull
     private Integer durationMinutes;
     @NonNull
-    private UUID taskId;
+    private UUID activityId;
     private LocalDateTime creationTime;
 
 }

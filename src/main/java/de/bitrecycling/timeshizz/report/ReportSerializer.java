@@ -3,9 +3,9 @@ package de.bitrecycling.timeshizz.report;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import de.bitrecycling.timeshizz.activity.model.ActivityEntity;
+import de.bitrecycling.timeshizz.activity.model.ActivityEntryEntity;
 import de.bitrecycling.timeshizz.project.model.ProjectEntity;
-import de.bitrecycling.timeshizz.task.model.TaskEntity;
-import de.bitrecycling.timeshizz.task.model.TaskEntryEntity;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,7 +22,7 @@ public class ReportSerializer extends JsonSerializer<ReportEntity> {
 
     }
 
-    private void writeProjects(Map<ProjectEntity, Map<TaskEntity, List<TaskEntryEntity>>> projects, JsonGenerator jsonGenerator) throws IOException{
+    private void writeProjects(Map<ProjectEntity, Map<ActivityEntity, List<ActivityEntryEntity>>> projects, JsonGenerator jsonGenerator) throws IOException{
 
         jsonGenerator.writeFieldName("projects");
         jsonGenerator.writeStartArray();
@@ -32,26 +32,26 @@ public class ReportSerializer extends JsonSerializer<ReportEntity> {
             jsonGenerator.writeStringField("name", project.getName());
             jsonGenerator.writeStringField("description", project.getDescription());
             jsonGenerator.writeNumberField("rate", project.getRate());
-            Map<TaskEntity, List<TaskEntryEntity>> tasks = (Map<TaskEntity, List<TaskEntryEntity>>) projectEntry.getValue();
-            writeTasks(tasks, jsonGenerator);
+            Map<ActivityEntity, List<ActivityEntryEntity>> tasks = (Map<ActivityEntity, List<ActivityEntryEntity>>) projectEntry.getValue();
+            writeActivitys(tasks, jsonGenerator);
             jsonGenerator.writeEndObject();
         }
         jsonGenerator.writeEndArray();
     }
 
-    private void writeTasks(Map<TaskEntity, List<TaskEntryEntity>> tasks, JsonGenerator jsonGenerator) throws IOException {
+    private void writeActivitys(Map<ActivityEntity, List<ActivityEntryEntity>> tasks, JsonGenerator jsonGenerator) throws IOException {
 
         jsonGenerator.writeFieldName("tasks");
         jsonGenerator.writeStartArray();
 
         for(Map.Entry taskEntry: tasks.entrySet()){
-            TaskEntity task = (TaskEntity) taskEntry.getKey();
+            ActivityEntity activity= (ActivityEntity) taskEntry.getKey();
             jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField("name", task.getName());
-            List<TaskEntryEntity> taskEntries = ( List<TaskEntryEntity>)taskEntry.getValue();
+            jsonGenerator.writeStringField("name", activity.getName());
+            List<ActivityEntryEntity> taskEntries = ( List<ActivityEntryEntity>)taskEntry.getValue();
             jsonGenerator.writeFieldName("taskEntries");
             jsonGenerator.writeStartArray();
-            for (TaskEntryEntity cur : taskEntries){
+            for (ActivityEntryEntity cur : taskEntries){
                 jsonGenerator.writeObject(cur);
 //                    jsonGenerator.writeEndObject();
             }

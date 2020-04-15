@@ -299,79 +299,79 @@
         </section>
         <!-- / client and project selection -->
 
-        <!-- tasks and task entries -->
+        <!-- activities and activity entries -->
         <section class="container">
             <div class="content">
                 <div class="columns">
                     <div v-if="selectedProject" class="column is-half">
                         <div class="tags has-addons">
-                            <div v-if="!showCreateTask && !selectedTask" class="tag is-medium is-info">
+                            <div v-if="!showCreateActivity && !selectedActivity" class="tag is-medium is-info">
                                 select activity
                             </div>
-                            <div v-if="selectedTask" class="tag is-medium is-dark">
-                                {{selectedTask.name}}
+                            <div v-if="selectedActivity" class="tag is-medium is-dark">
+                                {{selectedActivity.name}}
                             </div>
-                            <div v-if="selectedTask" class="tag is-medium is-delete" v-on:click="clearTask()">
+                            <div v-if="selectedActivity" class="tag is-medium is-delete" v-on:click="clearActivity()">
                             </div>
-                            <div v-if="showCreateTask" class="tag is-medium is-info">
+                            <div v-if="showCreateActivity" class="tag is-medium is-info">
                                 new activity
                             </div>
-                            <div v-if="showCreateTask" class="tag is-medium is-delete"
-                                 v-on:click="showCreateTask = !showCreateTask">
+                            <div v-if="showCreateActivity" class="tag is-medium is-delete"
+                                 v-on:click="showCreateActivity = !showCreateActivity">
                             </div>
-                            <div v-if="!selectedTask && !showCreateTask" class="tag is-medium">
-                                <a v-on:click="showCreateTask = !showCreateTask">
+                            <div v-if="!selectedActivity && !showCreateActivity" class="tag is-medium">
+                                <a v-on:click="showCreateActivity = !showCreateActivity">
                                     <div class="">new activity</div>
                                 </a>
                             </div>
                         </div>
-                        <div v-if="showCreateTask">
-                            <input class="input" v-model="taskName" type="text"><br>&nbsp;<br>
+                        <div v-if="showCreateActivity">
+                            <input class="input" v-model="activityName" type="text"><br>&nbsp;<br>
                             <div class="field is-grouped">
                                 <div class="control">
                                     <div class="tags has-addons">
                                         <div class="tag is-medium is-success"
-                                             v-on:click="showCreateTask = !showCreateTask;createTask()">
+                                             v-on:click="showCreateActivity = !showCreateActivity;createActivity()">
                                             create
                                         </div>
-                                        <div class="tag is-medium" v-on:click="showCreateTask = !showCreateTask">
+                                        <div class="tag is-medium" v-on:click="showCreateActivity = !showCreateActivity">
                                             cancel
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-if="selectedProject && !selectedTask">
-                            <div class="column box" v-for="task in tasks" v-on:click="taskSelected(task)">
-                                {{task.name}}
-                                <div v-for="entry in taskEntries">
-                                    <div v-if="entry.taskId == task.id">{{entry.duration}}</div>
+                        <div v-if="selectedProject && !selectedActivity">
+                            <div class="column box" v-for="activity in activities" v-on:click="activitySelected(activity)">
+                                {{activity.name}}
+                                <div v-for="entry in activityEntries">
+                                    <div v-if="entry.activityId == activity.id">{{entry.duration}}</div>
                                 </div>
-                                <div v-if="task.id == taskId">{{taskSelected(task)}}</div>
+                                <div v-if="activity.id == activityId">{{activitySelected(activity)}}</div>
                             </div>
                         </div>
                     </div>
 
-                    <div v-if="selectedTask" class="column is-half">
-                        <div v-if="!showCreateTaskEntry" class="tags has-addons">
+                    <div v-if="selectedActivity" class="column is-half">
+                        <div v-if="!showCreateActivityEntry" class="tags has-addons">
                             <div class="tag is-medium">
-                                task entry
+                                activity entry
                             </div>
-                            <div v-if="!selectedTask" class="tag is-medium is-info">
-                                select task entry
+                            <div v-if="!selectedActivity" class="tag is-medium is-info">
+                                select activity entry
                             </div>
                             <div class="tag is-medium">
-                                <a v-on:click="showCreateTaskEntry = !showCreateTaskEntry">
+                                <a v-on:click="showCreateActivityEntry = !showCreateActivityEntry">
                                     <div class="is-size-5 has-text-weight-bold">+</div>
                                 </a>
                             </div>
                         </div>
-                        <div v-if="showCreateTaskEntry" class="tags has-addons">
+                        <div v-if="showCreateActivityEntry" class="tags has-addons">
                             <div class="tag is-medium is-success"
-                                 v-on:click="showCreateTaskEntry = !showCreateTaskEntry;createTaskEntry()">
+                                 v-on:click="showCreateActivityEntry = !showCreateActivityEntry;createActivityEntry()">
                                 create
                             </div>
-                            <div class="tag is-medium" v-on:click="showCreateTaskEntry = !showCreateTaskEntry">
+                            <div class="tag is-medium" v-on:click="showCreateActivityEntry = !showCreateActivityEntry">
                                 cancel
                             </div>
                         </div>
@@ -379,14 +379,14 @@
 
                 </div>
                 <div class="columns">
-                    <!-- task list -->
+                    <!-- activity list -->
 
                 </div>
-                <!-- / task list -->
+                <!-- / activity list -->
 
 
-                <div v-if="selectedTask" class="column is-half box">
-                    <!-- task entry list -->
+                <div v-if="selectedActivity" class="column is-half box">
+                    <!-- activity entry list -->
                     <div class="column">
                         <table class="table">
                             <thead>
@@ -394,18 +394,18 @@
                             <th>duration</th>
                             </thead>
                             <tbody>
-                            <tr v-if="showCreateTaskEntry">
-                                <td><input v-model="taskEntryStartTime" class="input" type="text"></td>
-                                <td><input v-model="taskEntryDurationMinutes" class="input" type="number"></td>
+                            <tr v-if="showCreateActivityEntry">
+                                <td><input v-model="activityEntryStartTime" class="input" type="text"></td>
+                                <td><input v-model="activityEntryDurationMinutes" class="input" type="number"></td>
                             </tr>
-                            <tr v-for="taskEntry in taskEntries">
-                                <td>{{formatTime(taskEntry.startTime)}}</td>
-                                <td>{{taskEntry.durationMinutes}} minutes</td>
+                            <tr v-for="activityEntry in activityEntries">
+                                <td>{{formatTime(activityEntry.startTime)}}</td>
+                                <td>{{activityEntry.durationMinutes}} minutes</td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
-                    <!-- / task entry list -->
+                    <!-- / activity entry list -->
                 </div>
             </div>
         </section>

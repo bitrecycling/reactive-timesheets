@@ -14,14 +14,14 @@ var timeshizz = new Vue({
         formatTime: function (timeString) {
             return prettyPrintIsoDateTime(timeString);
         },
-        sumTasksForProject: function (projectId) {
-            return _sumTasksForProject(projectId);
+        sumActivitysForProject: function (projectId) {
+            return _sumActivitysForProject(projectId);
         },
-        sumTaskEntriesForTask: function (taskId) {
-            return _sumTaskEntriesForTask(taskId);
+        sumActivityEntriesForActivity: function (taskId) {
+            return _sumActivityEntriesForActivity(taskId);
         },
         subtotal: function (project) {
-           return _sumTasksForProject(project.id) * project.rate;
+           return _sumActivitysForProject(project.id) * project.rate;
 
         },
         total: function () {

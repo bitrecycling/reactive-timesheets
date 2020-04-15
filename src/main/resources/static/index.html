@@ -63,8 +63,8 @@
                                                class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
                                     <div v-for="project in recent.projects[client.id]" class="box">
                                         <strong><a href="track.html?client={{client.id}}&project={{project.id}}"
-                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(recent.tasks[project.id], recent)}} mins)
-                                        <div v-for="task in recent.tasks[project.id]">
+                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(recent.activities[project.id], recent)}} mins)
+                                        <div v-for="activity in recent.activities[project.id]">
                                             <a href="track.html?client={{client.id}}&project={{project.id}}&task={{task.id}}"
                                                class="" style="text-decoration: none;">
                                                 - {{task.name}}
@@ -91,8 +91,8 @@
                                                class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
                                     <div v-for="project in lastweek.projects[client.id]" class="box">
                                         <strong><a href="track.html?client={{client.id}}&project={{project.id}}"
-                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(lastweek.tasks[project.id], lastweek)}} mins)
-                                            <div v-for="task in lastweek.tasks[project.id]">
+                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(lastweek.activities[project.id], lastweek)}} mins)
+                                            <div v-for="activityin lastweek.activities[project.id]">
                                                 <a href="track.html?client={{client.id}}&project={{project.id}}&task={{task.id}}"
                                                 class="" style="text-decoration: none;">
                                                     - {{task.name}}
@@ -120,7 +120,7 @@
                                                class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
                                     <div v-for="project in lastmonth.projects[client.id]" class="box">
                                         <strong><a href="report.html?client={{client.id}}&project={{project.id}}"
-                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(lastmonth.tasks[project.id], lastmonth)}} mins)
+                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(lastmonth.activities[project.id], lastmonth)}} mins)
                                     </div>
                                 </div>
                             </div>

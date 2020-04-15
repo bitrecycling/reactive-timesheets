@@ -76,7 +76,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="task in project.tasks">
+                    <tr v-for="activityin project.tasks">
                         <td>{{task.name}}</td>
                         <td><div v-for="taskEntry in task.taskEntries">{{taskEntry.startTime}} Minutes spent:{{taskEntry.durationMinutes}}</div></td>
 
@@ -85,7 +85,7 @@
                     <thead>
                     <tr>
                         <th>total time spent</th>
-                        <th>{{sumTasksForProject(project.id)}}</th>
+                        <th>{{sumActivitysForProject(project.id)}}</th>
                     </tr>
                     <tr>
                         <th>rate</th>
