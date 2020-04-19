@@ -33,8 +33,8 @@ public class ActivityService {
         return (List<ActivityEntity>) activityRepository.findAll();
     }
 
-    public ActivityEntity byId(UUID activityId){
-        return activityRepository.findById(activityId).orElseThrow(()->new ResourceNotFoundException("activity", activityId.toString()));
+    public ActivityEntity byId(UUID activityId) {
+        return activityRepository.findById(activityId).orElseThrow(() -> new ResourceNotFoundException("activity", activityId.toString()));
     }
 
     public List<ActivityEntity> allByProjectId(UUID projectId) {
@@ -43,7 +43,7 @@ public class ActivityService {
 
     public ActivityEntity insert(String activityName, UUID projectId) {
         ActivityEntity activity = new ActivityEntity();
-        final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(()->new RuntimeException(String.format("project[$] not found", projectId)));
+        final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(() -> new RuntimeException(String.format("project[$] not found", projectId)));
         activity.setName(activityName);
         activity.setProject(project);
         activity.setCreationTime(LocalDateTime.now());
@@ -76,7 +76,7 @@ public class ActivityService {
      * @return
      */
     public ActivityEntity save(UUID id, String name) {
-        final ActivityEntity activity= byId(id);
+        final ActivityEntity activity = byId(id);
         activity.setName(name);
         return activityRepository.save(activity);
     }

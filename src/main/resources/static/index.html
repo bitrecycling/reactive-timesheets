@@ -1,4 +1,4 @@
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,84 +50,70 @@
 <section class="section" id="dashboard">
     <div class="container">
         <div class="tile is-ancestor">
-            <div class="tile is-parent is-4">
+            <!-- recent activities -->
+            <div class="tile is-parent is-6">
                 <div class="tile is-child">
                     <article class="message is-info">
                         <div class="message-header">
-                            recent activities
+                            <input type="number" value="20" size="3" v-on:change="getMostRecent(value)"></input> most recent activities 
                         </div>
                         <div class="message-body">
                             <div class="content">
-                                <div v-for="client in recent.clients" class="content">
-                                    <strong><a href="track.html?client={{client.id}}"
-                                               class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
-                                    <div v-for="project in recent.projects[client.id]" class="box">
-                                        <strong><a href="track.html?client={{client.id}}&project={{project.id}}"
-                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(recent.activities[project.id], recent)}} mins)
-                                        <div v-for="activity in recent.activities[project.id]">
-                                            <a href="track.html?client={{client.id}}&project={{project.id}}&task={{task.id}}"
-                                               class="" style="text-decoration: none;">
-                                                - {{task.name}}
-                                            </a>
-                                        </div>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <table>
+                                    <thead class="bold">
+                                    <tr>
+                                        <th>date</th>
+                                        <th>minutes</th>
+                                        <th>activity</th>
+                                        <th>project</th>
+                                        <th>client</th>
+                                    </tr>
+                                        
+                                    </thead>
+                                    <tr v-for="activityEntry in recent" class="content" v-on:click="track(activityEntry)">
+                                        <td>{{prettyPrintTime(activityEntry.startTime)}}</td> 
+                                        <td>{{activityEntry.durationMinutes}}</td> 
+                                        <td>{{activityEntry.activity.name}}</td> 
+                                        <td>{{activityEntry.activity.project.name}}</td> 
+                                        <td>{{activityEntry.activity.project.client.name}}</td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                     </article>
                 </div>
             </div>
-            <div class="tile is-4 is-parent">
+            <!-- END recent activities -->
+            
+            <!-- Clients --> 
+            <div class="tile is-6 is-parent">
                 <div class="tile is-child">
                     <article class="message is-info">
                         <div class="message-header">
-                            last week project activities
+                            Clients and Projects
                         </div>
                         <div class="message-body">
                             <div class="content">
-                                <div v-for="client in lastweek.clients" class="content">
-                                    <strong><a href="track.html?client={{client.id}}"
-                                               class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
-                                    <div v-for="project in lastweek.projects[client.id]" class="box">
-                                        <strong><a href="track.html?client={{client.id}}&project={{project.id}}"
-                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(lastweek.activities[project.id], lastweek)}} mins)
-                                            <div v-for="activityin lastweek.activities[project.id]">
-                                                <a href="track.html?client={{client.id}}&project={{project.id}}&task={{task.id}}"
-                                                class="" style="text-decoration: none;">
-                                                    - {{task.name}}
-                                                </a>
-                                            </div>
-                                        </ul>
-                                    </div>
+                                <div v-for="project in projects" class="content">
+                                    <strong><a href="track.html?project={{project.id}}"
+                                               class="" style="text-decoration: none;">{{project.name}}</a></strong><br>
+<!--                                    <div v-for="project in projects[client.id]" class="box">-->
+<!--                                        <strong><a href="track.html?client={{client.id}}&project={{project.id}}"-->
+<!--                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(lastweek.activities[project.id], lastweek)}} mins)-->
+<!--                                            <div v-for="activityin lastweek.activities[project.id]">-->
+<!--                                                <a href="track.html?client={{client.id}}&project={{project.id}}&task={{task.id}}"-->
+<!--                                                class="" style="text-decoration: none;">-->
+<!--                                                    - {{task.name}}-->
+<!--                                                </a>-->
+<!--                                            </div>-->
+<!--                                        </ul>-->
+<!--                                    </div>-->
 
                                 </div>
                             </div>
                         </div>
                     </article>
                 </div>
-            </div>
-            <div class="tile is-4 is-parent">
-                <div class="tile is-child">
-                    <article class="message is-info">
-                        <div class="message-header">
-                            last month reports
-                        </div>
-                        <div class="message-body">
-                            <div class="content">
-                                <div v-for="client in lastmonth.clients" class="content">
-                                    <strong><a href="report.html?client={{client.id}}"
-                                               class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
-                                    <div v-for="project in lastmonth.projects[client.id]" class="box">
-                                        <strong><a href="report.html?client={{client.id}}&project={{project.id}}"
-                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(lastmonth.activities[project.id], lastmonth)}} mins)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-
             </div>
 
         </div>

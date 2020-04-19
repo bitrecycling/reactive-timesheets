@@ -118,6 +118,18 @@ public class ActivityEntryController {
 
 
     /**
+     * find n most recent activity entries with full related objects (activityEntry -> activitiy -> project -> client
+     *
+     * @param count an integer indicating how many recent tasks shall be returned
+     * @param details has to be present 
+     * @return
+     */
+    @GetMapping(params = {"count","details"})
+    public List<ActivityEntryEntity> recentByStartTime(@RequestParam("count") Integer count, @RequestParam(value = "details", defaultValue = "true") boolean details) {
+        return activityEntryService.getMostRecentByStartTime(count);
+    }
+
+    /**
      * find n tasks with creation datetime ordered ascending
      *
      * @param page  the page number to load

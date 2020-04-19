@@ -395,7 +395,7 @@
                             </thead>
                             <tbody>
                             <tr v-if="showCreateActivityEntry">
-                                <td><input v-model="activityEntryStartTime" class="input" type="text"></td>
+                                <td><input v-model="activityEntryStartTime" class="input" type="text" placeholder="enter date & time, also fractional or natural language like 5 mins ago"></td>
                                 <td><input v-model="activityEntryDurationMinutes" class="input" type="number"></td>
                             </tr>
                             <tr v-for="activityEntry in activityEntries">
