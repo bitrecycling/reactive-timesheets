@@ -1,8 +1,10 @@
 var dashboard = new Vue({
     el: '#dashboard',
     data: {
+        activityCount:10,
         recent: [],
-        projects: []
+        clients: [],
+        clientsAndProjects: {}
     },
     methods: {
         sumProject: function (activities, target) {
@@ -17,8 +19,9 @@ var dashboard = new Vue({
             });
             return sum;
         },
-        getMostRecent: function (count) {
-            getMostRecentActivityEntries(count, dashboard.recent)
+        getMostRecent: function () {
+            dashboard.recent = [];
+            getMostRecentActivityEntries(dashboard.activityCount, dashboard.recent)
         },
         prettyPrintTime: function (dateTimeString) {
             return moment(dateTimeString).format("YYYY-MM-DD HH:mm ");
@@ -38,8 +41,6 @@ function getMostRecentActivityEntries(count, target) {
     axios.get(url).then(
         function (response) {
             response.data.forEach(function(activityEntry){
-                //process data "inside out"
-                
                dashboard.recent.push(activityEntry); 
             });
         }
@@ -47,18 +48,36 @@ function getMostRecentActivityEntries(count, target) {
 }
 
 
-function getProjects(count, target) {
+function getAllProjectsAndMapToClients() {
     var url = '/projects';
-    
+    dashboard.clients.forEach(function(client) {
+        axios.get(url + "?clientId=" + client.id).then(
+            function (response) {
+                response.data.forEach(function (project) {
+
+                    if (client.projects === undefined) {
+                        client.projects = [];
+                    }
+                    client.projects.push(project);
+                });
+            });
+    });
+}
+
+function getAllClientsProjects() {
+    var url = '/clients';
+    dashboard.clients = [];
     axios.get(url).then(
         function (response) {
-            response.data.forEach(function (project){
-                dashboard.projects.push(project);    
+      
+            response.data.forEach(function (client){
+                dashboard.clients.push(client);
             });
+            getAllProjectsAndMapToClients();
         }
     );
 }
 
 
-getMostRecentActivityEntries(20,dashboard.recent);
-getProjects(dashboard.projects);
+getMostRecentActivityEntries(dashboard.activityCount,dashboard.recent);
+getAllClientsProjects();

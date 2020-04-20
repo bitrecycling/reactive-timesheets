@@ -39,7 +39,9 @@ public class ClientController {
 
     @GetMapping
     public List<ClientJson> all(){
-        return clientService.all().stream().map(c->clientMapper.toJson(c)).collect(Collectors.toList());
+        return clientService.all().stream().map(
+                c->clientMapper.toJson(c)).collect(Collectors.toList()
+        );
     }
 
    
@@ -49,7 +51,7 @@ public class ClientController {
      * @param client json
      * @return the newly created client as json including the resource id.
      */
-    @PostMapping(consumes ="!application/x-www-form-urlencoded")
+    @PostMapping(consumes ="application/json")
     public ClientEntity create(@RequestBody ClientJson client){
         return clientService.insert(clientMapper.toEntity(client));
     }

@@ -37,7 +37,7 @@ public class ClientEntity {
     @NonNull
     private String address;
     private LocalDateTime creationTime;
-    @OneToMany()
+    @OneToMany
     private List<ProjectEntity> projects;
 
 }

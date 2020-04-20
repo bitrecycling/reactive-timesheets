@@ -55,7 +55,7 @@
                 <div class="tile is-child">
                     <article class="message is-info">
                         <div class="message-header">
-                            <input type="number" value="20" size="3" v-on:change="getMostRecent(value)"></input> most recent activities 
+                            most recent activities <input type="number" placeholder="20" size="3" v-model="activityCount" v-on:change="getMostRecent()" />  
                         </div>
                         <div class="message-body">
                             <div class="content">
@@ -94,20 +94,15 @@
                         </div>
                         <div class="message-body">
                             <div class="content">
-                                <div v-for="project in projects" class="content">
-                                    <strong><a href="track.html?project={{project.id}}"
-                                               class="" style="text-decoration: none;">{{project.name}}</a></strong><br>
-<!--                                    <div v-for="project in projects[client.id]" class="box">-->
-<!--                                        <strong><a href="track.html?client={{client.id}}&project={{project.id}}"-->
-<!--                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong> ({{sumProject(lastweek.activities[project.id], lastweek)}} mins)-->
-<!--                                            <div v-for="activityin lastweek.activities[project.id]">-->
-<!--                                                <a href="track.html?client={{client.id}}&project={{project.id}}&task={{task.id}}"-->
-<!--                                                class="" style="text-decoration: none;">-->
-<!--                                                    - {{task.name}}-->
-<!--                                                </a>-->
-<!--                                            </div>-->
-<!--                                        </ul>-->
-<!--                                    </div>-->
+                                <div v-for="client in clients" class="content">
+                                    
+                                    <strong><a href="track.html?client={{client.id}}"
+                                               class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
+                                    <div v-for="project in client.projects" class="box">
+                                        adsfgasdf
+                                        <strong><a href="track.html?client={{client.id}}&project={{project.id}}"
+                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong>
+                                    </div>
 
                                 </div>
                             </div>

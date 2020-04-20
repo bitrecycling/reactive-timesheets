@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for the project resource. provides the usual CRUD-like operations in a restful manner.
@@ -38,8 +39,8 @@ public class ProjectController {
      * @return
      */
     @GetMapping
-    public List<ProjectEntity> all() {
-        return projectService.all();
+    public List<ProjectJson> all() {
+        return projectService.all().stream().map(p -> projectMapper.toJson(p)).collect(Collectors.toList());
     }
 
     /**
