@@ -3,7 +3,11 @@ var timeshizz = new Vue({
     el: '#timeshizz',
     data: {
         clientId: '',
+        client: undefined,
+        clients: [],
         projectId: '',
+        project: undefined,
+        projects: [],
         report: ''
     },
     methods: {
@@ -32,6 +36,17 @@ var timeshizz = new Vue({
         },
         end: function(){
             return getLastMonthEnd(new Date());
+        },
+        clientSelected: function (client) {
+            this.client = client;
+            this.clientId = client.id;
+            loadProjectsForClient(client.id);
+            loadClientReport(client.id);
+        }
+        ,
+        projectSelected: function (project) {
+            this.project=project;
+            this.projectId=project.id;
         }
     }
 });
@@ -58,8 +73,19 @@ function init() {
     if (params) {
         timeshizz.clientId = params.get("client");
         timeshizz.projectId = params.get("project");
+        if(timeshizz.clientId === undefined || timeshizz.clientId == null){
+            getExistingClients();
+            
+        }else {
+            if(timeshizz.clientId != null){
+                loadClientReport(timeshizz.clientId);
+            }
+            if(timeshizz.projectId != null){
+                loadClientReport(timeshizz.projectId);
+            }
+        }
     }
-    loadClientReport(timeshizz.clientId);
+        
 }
 
 
@@ -119,5 +145,23 @@ function getSingleDaysBetween(startDate, endDate) {
     }
     return singleDays;
 };
+
+function getExistingClients() {
+    axios.get('/clients').then(
+        function (response) {
+            timeshizz.clients = response.data;
+        }
+    );
+}
+
+function loadProjectsForClient(clientId) {
+    axios.get('/projects/?clientId=' + clientId).then(
+        function (response) {
+            timeshizz.projects = response.data;
+        }
+    );
+}
+
+
 
 init();

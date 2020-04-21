@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz.project.model;
 
+import de.bitrecycling.timeshizz.activity.model.ActivityEntity;
 import de.bitrecycling.timeshizz.client.model.ClientEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -40,4 +43,6 @@ public class ProjectEntity {
     @NonNull
     @ManyToOne(optional = false)
     private ClientEntity client;
+    @OneToMany
+    private List<ActivityEntity> activities;
 }

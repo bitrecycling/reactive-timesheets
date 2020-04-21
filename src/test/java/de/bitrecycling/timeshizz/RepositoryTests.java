@@ -49,7 +49,7 @@ public class RepositoryTests {
     public void relationshipsOK() {
         ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress",LocalDateTime.now(), null);
         clientRepository.save(c);
-        ProjectEntity p = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
+        ProjectEntity p = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c, null);
         projectRespository.save(p);
         ActivityEntity t = new ActivityEntity(null,"fullTestActivityName", p, null, LocalDateTime.now());
         activityRepository.save(t);
@@ -85,8 +85,8 @@ public class RepositoryTests {
     public void testProjectActivitysAndCreationTimeQueries(){
         ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null);
         clientRepository.save(c);
-        ProjectEntity p1 = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
-        ProjectEntity p2 = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
+        ProjectEntity p1 = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c, null);
+        ProjectEntity p2 = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c,null);
         projectRespository.save(p1);
         projectRespository.save(p2);
 
@@ -118,7 +118,7 @@ public class RepositoryTests {
     public void testLatestCreatedActivityEntries(){
         ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null);
         clientRepository.save(c);
-        ProjectEntity p= new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
+        ProjectEntity p= new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c, null);
         projectRespository.save(p);
         ArrayList<ActivityEntryEntity> taskEntries = new ArrayList<>();
         ActivityEntity t = new ActivityEntity(null,"fullTestActivityName",p,null,LocalDateTime.now());
@@ -146,7 +146,7 @@ public class RepositoryTests {
     private ClientEntity createTestData() {
         ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null);
         clientRepository.save(c);
-        ProjectEntity p = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c);
+        ProjectEntity p = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c,null);
         projectRespository.save(p);
         ActivityEntity t = new ActivityEntity(null,"fullTestActivityName",p,null,LocalDateTime.now());
         activityRepository.save(t);

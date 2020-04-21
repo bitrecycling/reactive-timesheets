@@ -51,9 +51,7 @@ var timeshizz = new Vue({
         saveProject: function () {
             saveProject(this.selectedProject);
         },
-        countProjectsByClient: function (clientId) {
-            return countProjectsByClient(clientId);
-        },
+        
         createActivity: function () {
             insertActivity(this.activityName, this.selectedProject.id);
             this.activityName ='';
@@ -111,7 +109,7 @@ var timeshizz = new Vue({
         projectSelected: function (project) {
             this.selectedProject=project;
             this.showCreateClient = false;
-            loadActivitysForProject(project.id);
+            loadActivitiesForProject(project.id);
         },
         activitySelected: function (activity) {
             this.selectedActivity = activity;
@@ -173,7 +171,7 @@ function insertProject(projectName, projectDescription, projectRate, clientId) {
 function insertActivity(activityName, projectId) {
     let acticvity = {name:activityName, projectId:projectId}
     axios.post('/activities', acticvity).then(function (response) {
-        loadActivitysForProject(projectId);
+        loadActivitiesForProject(projectId);
     })
         .catch(function (error) {
             console.log(error);
@@ -213,7 +211,7 @@ function deleteProject(projectId){
 
 function deleteActivity(activityId){
     axios.delete('/activities/'+activityId).then(function (response) {
-        getExistingActivitys();
+        getExistingActivities();
     })
         .catch(function (error) {
             console.log(error);
@@ -230,15 +228,6 @@ function deleteActivityEntry(activityEntryId){
 
 }
 
-function countProjectsByClient(clientId) {
-    var count=0;
-    axios.get('/projects/_count?clientId=' + clientId).then(
-        function (response) {
-           count = response.data;
-        }
-    );
-    return count;
-}
 
 function loadProjectsForClient(clientId) {
     axios.get('/projects/?clientId=' + clientId).then(
@@ -248,7 +237,7 @@ function loadProjectsForClient(clientId) {
     );
 }
 
-function loadActivitysForProject(projectId) {
+function loadActivitiesForProject(projectId) {
     axios.get('/activities/?projectId=' + projectId).then(
         function (response) {
             timeshizz.activities = response.data;
@@ -280,7 +269,7 @@ function getExistingProjects() {
     );
 }
 
-function getExistingActivitys() {
+function getExistingActivities() {
     axios.get('/activities').then(
         function (response) {
             timeshizz.activities = response.data;

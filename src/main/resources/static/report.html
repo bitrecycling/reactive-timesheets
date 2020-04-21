@@ -52,17 +52,52 @@
 
 <section>
     <div id="timeshizz">
-        <h1 class="heading subtitle is-3 has-text-centered">Report for {{report.client.name}}</h1>
-        <hr>
-
+        <!-- client and project selection -->
         <section class="container">
+            <div class="content">
+                <div class="columns">
+                    <div class="column is-half">
+                        <!-- client list -->
+                        <div v-if="!client">
+                            <div class="column box" v-for="client in clients" v-on:click="clientSelected(client)">
+                                <strong>{{client.name}}</strong>
+                                <p class="is-size-7">{{client.address}}</p>
+                                <div v-if="client.id == clientId">{{clientSelected(client)}}</div>
+                            </div>
+                        </div>
+                        <!-- / client list -->
+
+                        <!-- project list -->
+                        <div v-if="client && !project">
+                            <div class="column box" v-for="project in projects" v-on:click="projectSelected(project)">
+                                {{project.name}}
+                                <p class="is-size-7">{{project.description}}</p>
+                                <p class="is-size-7">rate: {{project.rate}}</p>
+                                <div v-if="project.id == projectId">{{projectSelected(project)}}</div>
+                            </div>
+                        </div>
+                        <!-- / project list -->
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- / client and project selection -->
+
+
+        <section class="container" v-if="report">
+            <h1 class="heading subtitle is-3 has-text-centered">Report for {{report.client.name}}</h1>
+            <hr>
+
+
             <div class="content">
                 <h2 class="title is-5">{{report.client.name}}</h2>
                 <h3 class="subtitle is-6">{{report.client.address}}</h3>
                 <h1 class="title"><br>&nbsp;<br></h1>
             </div>
+            Timesheet from {{start()}} to {{end()}}
         </section>
-        Timesheet from {{start()}} to {{end()}}
+        
         <section v-for="project in report.projects" class="container">
             <div class="content">
                 <h1 class="title is-4">Project "{{project.name}}"</h1>
@@ -76,9 +111,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="activityin project.tasks">
-                        <td>{{task.name}}</td>
-                        <td><div v-for="taskEntry in task.taskEntries">{{taskEntry.startTime}} Minutes spent:{{taskEntry.durationMinutes}}</div></td>
+                    <tr v-for="activity in project.activities">
+                        <td>{{activity.name}}</td>
+                        <td>
+                            <div v-for="activityEntry in activity.activityEntries">{{activityEntry.startTime}} Minutes spent:{{activityEntry.durationMinutes}}</div>
+                        </td>
 
                     </tr>
                     </tbody>

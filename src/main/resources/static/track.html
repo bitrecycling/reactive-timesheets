@@ -275,7 +275,7 @@
                         <!-- client list -->
                         <div v-if="!selectedClient">
                             <div class="column box" v-for="client in clients" v-on:click="clientSelected(client)">
-                                <strong>{{client.name}}</strong> ({{countProjectsByClient(client.id)}})
+                                <strong>{{client.name}}</strong>
                                 <p class="is-size-7">{{client.address}}</p>
                                 <div v-if="client.id == clientId">{{clientSelected(client)}}</div>
                             </div>

@@ -11,13 +11,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class ReportSerializer extends JsonSerializer<ReportEntity> {
+public class ReportSerializer extends JsonSerializer<ReportJson> {
     @Override
-    public void serialize(ReportEntity report, JsonGenerator jsonGenerator, SerializerProvider serializers) throws IOException {
+    public void serialize(ReportJson report, JsonGenerator jsonGenerator, SerializerProvider serializers) throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeObjectField("client",report.getClient());
-
-        writeProjects(report.getProjects(), jsonGenerator);
+//        jsonGenerator.writeObjectField("client",report.getClient());
+//
+//        writeProjects(report.getProjects(), jsonGenerator);
         jsonGenerator.writeEndObject();
 
     }
