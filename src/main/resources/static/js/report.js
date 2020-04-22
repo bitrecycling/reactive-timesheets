@@ -53,7 +53,18 @@ var timeshizz = new Vue({
 
 
 function loadClientReport(clientId) {
-    axios.get('/report/client/' + clientId+'?start=2000-01-01&end='+'2019-12-31').then(
+    // axios.get('/report?clientId=' + clientId+'&start=2000-01-01&end='+'2019-12-31').then(
+    axios.get('/report?clientId=' + clientId).then(
+        function (response) {
+            timeshizz.report = response.data;
+            console.log(response.data);
+        }
+    );
+}
+
+function loadProjectReport(projectId) {
+    // axios.get('/report?projectId=' + clientId+'&start=2000-01-01&end='+'2019-12-31').then(
+    axios.get('/report?projectId=' + clientId).then(
         function (response) {
             timeshizz.report = response.data;
             console.log(response.data);
@@ -81,7 +92,7 @@ function init() {
                 loadClientReport(timeshizz.clientId);
             }
             if(timeshizz.projectId != null){
-                loadClientReport(timeshizz.projectId);
+                loadProjectReport(timeshizz.projectId);
             }
         }
     }

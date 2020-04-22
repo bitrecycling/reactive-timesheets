@@ -4,7 +4,9 @@ import de.bitrecycling.timeshizz.activity.model.ActivityEntity;
 import de.bitrecycling.timeshizz.activity.model.ActivityEntryEntity;
 import de.bitrecycling.timeshizz.activity.repository.ActivityEntryRepository;
 import de.bitrecycling.timeshizz.activity.repository.ActivityRepository;
+import de.bitrecycling.timeshizz.client.model.ClientEntity;
 import de.bitrecycling.timeshizz.client.repository.ClientRepository;
+import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -55,6 +57,16 @@ public class ActivityEntryService {
     public List<ActivityEntryEntity> getByStartTimeBetween(LocalDateTime from, LocalDateTime to, UUID taskId) {
         return activityEntryRepository.findAllByActivityIdAndStartTimeBetween(taskId, from, to);
     }
+    
+    public List<ActivityEntryEntity> getForClientByStartTimeBetween(UUID clientId, LocalDateTime from, LocalDateTime to) {
+        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(()->new RuntimeException(String.format("client [%s] not found", clientId)));
+        return activityEntryRepository.findActivityEntriesForClientBetween(client, from, to);
+    }
+
+    public List<ActivityEntryEntity> getForProjectByStartTimeBetween(UUID projectId, LocalDateTime from, LocalDateTime to) {
+        final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(()->new RuntimeException(String.format("project [%s] not found", projectId)));
+        return activityEntryRepository.findActivityEntriesForProjectBetween(project, from, to);
+    }
 
     public List<ActivityEntryEntity> getPagedAscending(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -68,7 +80,7 @@ public class ActivityEntryService {
     }
 
     public ActivityEntryEntity createForActivity(ActivityEntryEntity activityEntry, UUID activityId) {
-        final ActivityEntity activity = activityRepository.findById(activityId).orElseThrow(() -> new RuntimeException(String.format("activity[$] not found", activityId)));
+        final ActivityEntity activity = activityRepository.findById(activityId).orElseThrow(() -> new RuntimeException(String.format("activity[%s] not found", activityId)));
         activityEntry.setActivity(activity);
         return activityEntryRepository.save(activityEntry);
     }

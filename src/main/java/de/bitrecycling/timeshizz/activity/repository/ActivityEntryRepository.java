@@ -23,16 +23,27 @@ public interface ActivityEntryRepository extends CrudRepository<ActivityEntryEnt
     List<ActivityEntryEntity> findAllByStartTimeBetween(LocalDateTime from, LocalDateTime to);
     List<ActivityEntryEntity> findAllByActivityIdAndStartTimeBetween(UUID taskId, LocalDateTime from, LocalDateTime to);
     
-    // https://www.baeldung.com/jpa-join-types#multiple
-    // https://thoughts-on-java.org/spring-data-jpa-query-annotation/
-    // https://www.oracle.com/technical-resources/articles/vasiliev-jpql.html
-    
     @Query(value="from ActivityEntryEntity ae where ae.activity.id = :activityId and ae.startTime > :from and ae.startTime < :to")
     List<ActivityEntryEntity> findActivityEntriesForActivityBetween(UUID activityId, LocalDateTime from, LocalDateTime to);
-    @Query(value="Select ae from ActivityEntryEntity ae where ae.activity.project = :project and ae.startTime > :from and ae.startTime < :to")
+
+    /**
+     * finds all activity entries for specified project and start time between specified boundaries. results are ordered by start time 
+     * @param project the project which the activity entry belong to  ( project 1->n activity 1->n activity entry)
+     * @param from optional: the oldest start time that shall be included in the results
+     * @param to optional: the latest (most recent) start time that shall be included in the results
+     * @return
+     */
+    @Query(value="Select ae from ActivityEntryEntity ae where ae.activity.project = :project and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
     List<ActivityEntryEntity> findActivityEntriesForProjectBetween(ProjectEntity project, LocalDateTime from, LocalDateTime to);
 
-    @Query(value="Select ae from ActivityEntryEntity ae where ae.activity.project.client = :client and ae.startTime > :from and ae.startTime < :to")
+    /**
+     * finds all activity entries for specified client and start time between specified boundaries. results are ordered by start time 
+     * @param client the client which the activity entry belongs to (client 1->n project 1->n activity 1->n activity entry)
+     * @param from optional: the oldest start time that shall be included in the results
+     * @param to optional: the latest (most recent) start time that shall be included in the results
+     * @return
+     */
+    @Query(value="Select ae from ActivityEntryEntity ae where ae.activity.project.client = :client and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
     List<ActivityEntryEntity> findActivityEntriesForClientBetween(ClientEntity client, LocalDateTime from, LocalDateTime to);
     
     List<ActivityEntryEntity> findAllByActivityId(UUID taskId);

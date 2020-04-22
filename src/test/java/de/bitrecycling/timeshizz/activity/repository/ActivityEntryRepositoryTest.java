@@ -17,6 +17,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * specific test for the custom queries in activity entry repository
+ */
 @SpringBootTest
 class ActivityEntryRepositoryTest {
 

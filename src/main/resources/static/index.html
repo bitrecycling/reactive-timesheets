@@ -95,14 +95,24 @@
                         <div class="message-body">
                             <div class="content">
                                 <div v-for="client in clients" class="content">
-                                    
-                                    <strong><a href="track.html?client={{client.id}}"
-                                               class="" style="text-decoration: none;">{{client.name}}</a></strong><br>
-                                    <div v-for="project in client.projects" class="box">
-                                        adsfgasdf
-                                        <strong><a href="track.html?client={{client.id}}&project={{project.id}}"
-                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong>
-                                    </div>
+                                    <table>
+                                        <thead class="bold">
+                                        <tr>
+                                            <th>{{client.name}}</th>
+                                        </tr>
+
+                                        </thead>
+                                        <tr v-for="project in client.projects" class="content">
+                                            <td><a href="track.html?client={{client.id}}&project={{project.id}}"
+                                                   class="" style="text-decoration: none;">{{project.name}}</a></td>
+                                        </tr>
+                                    </table>
+<!--                                    <strong><a href="track.html?client={{client.id}}"-->
+<!--                                               class="" style="text-decoration: none;">{{client.name}}</a></strong><br>-->
+<!--                                    <div v-for="project in client.projects" class="box">-->
+<!--                                        <strong><a href="track.html?client={{client.id}}&project={{project.id}}"-->
+<!--                                                   class="" style="text-decoration: none;">{{project.name}}</a></strong>-->
+<!--                                    </div>-->
 
                                 </div>
                             </div>

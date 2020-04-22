@@ -32,7 +32,7 @@ public class ProjectService {
     }
 
     public ProjectEntity createProjectForClient(ProjectEntity project, UUID clientId) {
-        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(() -> new RuntimeException(String.format("client [%] not found", clientId)));
+        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(() -> new RuntimeException(String.format("client [%s] not found", clientId)));
         project.setClient(client);
         return projectRespository.save(project);
     }

@@ -26,7 +26,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * these tests just ensure, that the db, models and queries work as expected
+ * general test for model, persistency and relations work as expected
+ * 
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TimeshizzApplication.class)
