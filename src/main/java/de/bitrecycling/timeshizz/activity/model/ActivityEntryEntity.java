@@ -36,8 +36,6 @@ public class ActivityEntryEntity {
     private LocalDateTime startTime;
     @NonNull
     private Integer durationMinutes;
-//    @ManyToOne(optional = false)
-//    @JoinColumn(referencedColumnName = "id", insertable=false, updatable=false)
     @ManyToOne
     private ActivityEntity activity;
     private LocalDateTime creationTime;

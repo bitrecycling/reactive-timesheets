@@ -86,56 +86,58 @@
 
 
         <section class="container" v-if="report">
-            <h1 class="heading subtitle is-3 has-text-centered">Report for {{report.client.name}}</h1>
+            <h1 class="heading subtitle is-3 has-text-centered">Report for {{client.name}}</h1>
             <hr>
 
 
             <div class="content">
-                <h2 class="title is-5">{{report.client.name}}</h2>
-                <h3 class="subtitle is-6">{{report.client.address}}</h3>
+                <h2 class="title is-5">{{client.name}}</h2>
+                <h3 class="subtitle is-6">{{client.address}}</h3>
                 <h1 class="title"><br>&nbsp;<br></h1>
             </div>
             Timesheet from {{start()}} to {{end()}}
         </section>
-        
-        <section v-for="project in report.projects" class="container">
-            <div class="content">
-                <h1 class="title is-4">Project "{{project.name}}"</h1>
-                <hr>
-
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>activity</th>
-                        <th>date / time spent</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="activity in project.activities">
-                        <td>{{activity.name}}</td>
-                        <td>
-                            <div v-for="activityEntry in activity.activityEntries">{{activityEntry.startTime}} Minutes spent:{{activityEntry.durationMinutes}}</div>
-                        </td>
-
-                    </tr>
-                    </tbody>
-                    <thead>
-                    <tr>
-                        <th>total time spent</th>
-                        <th>{{sumActivitysForProject(project.id)}}</th>
-                    </tr>
-                    <tr>
-                        <th>rate</th>
-                        <th>{{project.rate}} €</th>
-                    </tr>
-                    <tr>
-                        <th>subtotal</th>
-                        <th>{{subtotal(project)}},00 €</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
+        <section class="container">
+            
         </section>
+<!--        <section v-for="ae in report" class="container">-->
+<!--            <div class="content">-->
+<!--                <h1 class="title is-4">Project "{{ae.activity.name}}"</h1>-->
+<!--                <hr>-->
+
+<!--                <table class="table">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>activity</th>-->
+<!--                        <th>date / time spent</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr v-for="activity in project.activities">-->
+<!--                        <td>{{activity.name}}</td>-->
+<!--                        <td>-->
+<!--                            <div v-for="activityEntry in activity.activityEntries">{{activityEntry.startTime}} Minutes spent:{{activityEntry.durationMinutes}}</div>-->
+<!--                        </td>-->
+
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>total time spent</th>-->
+<!--                        <th>{{sumActivitysForProject(project.id)}}</th>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <th>rate</th>-->
+<!--                        <th>{{project.rate}} €</th>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <th>subtotal</th>-->
+<!--                        <th>{{subtotal(project)}},00 €</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </section>-->
         <section class="container">
             <div class="content">
                 <!--<div class="title is-4">Grand Total: {{total()}}</div>-->

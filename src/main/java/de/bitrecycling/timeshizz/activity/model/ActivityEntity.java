@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz.activity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,10 +39,10 @@ public class ActivityEntity {
     private UUID id;
     @NonNull
     private String name;
+    @JsonIgnore
     @NonNull
     @ManyToOne(optional = false)
     private ProjectEntity project;
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "activity")
     @OneToMany()
     private List<ActivityEntryEntity> activityEntries = new ArrayList<>();
     

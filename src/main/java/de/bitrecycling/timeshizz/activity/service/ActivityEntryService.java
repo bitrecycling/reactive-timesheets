@@ -14,8 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * The activity entry service
@@ -57,17 +60,67 @@ public class ActivityEntryService {
     public List<ActivityEntryEntity> getByStartTimeBetween(LocalDateTime from, LocalDateTime to, UUID taskId) {
         return activityEntryRepository.findAllByActivityIdAndStartTimeBetween(taskId, from, to);
     }
-    
+
+    /**
+     * retrieve all activity entries belonging to a specified client, start time can be restricted. ordered by start time
+     *
+     * This can be useful to generate monthly reports.
+     *
+     * @param clientId the client to retrieve the activity entries for
+     * @param from the earliest start date of the activity entries to select
+     * @param to the latest start date of the activity entries to select
+     */           
     public List<ActivityEntryEntity> getForClientByStartTimeBetween(UUID clientId, LocalDateTime from, LocalDateTime to) {
         final ClientEntity client = clientRepository.findById(clientId).orElseThrow(()->new RuntimeException(String.format("client [%s] not found", clientId)));
         return activityEntryRepository.findActivityEntriesForClientBetween(client, from, to);
     }
 
+    /**
+     * retrieve all activity entries belonging to a specified client, start time can be restricted. ordered by start time
+     *
+     * This can be useful to generate monthly reports.
+     *
+     * @param projectId the project to retrieve the activity entries for
+     * @param from the earliest start date of the activity entries to select
+     * @param to the latest start date of the activity entries to select
+     */
     public List<ActivityEntryEntity> getForProjectByStartTimeBetween(UUID projectId, LocalDateTime from, LocalDateTime to) {
         final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(()->new RuntimeException(String.format("project [%s] not found", projectId)));
         return activityEntryRepository.findActivityEntriesForProjectBetween(project, from, to);
     }
 
+    /**
+     * retrieve all activity entries belonging to a specified client, start time can be restricted. ordered by start time
+     * 
+     * This can be useful to generate monthly reports.
+     * 
+     * @param clientId the client to retrieve the activity entries for
+     * @param from the earliest start date of the activity entries to select
+     * @param to the latest start date of the activity entries to select
+     * @param grouping maybe later
+     * @return
+     */
+    public Map<String, List<ActivityEntryEntity>> getGroupedForClientByStartTimeBetween(UUID clientId, LocalDateTime from, LocalDateTime to, String grouping) {
+        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(()->new RuntimeException(String.format("client [%s] not found", clientId)));
+        return activityEntryRepository.findActivityEntriesForClientBetween(client, from, to).stream().collect(Collectors.groupingBy(y->y.getStartTime().format(DateTimeFormatter.ISO_LOCAL_DATE), Collectors.toList()));
+    }
+
+    /**
+     *
+     * retrieve all activity entries belonging to a specified project, start time can be restricted. ordered by start time
+     * This can be useful to generate monthly reports.
+     * 
+     * @param projectId the project to retrieve the activity entries for
+     * @param from the earliest start date of the activity entries to select
+     * @param to the latest start date of the activity entries to select
+     * @param grouping maybe later
+     * @return
+     */
+    public Map<String, List<ActivityEntryEntity>> getGroupedForProjectByStartTimeBetween(UUID projectId, LocalDateTime from, LocalDateTime to, String grouping) {
+        final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(()->new RuntimeException(String.format("project [%s] not found", projectId)));
+        return activityEntryRepository.findActivityEntriesForProjectBetween(project, from, to).stream().collect(Collectors.groupingBy(y->y.getStartTime().format(DateTimeFormatter.ISO_LOCAL_DATE), Collectors.toList()));
+    }
+    
     public List<ActivityEntryEntity> getPagedAscending(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return activityEntryRepository.findAllByOrderByCreationTimeAsc(pageable);
