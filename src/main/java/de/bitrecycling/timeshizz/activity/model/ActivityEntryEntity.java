@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
+@Table(name = "activityentry")
 public class ActivityEntryEntity {
     
     @Id

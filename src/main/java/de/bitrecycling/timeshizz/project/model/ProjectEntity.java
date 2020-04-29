@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,8 +26,8 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@RequiredArgsConstructor
 @Entity
+@Table(name = "project")
 public class ProjectEntity {
 
     @Id
