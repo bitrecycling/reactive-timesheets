@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz.activity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,5 +42,7 @@ public class ActivityEntryEntity {
     @ManyToOne
     private ActivityEntity activity;
     private LocalDateTime creationTime;
+    @JsonIgnore // defensive
+    private UUID userId;
     
 }

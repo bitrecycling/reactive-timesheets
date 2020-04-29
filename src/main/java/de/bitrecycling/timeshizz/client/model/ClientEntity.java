@@ -1,5 +1,6 @@
 package de.bitrecycling.timeshizz.client.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,5 +42,8 @@ public class ClientEntity {
     private LocalDateTime creationTime;
     @OneToMany
     private List<ProjectEntity> projects;
+    @Column(columnDefinition = "BINARY(16)")
+    @JsonIgnore // defensive
+    private UUID userId;
 
 }

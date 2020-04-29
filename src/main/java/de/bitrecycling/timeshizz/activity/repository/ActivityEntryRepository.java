@@ -23,8 +23,16 @@ public interface ActivityEntryRepository extends CrudRepository<ActivityEntryEnt
     List<ActivityEntryEntity> findAllByStartTimeBetween(LocalDateTime from, LocalDateTime to);
     List<ActivityEntryEntity> findAllByActivityIdAndStartTimeBetween(UUID taskId, LocalDateTime from, LocalDateTime to);
     
+    List<ActivityEntryEntity> findAllByActivityIdAndUserIdOrderByCreationTimeDesc(UUID taskId, UUID userId);
+    List<ActivityEntryEntity> findAllByUserIdAndCreationTimeBetween(LocalDateTime from, LocalDateTime to, UUID userId);
+    List<ActivityEntryEntity> findAllByUserIdAndStartTimeBetween(LocalDateTime from, LocalDateTime to, UUID userId);
+    List<ActivityEntryEntity> findAllByActivityIdAndUserIdAndStartTimeBetween(UUID taskId, LocalDateTime from, LocalDateTime to, UUID userId);
+    
     @Query(value="from ActivityEntryEntity ae where ae.activity.id = :activityId and ae.startTime > :from and ae.startTime < :to")
     List<ActivityEntryEntity> findActivityEntriesForActivityBetween(UUID activityId, LocalDateTime from, LocalDateTime to);
+
+    @Query(value="from ActivityEntryEntity ae where ae.userId = :userId and ae.activity.id = :activityId and ae.startTime > :from and ae.startTime < :to")
+    List<ActivityEntryEntity> findUsersActivityEntriesForActivityBetween(UUID userId, UUID activityId, LocalDateTime from, LocalDateTime to);
 
     /**
      * finds all activity entries for specified project and start time between specified boundaries. results are ordered by start time 
@@ -36,6 +44,10 @@ public interface ActivityEntryRepository extends CrudRepository<ActivityEntryEnt
     @Query(value="Select ae from ActivityEntryEntity ae where ae.activity.project = :project and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
     List<ActivityEntryEntity> findActivityEntriesForProjectBetween(ProjectEntity project, LocalDateTime from, LocalDateTime to);
 
+    @Query(value="Select ae from ActivityEntryEntity ae where ae.userId = :userId and ae.activity.project = :project and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
+    List<ActivityEntryEntity> findUsersActivityEntriesForProjectBetween(UUID userId, ProjectEntity project, LocalDateTime from, LocalDateTime to);
+
+
     /**
      * finds all activity entries for specified client and start time between specified boundaries. results are ordered by start time 
      * @param client the client which the activity entry belongs to (client 1->n project 1->n activity 1->n activity entry)
@@ -45,6 +57,9 @@ public interface ActivityEntryRepository extends CrudRepository<ActivityEntryEnt
      */
     @Query(value="Select ae from ActivityEntryEntity ae where ae.activity.project.client = :client and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
     List<ActivityEntryEntity> findActivityEntriesForClientBetween(ClientEntity client, LocalDateTime from, LocalDateTime to);
+    
+    @Query(value="Select ae from ActivityEntryEntity ae where ae.userId = :userId and ae.activity.project.client = :client and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
+    List<ActivityEntryEntity> findUsersActivityEntriesForClientBetween(UUID userId, ClientEntity client, LocalDateTime from, LocalDateTime to);
     
     List<ActivityEntryEntity> findAllByActivityId(UUID taskId);
     List<ActivityEntryEntity> findAll();

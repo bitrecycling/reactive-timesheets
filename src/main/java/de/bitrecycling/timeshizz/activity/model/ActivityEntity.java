@@ -50,4 +50,7 @@ public class ActivityEntity {
     
     private LocalDateTime creationTime;
 
+    @JsonIgnore // defensive
+    private UUID userId;
+
 }
