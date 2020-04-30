@@ -44,7 +44,7 @@ public class ActivityEntryController {
 
     @GetMapping(params = "activityId")
     public List<ActivityEntryEntity> allByActivityId(@RequestParam("activityId") UUID activityId) {
-        return activityEntryService.getAllById(activityId);
+        return activityEntryService.getAllByActivityId(activityId);
     }
     
 

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * TODO: guarding to allow normal (logged-in) users only to deal with their owned items
  * The project service
  * <p>
  * created by robo

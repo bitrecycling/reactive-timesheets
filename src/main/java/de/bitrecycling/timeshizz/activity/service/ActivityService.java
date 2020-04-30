@@ -43,7 +43,7 @@ public class ActivityService {
 
     public ActivityEntity insert(String activityName, UUID projectId) {
         ActivityEntity activity = new ActivityEntity();
-        final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(() -> new RuntimeException(String.format("project[%s] not found", projectId)));
+        final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(() -> new ResourceNotFoundException(String.format("project[%s] not found", projectId)));
         activity.setName(activityName);
         activity.setProject(project);
         activity.setCreationTime(LocalDateTime.now());

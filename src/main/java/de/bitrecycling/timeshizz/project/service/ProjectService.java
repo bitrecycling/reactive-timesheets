@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * TODO: guarding to allow normal (logged-in) users only to deal with their owned items
  * The project service
  *
  * created by robo
@@ -32,7 +33,7 @@ public class ProjectService {
     }
 
     public ProjectEntity createProjectForClient(ProjectEntity project, UUID clientId) {
-        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(() -> new RuntimeException(String.format("client [%s] not found", clientId)));
+        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(() -> new ResourceNotFoundException(String.format("client [%s] not found", clientId)));
         project.setClient(client);
         return projectRespository.save(project);
     }

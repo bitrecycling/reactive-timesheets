@@ -6,6 +6,7 @@ import de.bitrecycling.timeshizz.activity.repository.ActivityEntryRepository;
 import de.bitrecycling.timeshizz.activity.repository.ActivityRepository;
 import de.bitrecycling.timeshizz.client.model.ClientEntity;
 import de.bitrecycling.timeshizz.client.repository.ClientRepository;
+import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
+ * TODO: guarding to allow normal (logged-in) users only to deal with their owned items
  * The activity entry service
  * created by robo
  */
@@ -37,10 +39,11 @@ public class ActivityEntryService {
     private ClientRepository clientRepository;
 
     public List<ActivityEntryEntity> all() {
+        
         return activityEntryRepository.findAll();
     }
 
-    public List<ActivityEntryEntity> getAllById(UUID id) {
+    public List<ActivityEntryEntity> getAllByActivityId(UUID id) {
         return activityEntryRepository.findAllByActivityIdOrderByCreationTimeDesc(id);
     }
 
@@ -71,7 +74,7 @@ public class ActivityEntryService {
      * @param to the latest start date of the activity entries to select
      */           
     public List<ActivityEntryEntity> getForClientByStartTimeBetween(UUID clientId, LocalDateTime from, LocalDateTime to) {
-        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(()->new RuntimeException(String.format("client [%s] not found", clientId)));
+        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(()->new ResourceNotFoundException(String.format("client [%s] not found", clientId)));
         return activityEntryRepository.findActivityEntriesForClientBetween(client, from, to);
     }
 
@@ -85,7 +88,7 @@ public class ActivityEntryService {
      * @param to the latest start date of the activity entries to select
      */
     public List<ActivityEntryEntity> getForProjectByStartTimeBetween(UUID projectId, LocalDateTime from, LocalDateTime to) {
-        final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(()->new RuntimeException(String.format("project [%s] not found", projectId)));
+        final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(()->new ResourceNotFoundException(String.format("project [%s] not found", projectId)));
         return activityEntryRepository.findActivityEntriesForProjectBetween(project, from, to);
     }
 
@@ -101,7 +104,7 @@ public class ActivityEntryService {
      * @return
      */
     public Map<String, List<ActivityEntryEntity>> getGroupedForClientByStartTimeBetween(UUID clientId, LocalDateTime from, LocalDateTime to, String grouping) {
-        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(()->new RuntimeException(String.format("client [%s] not found", clientId)));
+        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(()->new ResourceNotFoundException(String.format("client [%s] not found", clientId)));
         return activityEntryRepository.findActivityEntriesForClientBetween(client, from, to).stream().collect(Collectors.groupingBy(y->y.getStartTime().format(DateTimeFormatter.ISO_LOCAL_DATE), Collectors.toList()));
     }
 
@@ -117,7 +120,7 @@ public class ActivityEntryService {
      * @return
      */
     public Map<String, List<ActivityEntryEntity>> getGroupedForProjectByStartTimeBetween(UUID projectId, LocalDateTime from, LocalDateTime to, String grouping) {
-        final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(()->new RuntimeException(String.format("project [%s] not found", projectId)));
+        final ProjectEntity project = projectRespository.findById(projectId).orElseThrow(()->new ResourceNotFoundException(String.format("project [%s] not found", projectId)));
         return activityEntryRepository.findActivityEntriesForProjectBetween(project, from, to).stream().collect(Collectors.groupingBy(y->y.getStartTime().format(DateTimeFormatter.ISO_LOCAL_DATE), Collectors.toList()));
     }
     
@@ -133,13 +136,13 @@ public class ActivityEntryService {
     }
 
     public ActivityEntryEntity createForActivity(ActivityEntryEntity activityEntry, UUID activityId) {
-        final ActivityEntity activity = activityRepository.findById(activityId).orElseThrow(() -> new RuntimeException(String.format("activity[%s] not found", activityId)));
+        final ActivityEntity activity = activityRepository.findById(activityId).orElseThrow(() -> new ResourceNotFoundException(String.format("activity[%s] not found", activityId)));
         activityEntry.setActivity(activity);
         return activityEntryRepository.save(activityEntry);
     }
 
     public ActivityEntryEntity byId(UUID id) {
-        return activityEntryRepository.findById(id).orElseThrow(()->new RuntimeException("ActivityEntry["+id+"] not available"));
+        return activityEntryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("ActivityEntry["+id+"] not available"));
     }
     
     public ActivityEntryEntity save(ActivityEntryEntity taskEntry) {

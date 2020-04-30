@@ -3,9 +3,9 @@ package de.bitrecycling.timeshizz.activity.model;
 import de.bitrecycling.timeshizz.common.NlpTime;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface ActivityMapper {
@@ -17,7 +17,9 @@ public interface ActivityMapper {
     ActivityJson toJson(ActivityEntity entity);
     ActivityEntity toEntity(ActivityJson json);
     
-    default Optional<LocalDateTime> parseNLP(String nlp){
-        return NlpTime.parseTimeFromNlpString(nlp);
+    
+    @Named("parseNLP")
+    default LocalDateTime parseNLP(String nlp){
+        return NlpTime.parseTimeFromNlpString(nlp).orElse(LocalDateTime.now());
     }
 }

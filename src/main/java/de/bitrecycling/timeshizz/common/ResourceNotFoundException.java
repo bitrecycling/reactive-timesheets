@@ -10,4 +10,7 @@ public class ResourceNotFoundException extends ResponseStatusException {
     public ResourceNotFoundException(String resourceName, String id){
         super(HttpStatus.NOT_FOUND, resourceName + " resource with id="+id+" not found");
     }
+    public ResourceNotFoundException(String message){
+        super(HttpStatus.NOT_FOUND, message);
+    }
 }
