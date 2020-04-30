@@ -29,11 +29,11 @@ public class ProjectService {
     }
 
     public ProjectEntity byId(UUID id) {
-        return projectRespository.findById(id).orElseThrow(() -> new ResourceNotFoundException("project", id.toString()));
+        return projectRespository.findById(id).orElseThrow(() -> new ResourceNotFoundException("project", id));
     }
 
     public ProjectEntity createProjectForClient(ProjectEntity project, UUID clientId) {
-        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(() -> new ResourceNotFoundException(String.format("client [%s] not found", clientId)));
+        final ClientEntity client = clientRepository.findById(clientId).orElseThrow(() -> new ResourceNotFoundException(String.format("client", clientId)));
         project.setClient(client);
         return projectRespository.save(project);
     }

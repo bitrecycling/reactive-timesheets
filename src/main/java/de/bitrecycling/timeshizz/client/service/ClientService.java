@@ -27,7 +27,7 @@ public class ClientService {
     }
 
     public ClientEntity byId(UUID id) {
-        return clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("client", id.toString()));
+        return clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("client", id));
 
     }
 

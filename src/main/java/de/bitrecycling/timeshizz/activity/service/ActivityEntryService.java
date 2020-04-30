@@ -44,6 +44,7 @@ public class ActivityEntryService {
     }
 
     public List<ActivityEntryEntity> getAllByActivityId(UUID id) {
+        activityRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("activity", id));
         return activityEntryRepository.findAllByActivityIdOrderByCreationTimeDesc(id);
     }
 

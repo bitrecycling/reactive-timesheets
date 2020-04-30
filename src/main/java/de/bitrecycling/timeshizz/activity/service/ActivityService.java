@@ -34,7 +34,7 @@ public class ActivityService {
     }
 
     public ActivityEntity byId(UUID activityId) {
-        return activityRepository.findById(activityId).orElseThrow(() -> new ResourceNotFoundException("activity", activityId.toString()));
+        return activityRepository.findById(activityId).orElseThrow(() -> new ResourceNotFoundException("activity", activityId));
     }
 
     public List<ActivityEntity> allByProjectId(UUID projectId) {
