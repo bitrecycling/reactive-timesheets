@@ -8,7 +8,8 @@ var timeshizz = new Vue({
         projectId: '',
         project: undefined,
         projects: [],
-        report: ''
+        report: '',
+        momentjs: moment
     },
     methods: {
         reportForClient: function(clientId){
@@ -25,17 +26,25 @@ var timeshizz = new Vue({
             return _sumActivityEntriesForActivity(taskId);
         },
         subtotal: function (project) {
-           return _sumActivitysForProject(project.id) * project.rate;
+            return _sumActivitysForProject(project.id) * project.rate;
 
         },
         total: function () {
 
         },
-        start: function(){
-            return getLastMonthStart(new Date());
+        startOfMonth: function (cur) {
+            if (cur === undefined) {
+                cur = new Date();
+                cur.setMonth(new Date().getMonth() - 1);
+            }
+            return getMonthStart(cur);
         },
-        end: function(){
-            return getLastMonthEnd(new Date());
+        endOfMonth: function (cur) {
+            if (cur === undefined) {
+                cur = new Date();
+                cur.setMonth(new Date().getMonth() - 1);
+            }
+            return getMonthEnd(cur);
         },
         clientSelected: function (client) {
             this.client = client;
@@ -45,9 +54,25 @@ var timeshizz = new Vue({
         }
         ,
         projectSelected: function (project) {
-            this.project=project;
-            this.projectId=project.id;
+            this.project = project;
+            this.projectId = project.id;
+        },
+        enumerateDays(startDate, endDate) {
+            return getDates(startDate, endDate);
+        },
+        weekend(day) {
+            var dayIndex = moment(day).day();
+            return dayIndex == 6 || dayIndex == 0;
+        },
+        sum() {
+
+            var sum = 0;
+            this.report.forEach(function (line) {
+                sum += line.durationMinutes;
+            });
+            return sum;
         }
+
     }
 });
 
@@ -74,7 +99,7 @@ function loadProjectReport(projectId) {
 
 
 function prettyPrintIsoDateTime(dateTimeString) {
-    return moment(dateTimeString).format("YYYY-MM-DD HH:mm ");
+    return moment(dateTimeString).format("YYYY-MM-DD");
 }
 
 
@@ -118,44 +143,44 @@ function getLastWeekEnd(date){
 }
 
 
-function getLastMonthStart(date){
-    var d = new Date(new Date(date.setDate(0)).setDate(1));
-    d.setHours(2,0,0,0);
-    return new Date(d).toISOString().split('.')[0] ;
+function getMonthStart(date) {
+    return moment(date).startOf('month').toDate();
 }
 
-function getLastMonthEnd(date){
-    var d = new Date(new Date(date.setDate(0)));
-    d.setHours(1,0,0,0);
-    return new Date(d).toISOString().split('.')[0] ;
+function getMonthEnd(date) {
+    return moment(date).endOf('month').toDate();
 }
 
 
 function getDayStart(dayDate){
     var d = new Date(dayDate);
-    d.setHours(1,0,0,0);
-    return new Date(d).toISOString().split('.')[0] ;
-}
-function getDayEnd(dayDate){
-    var d = new Date(dayDate);
-    d.setHours(23,59,59,999);
-    return new Date(d).toISOString().split('.')[0] ;
+    d.setHours(1, 0, 0, 0);
+    return new Date(d).toISOString().split('.')[0];
 }
 
-function getSingleDaysBetween(startDate, endDate) {
-    var singleDays = [],
-        currentDay = startDate,
-        addDays = function(days) {
+function getDayEnd(dayDate) {
+    var d = new Date(dayDate);
+    d.setHours(23, 59, 59, 999);
+    return new Date(d).toISOString().split('.')[0];
+}
+
+
+// lists all dates between startDate and endDate into Array
+function getDates(startDate, endDate) {
+    var dates = [],
+        currentDate = startDate,
+        addDays = function (days) {
             var date = new Date(this.valueOf());
             date.setDate(date.getDate() + days);
             return date;
         };
-    while (currentDay <= endDate) {
-        singleDays.push(currentDay);
-        currentDay = addDays.call(currentDay, 1);
+    while (currentDate <= endDate) {
+        dates.push(currentDate);
+        currentDate = addDays.call(currentDate, 1);
     }
-    return singleDays;
+    return dates;
 };
+
 
 function getExistingClients() {
     axios.get('/clients').then(
