@@ -4,7 +4,7 @@ import de.bitrecycling.timeshizz.client.model.ClientEntity;
 import de.bitrecycling.timeshizz.client.model.ClientJson;
 import de.bitrecycling.timeshizz.client.model.ClientMapper;
 import de.bitrecycling.timeshizz.client.service.ClientService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,17 +25,11 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/clients")
-
+@RequiredArgsConstructor
 public class ClientController {
     
     private final ClientService clientService;
     private final ClientMapper clientMapper;
-
-    @Autowired
-    public ClientController(ClientService clientService, ClientMapper clientMapper) {
-        this.clientService = clientService;
-        this.clientMapper = clientMapper;
-    }
 
     @GetMapping
     public List<ClientJson> all(){
@@ -43,8 +37,6 @@ public class ClientController {
                 c->clientMapper.toJson(c)).collect(Collectors.toList()
         );
     }
-
-   
 
     /**
      * create a new client using json, e.g. {"name":"Client Name", "address":"Client Adress, 234521 Some City"}

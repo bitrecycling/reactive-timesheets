@@ -5,7 +5,7 @@ import de.bitrecycling.timeshizz.client.repository.ClientRepository;
 import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +18,10 @@ import java.util.UUID;
  * created by robo
  */
 @Service
+@RequiredArgsConstructor
 public class ProjectService {
-    @Autowired
-    ProjectRespository projectRespository;
-    @Autowired
-    ClientRepository clientRepository;
+    private final ProjectRespository projectRespository;
+    private final ClientRepository clientRepository;
 
     public List<ProjectEntity> all() {
         return projectRespository.findAll();

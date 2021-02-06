@@ -5,7 +5,7 @@ import de.bitrecycling.timeshizz.activity.model.ActivityJson;
 import de.bitrecycling.timeshizz.activity.model.ActivityMapper;
 import de.bitrecycling.timeshizz.activity.service.ActivityService;
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,14 +26,12 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/activities")
-@Api(value = "Activity Management", description = "CRUD for activity resource")
+@Api(value = "Activity Management")
+@RequiredArgsConstructor
 public class ActivityController {
 
-    @Autowired
-    private ActivityService activityService;
-
-    @Autowired
-    private ActivityMapper activityMapper;
+    private final ActivityService activityService;
+    private final ActivityMapper activityMapper;
 
     /**
      * get all activities, can be used for reports or custom filtering

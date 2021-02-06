@@ -9,7 +9,7 @@ import de.bitrecycling.timeshizz.client.repository.ClientRepository;
 import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
 import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,19 +27,16 @@ import java.util.stream.Collectors;
  * created by robo
  */
 @Service
+@RequiredArgsConstructor
 public class ActivityEntryService {
 
-    @Autowired
-    private ActivityEntryRepository activityEntryRepository;
-    @Autowired
-    private ActivityRepository activityRepository;
-    @Autowired
-    private ProjectRespository projectRespository;
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ActivityEntryRepository activityEntryRepository;
+    private final ActivityRepository activityRepository;
+    private final ProjectRespository projectRespository;
+    private final ClientRepository clientRepository;
 
     public List<ActivityEntryEntity> all() {
-        
+
         return activityEntryRepository.findAll();
     }
 

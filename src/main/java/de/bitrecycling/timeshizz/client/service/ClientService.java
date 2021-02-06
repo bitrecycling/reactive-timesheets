@@ -3,7 +3,7 @@ package de.bitrecycling.timeshizz.client.service;
 import de.bitrecycling.timeshizz.client.model.ClientEntity;
 import de.bitrecycling.timeshizz.client.repository.ClientRepository;
 import de.bitrecycling.timeshizz.common.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * TODO: guarding to allow normal (logged-in) users only to deal with their owned items
+ *
  * The project service
  * <p>
  * created by robo
  */
 @Service
+@RequiredArgsConstructor
 public class ClientService {
 
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
     public List<ClientEntity> all() {
         return clientRepository.findAllByOrderByCreationTimeDesc();

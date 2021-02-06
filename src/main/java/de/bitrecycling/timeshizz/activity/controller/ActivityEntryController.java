@@ -5,7 +5,7 @@ import de.bitrecycling.timeshizz.activity.model.ActivityEntryJson;
 import de.bitrecycling.timeshizz.activity.model.ActivityMapper;
 import de.bitrecycling.timeshizz.activity.service.ActivityEntryService;
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,13 +29,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/activityentries")
 @Api(value = "ActivityEntry Management", description = "CRUD for activity entry resource")
+@RequiredArgsConstructor
 public class ActivityEntryController {
 
-    @Autowired
-    private ActivityEntryService activityEntryService;
-    
-    @Autowired
-    private ActivityMapper activityMapper;
+    private final ActivityEntryService activityEntryService;
+    private final ActivityMapper activityMapper;
 
     @GetMapping
     public List<ActivityEntryEntity> all() {
