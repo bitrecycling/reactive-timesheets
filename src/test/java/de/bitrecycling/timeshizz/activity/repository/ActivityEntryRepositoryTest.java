@@ -124,7 +124,7 @@ class ActivityEntryRepositoryTest {
 
         //when all activity entries for project with wrong timeframe are queried, then 0 are expected
         final List<ActivityEntryEntity> none = activityEntryRepository.findActivityEntriesForActivityBetween(a1.getId(), LocalDateTime.now(), LocalDateTime.now());
-        assertThat(none.size()).isEqualTo(0);
+        assertThat(none.size()).isZero();
 
         //when all activity entries for other project are queried with long enough timeframe, then the only one is expected
         final List<ActivityEntryEntity> one = activityEntryRepository.findActivityEntriesForProjectBetween(p2,LocalDateTime.now().minusMinutes(1), LocalDateTime.now());

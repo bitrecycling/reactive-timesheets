@@ -8,14 +8,12 @@ import de.bitrecycling.timeshizz.client.model.ClientEntity;
 import de.bitrecycling.timeshizz.client.repository.ClientRepository;
 import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -30,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * general test for model, persistency and relations work as expected
  * 
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = TimeshizzApplication.class)
 @AutoConfigureMockMvc
 public class RepositoryTests {
@@ -52,7 +49,7 @@ public class RepositoryTests {
         UUID userId = UUID.randomUUID();
         ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress",LocalDateTime.now(), null, userId);
         clientRepository.save(c);
-        ProjectEntity p = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c, null,userId);
+        ProjectEntity p = new ProjectEntity(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
         projectRespository.save(p);
         ActivityEntity t = new ActivityEntity(null,"fullTestActivityName", p, null, LocalDateTime.now(), userId);
         activityRepository.save(t);
@@ -85,21 +82,21 @@ public class RepositoryTests {
      * tests tasks created between given timespan
      */
     @Test
-    public void testProjectActivitysAndCreationTimeQueries(){
+    public void testProjectActivitysAndCreationTimeQueries() {
         UUID userId = UUID.randomUUID();
-        ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null,userId);
+        ClientEntity c = new ClientEntity(null, "fullTestClient", "fullTestClientAddress", LocalDateTime.now(), null, userId);
         clientRepository.save(c);
-        ProjectEntity p1 = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c, null,userId);
-        ProjectEntity p2 = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c,null,userId);
+        ProjectEntity p1 = new ProjectEntity(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
+        ProjectEntity p2 = new ProjectEntity(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
         projectRespository.save(p1);
         projectRespository.save(p2);
 
         LocalDateTime before = LocalDateTime.now().minusSeconds(2);
-        ActivityEntity t1 = new ActivityEntity(null, "t1", p1, null,before,userId);
-        ActivityEntity t2 = new ActivityEntity(null, "t2", p1, null,before,userId);
-        ActivityEntity t3 = new ActivityEntity(null,"t3", p2, null,before,userId);
-        ActivityEntity t4 = new ActivityEntity(null,"t4",p2, null,before,userId);
-        ActivityEntity t5 = new ActivityEntity(null,"t5", p2, null,before,userId);
+        ActivityEntity t1 = new ActivityEntity(null, "t1", p1, null, before, userId);
+        ActivityEntity t2 = new ActivityEntity(null, "t2", p1, null, before, userId);
+        ActivityEntity t3 = new ActivityEntity(null, "t3", p2, null, before, userId);
+        ActivityEntity t4 = new ActivityEntity(null, "t4", p2, null, before, userId);
+        ActivityEntity t5 = new ActivityEntity(null, "t5", p2, null, before, userId);
         List<ActivityEntity> activities = Arrays.asList(t1, t2, t3, t4, t5);
         activities.forEach(activity-> activityRepository.save(activity));
         assertThat(activityRepository.findAllByProjectIdOrderByCreationTimeDesc(p1.getId()).size()).isEqualTo(2);
@@ -123,7 +120,7 @@ public class RepositoryTests {
         UUID userId = UUID.randomUUID();
         ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null,userId);
         clientRepository.save(c);
-        ProjectEntity p= new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c, null,userId);
+        ProjectEntity p = new ProjectEntity(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
         projectRespository.save(p);
         ArrayList<ActivityEntryEntity> taskEntries = new ArrayList<>();
         ActivityEntity t = new ActivityEntity(null,"fullTestActivityName",p,null,LocalDateTime.now(),userId);
@@ -152,7 +149,7 @@ public class RepositoryTests {
         UUID userId = UUID.randomUUID();
         ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null,userId);
         clientRepository.save(c);
-        ProjectEntity p = new ProjectEntity(null,"fullTestProjectName","fullTestProjectDescription",60.0,c,null,userId);
+        ProjectEntity p = new ProjectEntity(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
         projectRespository.save(p);
         ActivityEntity t = new ActivityEntity(null,"fullTestActivityName",p,null,LocalDateTime.now(),userId);
         activityRepository.save(t);

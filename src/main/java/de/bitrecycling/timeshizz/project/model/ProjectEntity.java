@@ -3,6 +3,7 @@ package de.bitrecycling.timeshizz.project.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.bitrecycling.timeshizz.activity.model.ActivityEntity;
 import de.bitrecycling.timeshizz.client.model.ClientEntity;
+import de.bitrecycling.timeshizz.notes.NoteEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -49,4 +50,7 @@ public class ProjectEntity {
     private List<ActivityEntity> activities;
     @JsonIgnore // defensive
     private UUID userId;
+    @OneToMany
+    @JsonIgnore
+    private List<NoteEntity> notes;
 }

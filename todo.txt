@@ -1,0 +1,8 @@
+- add multiuser / multi-tenancy
+- add spring security guardings
+- add oidc 
+- add bdd-style tests 
+
+//maybe useful hints for auth
+@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("#userId == #principal.getName()")

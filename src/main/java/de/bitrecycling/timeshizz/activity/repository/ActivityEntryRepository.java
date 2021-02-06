@@ -6,6 +6,7 @@ import de.bitrecycling.timeshizz.project.model.ProjectEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,9 +28,9 @@ public interface ActivityEntryRepository extends CrudRepository<ActivityEntryEnt
     List<ActivityEntryEntity> findAllByUserIdAndCreationTimeBetween(LocalDateTime from, LocalDateTime to, UUID userId);
     List<ActivityEntryEntity> findAllByUserIdAndStartTimeBetween(LocalDateTime from, LocalDateTime to, UUID userId);
     List<ActivityEntryEntity> findAllByActivityIdAndUserIdAndStartTimeBetween(UUID taskId, LocalDateTime from, LocalDateTime to, UUID userId);
-    
-    @Query(value="from ActivityEntryEntity ae where ae.activity.id = :activityId and ae.startTime > :from and ae.startTime < :to")
-    List<ActivityEntryEntity> findActivityEntriesForActivityBetween(UUID activityId, LocalDateTime from, LocalDateTime to);
+
+    @Query(value = "from ActivityEntryEntity ae where ae.activity.id = :activityId and ae.startTime > :from and ae.startTime < :to")
+    List<ActivityEntryEntity> findActivityEntriesForActivityBetween(@Param("activityId") UUID activityId, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
     @Query(value="from ActivityEntryEntity ae where ae.userId = :userId and ae.activity.id = :activityId and ae.startTime > :from and ae.startTime < :to")
     List<ActivityEntryEntity> findUsersActivityEntriesForActivityBetween(UUID userId, UUID activityId, LocalDateTime from, LocalDateTime to);
@@ -41,8 +42,8 @@ public interface ActivityEntryRepository extends CrudRepository<ActivityEntryEnt
      * @param to optional: the latest (most recent) start time that shall be included in the results
      * @return
      */
-    @Query(value="Select ae from ActivityEntryEntity ae where ae.activity.project = :project and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
-    List<ActivityEntryEntity> findActivityEntriesForProjectBetween(ProjectEntity project, LocalDateTime from, LocalDateTime to);
+    @Query(value = "Select ae from ActivityEntryEntity ae where ae.activity.project = :project and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
+    List<ActivityEntryEntity> findActivityEntriesForProjectBetween(@Param("project") ProjectEntity project, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
     @Query(value="Select ae from ActivityEntryEntity ae where ae.userId = :userId and ae.activity.project = :project and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
     List<ActivityEntryEntity> findUsersActivityEntriesForProjectBetween(UUID userId, ProjectEntity project, LocalDateTime from, LocalDateTime to);
@@ -55,8 +56,8 @@ public interface ActivityEntryRepository extends CrudRepository<ActivityEntryEnt
      * @param to optional: the latest (most recent) start time that shall be included in the results
      * @return
      */
-    @Query(value="Select ae from ActivityEntryEntity ae where ae.activity.project.client = :client and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
-    List<ActivityEntryEntity> findActivityEntriesForClientBetween(ClientEntity client, LocalDateTime from, LocalDateTime to);
+    @Query(value = "Select ae from ActivityEntryEntity ae where ae.activity.project.client = :client and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
+    List<ActivityEntryEntity> findActivityEntriesForClientBetween(@Param("client") ClientEntity client, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
     
     @Query(value="Select ae from ActivityEntryEntity ae where ae.userId = :userId and ae.activity.project.client = :client and (:from is null or ae.startTime > :from) and (:to is null or ae.startTime < :to) order by ae.startTime")
     List<ActivityEntryEntity> findUsersActivityEntriesForClientBetween(UUID userId, ClientEntity client, LocalDateTime from, LocalDateTime to);
