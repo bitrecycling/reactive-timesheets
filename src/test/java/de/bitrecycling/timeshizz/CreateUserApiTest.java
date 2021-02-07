@@ -1,8 +1,9 @@
 package de.bitrecycling.timeshizz;
 
-import de.bitrecycling.timeshizz.security.service.UserService;
-import de.bitrecycling.timeshizz.user.controller.CreateUserController;
-import de.bitrecycling.timeshizz.user.model.UserMapper;
+import de.bitrecycling.timeshizz.management.api.CreateUserController;
+import de.bitrecycling.timeshizz.management.api.UserMapper;
+import de.bitrecycling.timeshizz.management.repository.UserRepository;
+import de.bitrecycling.timeshizz.management.service.UserService;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,8 @@ public class CreateUserApiTest {
 
     @MockBean
     UserService userService;
+    @MockBean
+    UserRepository userRepository;
     @MockBean
     UserMapper userMapper;
     @InjectMocks

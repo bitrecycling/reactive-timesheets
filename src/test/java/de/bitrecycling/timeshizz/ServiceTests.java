@@ -1,9 +1,9 @@
 package de.bitrecycling.timeshizz;
 
-import de.bitrecycling.timeshizz.activity.service.ActivityEntryService;
-import de.bitrecycling.timeshizz.activity.service.ActivityService;
-import de.bitrecycling.timeshizz.client.service.ClientService;
-import de.bitrecycling.timeshizz.project.service.ProjectService;
+import de.bitrecycling.timeshizz.management.service.ClientService;
+import de.bitrecycling.timeshizz.management.service.ProjectService;
+import de.bitrecycling.timeshizz.timetracking.service.ActivityEntryService;
+import de.bitrecycling.timeshizz.timetracking.service.ActivityService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

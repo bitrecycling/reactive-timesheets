@@ -1,11 +1,11 @@
 package de.bitrecycling.timeshizz.report;
 
-import de.bitrecycling.timeshizz.activity.model.ActivityEntryEntity;
-import de.bitrecycling.timeshizz.activity.service.ActivityEntryService;
-import de.bitrecycling.timeshizz.activity.service.ActivityService;
-import de.bitrecycling.timeshizz.client.service.ClientService;
 import de.bitrecycling.timeshizz.common.NlpTime;
-import de.bitrecycling.timeshizz.project.service.ProjectService;
+import de.bitrecycling.timeshizz.management.service.ClientService;
+import de.bitrecycling.timeshizz.management.service.ProjectService;
+import de.bitrecycling.timeshizz.timetracking.model.ActivityEntryEntity;
+import de.bitrecycling.timeshizz.timetracking.service.ActivityEntryService;
+import de.bitrecycling.timeshizz.timetracking.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

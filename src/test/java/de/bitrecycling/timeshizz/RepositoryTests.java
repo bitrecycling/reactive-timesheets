@@ -1,13 +1,13 @@
 package de.bitrecycling.timeshizz;
 
-import de.bitrecycling.timeshizz.activity.model.ActivityEntity;
-import de.bitrecycling.timeshizz.activity.model.ActivityEntryEntity;
-import de.bitrecycling.timeshizz.activity.repository.ActivityEntryRepository;
-import de.bitrecycling.timeshizz.activity.repository.ActivityRepository;
-import de.bitrecycling.timeshizz.client.model.ClientEntity;
-import de.bitrecycling.timeshizz.client.repository.ClientRepository;
-import de.bitrecycling.timeshizz.project.model.ProjectEntity;
-import de.bitrecycling.timeshizz.project.repository.ProjectRespository;
+import de.bitrecycling.timeshizz.management.model.Client;
+import de.bitrecycling.timeshizz.management.model.Project;
+import de.bitrecycling.timeshizz.management.repository.ClientRepository;
+import de.bitrecycling.timeshizz.management.repository.ProjectRespository;
+import de.bitrecycling.timeshizz.timetracking.model.ActivityEntity;
+import de.bitrecycling.timeshizz.timetracking.model.ActivityEntryEntity;
+import de.bitrecycling.timeshizz.timetracking.repository.ActivityEntryRepository;
+import de.bitrecycling.timeshizz.timetracking.repository.ActivityRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -47,9 +47,9 @@ public class RepositoryTests {
     @Test
     public void relationshipsOK() {
         UUID userId = UUID.randomUUID();
-        ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress",LocalDateTime.now(), null, userId);
+        Client c = new Client(null, "fullTestClient", "fullTestClientAddress", LocalDateTime.now(), null, userId);
         clientRepository.save(c);
-        ProjectEntity p = new ProjectEntity(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
+        Project p = new Project(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
         projectRespository.save(p);
         ActivityEntity t = new ActivityEntity(null,"fullTestActivityName", p, null, LocalDateTime.now(), userId);
         activityRepository.save(t);
@@ -58,7 +58,7 @@ public class RepositoryTests {
         activityEntryRepository.save(te1);
         activityEntryRepository.save(te2);
         activityRepository.save(t);
-        final List<ClientEntity> all = clientRepository.findAll();
+        final List<Client> all = clientRepository.findAll();
         //expect 1st client is c
         assertThat(all).hasSize(1);
         assertThat(all.iterator().next()).isEqualTo(c);
@@ -73,8 +73,8 @@ public class RepositoryTests {
      */
     @Test
     public void testProjectsByClientQuery() {
-        ClientEntity c = createTestData();
-        final List<ProjectEntity> allByClientId = projectRespository.findAllByClientId(c.getId());
+        Client c = createTestData();
+        final List<Project> allByClientId = projectRespository.findAllByClientId(c.getId());
         assertThat(allByClientId.iterator().next().getName()).isEqualTo("fullTestProjectName");
     }
 
@@ -84,10 +84,10 @@ public class RepositoryTests {
     @Test
     public void testProjectActivitysAndCreationTimeQueries() {
         UUID userId = UUID.randomUUID();
-        ClientEntity c = new ClientEntity(null, "fullTestClient", "fullTestClientAddress", LocalDateTime.now(), null, userId);
+        Client c = new Client(null, "fullTestClient", "fullTestClientAddress", LocalDateTime.now(), null, userId);
         clientRepository.save(c);
-        ProjectEntity p1 = new ProjectEntity(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
-        ProjectEntity p2 = new ProjectEntity(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
+        Project p1 = new Project(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
+        Project p2 = new Project(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
         projectRespository.save(p1);
         projectRespository.save(p2);
 
@@ -118,9 +118,9 @@ public class RepositoryTests {
     @Test
     public void testLatestCreatedActivityEntries(){
         UUID userId = UUID.randomUUID();
-        ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null,userId);
+        Client c = new Client(null, "fullTestClient", "fullTestClientAddress", LocalDateTime.now(), null, userId);
         clientRepository.save(c);
-        ProjectEntity p = new ProjectEntity(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
+        Project p = new Project(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
         projectRespository.save(p);
         ArrayList<ActivityEntryEntity> taskEntries = new ArrayList<>();
         ActivityEntity t = new ActivityEntity(null,"fullTestActivityName",p,null,LocalDateTime.now(),userId);
@@ -145,16 +145,16 @@ public class RepositoryTests {
         assertThat(activityEntryRepository.findAllByOrderByCreationTimeAsc(pageable).size()).isEqualTo(10);
     }
 
-    private ClientEntity createTestData() {
+    private Client createTestData() {
         UUID userId = UUID.randomUUID();
-        ClientEntity c = new ClientEntity(null,"fullTestClient","fullTestClientAddress", LocalDateTime.now(), null,userId);
+        Client c = new Client(null, "fullTestClient", "fullTestClientAddress", LocalDateTime.now(), null, userId);
         clientRepository.save(c);
-        ProjectEntity p = new ProjectEntity(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
+        Project p = new Project(null, "fullTestProjectName", "fullTestProjectDescription", 60.0, c, null, userId, null);
         projectRespository.save(p);
-        ActivityEntity t = new ActivityEntity(null,"fullTestActivityName",p,null,LocalDateTime.now(),userId);
+        ActivityEntity t = new ActivityEntity(null, "fullTestActivityName", p, null, LocalDateTime.now(), userId);
         activityRepository.save(t);
-        ActivityEntryEntity te1 = new ActivityEntryEntity(null,LocalDateTime.now(),120, t, LocalDateTime.now(),userId);
-        ActivityEntryEntity te2 = new ActivityEntryEntity(null,LocalDateTime.now(),180, t,LocalDateTime.now(),userId);
+        ActivityEntryEntity te1 = new ActivityEntryEntity(null, LocalDateTime.now(), 120, t, LocalDateTime.now(), userId);
+        ActivityEntryEntity te2 = new ActivityEntryEntity(null, LocalDateTime.now(), 180, t, LocalDateTime.now(), userId);
         activityEntryRepository.save(te1);
         activityEntryRepository.save(te2);
         return c;

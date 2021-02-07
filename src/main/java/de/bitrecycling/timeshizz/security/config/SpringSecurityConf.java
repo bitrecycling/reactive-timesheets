@@ -1,6 +1,9 @@
 package de.bitrecycling.timeshizz.security.config;
 
-import de.bitrecycling.timeshizz.security.service.UserService;
+import de.bitrecycling.timeshizz.management.model.User;
+import de.bitrecycling.timeshizz.management.repository.UserRepository;
+import de.bitrecycling.timeshizz.security.model.UserPrincipal;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -8,14 +11,17 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
+@RequiredArgsConstructor
 class SpringSecurityConf extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    UserService userService;
-    
+    private final UserRepository userRepository;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -28,67 +34,26 @@ class SpringSecurityConf extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.authenticationProvider()
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
-        
-//        UserDetails user = User.withDefaultPasswordEncoder().username("timeshizz").password("timeshizz").roles("USER").build();
-//        auth
-//                .inMemoryAuthentication()
-//                .withUser(user);
+        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
-    
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) {
+                User user = userRepository.findByName(username);
+                if (user == null) {
+                    throw new UsernameNotFoundException(username);
+                }
+                return new UserPrincipal(user);
+            }
+        };
+    }
 
-
-
-
-//
-//    @Autowired
-//    UserService userService;
-//
-//    @Bean
-//    public AuthenticationProvider authenticationProvider() {
-//
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(userService);
-//        authProvider.setPasswordEncoder(passwordEncoder());
-//        return authProvider;
-//    }
-
-//    @Override
-//
-//    protected void configure(AuthenticationManagerBuilder auth) {
-//
-//        auth.authenticationProvider(authenticationProvider());
-//
-//    }
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        return new UserService();
-//    }
-
-//    @Bean
-//    @Override
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =
-//                User.withDefaultPasswordEncoder()
-//                        .username("user")
-//                        .password("password")
-//                        .roles("USER")
-//                        .build();
-//
-//        return  UserService;
-//    }
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        UserDetails user = User.withDefaultPasswordEncoder().username("timeshizz").password("timeshizz").roles("USER").build();
-//        auth
-//                .inMemoryAuthentication()
-//                .withUser(user);
-//    }
 }

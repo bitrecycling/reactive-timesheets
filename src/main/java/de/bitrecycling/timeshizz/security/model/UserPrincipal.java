@@ -1,6 +1,6 @@
 package de.bitrecycling.timeshizz.security.model;
 
-import de.bitrecycling.timeshizz.user.model.UserEntity;
+import de.bitrecycling.timeshizz.management.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class UserPrincipal implements UserDetails {
-    private UserEntity user;
+    private User user;
 
-    public UserPrincipal(UserEntity user) {
+    public UserPrincipal(User user) {
         this.user = user;
     }
 
