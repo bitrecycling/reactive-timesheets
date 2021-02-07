@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @RequiredArgsConstructor
-public class UserDetailsServiceImpl {
+public class LoggedInUserService {
 
     private final UserRepository userRepository;
 

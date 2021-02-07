@@ -6,7 +6,7 @@ import de.bitrecycling.timeshizz.management.service.ProjectService;
 import de.bitrecycling.timeshizz.timetracking.model.ActivityEntryEntity;
 import de.bitrecycling.timeshizz.timetracking.service.ActivityEntryService;
 import de.bitrecycling.timeshizz.timetracking.service.ActivityService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,16 +20,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/report")
+@RequiredArgsConstructor
 public class ReportController {
 
-    @Autowired
-    ClientService clientService;
-    @Autowired
-    ProjectService projectService;
-    @Autowired
-    ActivityService activityService;
-    @Autowired
-    ActivityEntryService activityEntryService;
+    private final ClientService clientService;
+    private final ProjectService projectService;
+    private final ActivityService activityService;
+    private final ActivityEntryService activityEntryService;
 
     /**
      * get all activity entries for given client in given timespan

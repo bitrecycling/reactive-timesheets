@@ -17,7 +17,6 @@ public class CreateUserController {
 
     @PostMapping(consumes = "application/json")
     public CreateUserResponse createUser(@RequestBody CreateUserRequest userRequest) {
-
         return userMapper.toJson(
                 userService.createUser(userRequest.getName(), userRequest.getPassword(), userRequest.getEmail()));
     }

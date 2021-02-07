@@ -11,25 +11,27 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
-class SpringSecurityConf extends WebSecurityConfigurerAdapter {
+public class SpringSecurityConf extends WebSecurityConfigurerAdapter {
 
     private final UserRepository userRepository;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
+        http.csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/user").permitAll()
-                .antMatchers("/**").hasRole("USER")
+//                .antMatchers("/**").hasRole("USER")
                 .and()
                 .formLogin();
+//                .antMatchers(HttpMethod.POST, "/user").permitAll()
+//                .antMatchers("/**").hasRole("USER")
+//                .and()
+//                .formLogin();
     }
 
     @Autowired
@@ -44,15 +46,12 @@ class SpringSecurityConf extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) {
-                User user = userRepository.findByName(username);
-                if (user == null) {
-                    throw new UsernameNotFoundException(username);
-                }
-                return new UserPrincipal(user);
+        return username -> {
+            User user = userRepository.findByName(username);
+            if (user == null) {
+                throw new UsernameNotFoundException(username);
             }
+            return new UserPrincipal(user);
         };
     }
 

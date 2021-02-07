@@ -3,6 +3,7 @@ package de.bitrecycling.timeshizz.management.api;
 import de.bitrecycling.timeshizz.management.model.Client;
 import de.bitrecycling.timeshizz.management.service.ClientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,10 +26,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/clients")
 @RequiredArgsConstructor
 public class ClientController {
-    
+
+    //    private final LoggedInUserService loggedInUserService;
     private final ClientService clientService;
     private final ClientMapper clientMapper;
 
+    @PreAuthorize("hasPermission('client')")
     @GetMapping
     public List<ClientJson> all(){
         return clientService.all().stream().map(
